@@ -1,0 +1,25 @@
+{
+  "version": "v_20260208_135853",
+  "timestamp": "2026-02-08T13:58:53.783876",
+  "reason": "initial_setup",
+  "metrics": {
+    "initialized": true
+  },
+  "state": {
+    "offer_10_pct": {
+      "alpha": 1.0,
+      "beta": 1.0,
+      "mean": 0.5
+    },
+    "offer_free_ship": {
+      "alpha": 1.0,
+      "beta": 1.0,
+      "mean": 0.5
+    },
+    "offer_bundle": {
+      "alpha": 1.0,
+      "beta": 1.0,
+      "mean": 0.5
+    }
+  }
+}

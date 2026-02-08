@@ -1,0 +1,52 @@
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+python-dotenv
+python-jose[cryptography]
+cryptography
+
+# Data & Scientific Computing
+pandas
+numpy
+scipy
+lifetimes
+scikit-learn
+
+# Database
+supabase
+
+# Testing
+pytest
+pytest-asyncio
+
+# ============================================================
+# ENTERPRISE TIER - SOTA 2024 (Optional Dependencies)
+# ============================================================
+
+# Deep Learning for LSTM LTV (Enterprise)
+# Uncomment to enable LSTM-based predictions
+tensorflow>=2.15.0
+
+# Bayesian MMM (Enterprise)
+# Uncomment for full Bayesian inference
+pymc>=5.10.0
+arviz>=0.17.0
+# pymc-marketing>=0.5.0  # Optional: specific MMM library
+
+# Hyperparameter Auto-tuning (Enterprise)
+nevergrad>=1.0.0
+
+# ============================================================
+# PRODUCTION HARDENING (Phase 13)
+# ============================================================
+
+# Error Monitoring
+# sentry-sdk[fastapi]>=1.40.0
+
+# Async Job Queue (for heavy ML tasks)
+# celery>=5.3.0
+# redis>=5.0.0
+
+# API Documentation
+# httpx>=0.26.0  # For testing
