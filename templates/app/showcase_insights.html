@@ -38,17 +38,19 @@
             <div>
                 <h1 class="text-3xl font-bold tracking-tight">
                     <span class="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                        Insights Preview
+                        {{ 'Insights Preview' if locale == 'en' else 'Vista Previa de Insights' }}
                     </span>
                 </h1>
-                <p class="text-slate-400 mt-1">Lo que Tactics descubre en tus datos</p>
+                <p class="text-slate-400 mt-1">{{ 'What Tactics discovers in your data' if locale == 'en' else 'Lo que
+                    Tactics descubre en tus datos' }}</p>
             </div>
-            <a href="/app/showcase" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+            <a href="{{ '/en' if locale == 'en' else '' }}/app/showcase"
+                class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Volver a Showcases
+                {{ 'Back to Showcases' if locale == 'en' else 'Volver a Showcases' }}
             </a>
         </div>
     </header>
@@ -64,32 +66,41 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
-                        Manifiesto de Precisi├│n: Ground Truth
+                        {{ 'Accuracy Manifesto: Ground Truth' if locale == 'en' else 'Manifiesto de Precisión: Ground
+                        Truth' }}
                     </h2>
                     <p class="text-slate-300 leading-relaxed mb-4">
-                        A diferencia de otros dashboards que solo muestran gr├íficos, Tactics somete cada an├ílisis a una
-                        **prueba de veracidad**. Utilizamos datasets p├║blicos con resultados conocidos ("Ground Truth")
-                        para demostrar que nuestros algoritmos detectan patrones que otros ignoran.
+                        {{ 'Unlike other dashboards that only show charts, Tactics subjects every analysis to a truth
+                        test. We use public datasets with known results ("Ground Truth") to demonstrate that our
+                        algorithms detect patterns that others ignore.' if locale == 'en' else 'A diferencia de otros
+                        dashboards que solo muestran gráficos, Tactics somete cada análisis a una prueba de veracidad.
+                        Utilizamos datasets públicos con resultados conocidos ("Ground Truth") para demostrar que
+                        nuestros algoritmos detectan patrones que otros ignoran.' }}
                     </p>
                     <div class="flex flex-wrap gap-4 text-sm">
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                            <span class="text-slate-400">Validaci├│n Temporal (Holdout)</span>
+                            <span class="text-slate-400">{{ 'Temporal Validation (Holdout)' if locale == 'en' else
+                                'Validación Temporal (Holdout)' }}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                            <span class="text-slate-400">Pruebas Param├®tricas Bootstrap</span>
+                            <span class="text-slate-400">{{ 'Bootstrap Parametric Tests' if locale == 'en' else 'Pruebas
+                                Paramétricas Bootstrap' }}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                            <span class="text-slate-400">Intervalos de Confianza 95%</span>
+                            <span class="text-slate-400">{{ '95% Confidence Intervals' if locale == 'en' else
+                                'Intervalos de Confianza 95%' }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="bg-slate-900/50 rounded-xl p-6 border border-white/5 text-center px-12">
-                    <div class="text-xs text-slate-500 uppercase tracking-widest mb-1">Precisi├│n Media Agregada</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-widest mb-1">{{ 'Average Aggregate Accuracy'
+                        if locale == 'en' else 'Precisión Media Agregada' }}</div>
                     <div class="text-5xl font-black text-emerald-400 stat-glow">92.4%</div>
-                    <div class="text-xs text-emerald-500/60 mt-2">Basado en 6 escenarios validados</div>
+                    <div class="text-xs text-emerald-500/60 mt-2">{{ 'Based on 6 validated scenarios' if locale == 'en'
+                        else 'Basado en 6 escenarios validados' }}</div>
                 </div>
             </div>
         </section>
@@ -99,36 +110,44 @@
             <div class="flex items-center gap-4 mb-8">
                 <div
                     class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-3xl">
-                    ­ƒøÆ
+                    💰
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold">E-commerce: Valor de Vida del Cliente</h2>
-                    <p class="text-slate-400">UCI Online Retail Dataset ÔÇó 18,562 pedidos ÔÇó 4,338 clientes</p>
+                    <h2 class="text-2xl font-bold">{{ 'E-commerce: Customer Lifetime Value' if locale == 'en' else
+                        'E-commerce: Valor de Vida del Cliente' }}</h2>
+                    <p class="text-slate-400">{{ 'UCI Online Retail Dataset • 18,562 orders • 4,338 customers' if locale
+                        == 'en' else 'UCI Online Retail Dataset • 18,562 pedidos • 4,338 clientes' }}</p>
                 </div>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 mb-8">
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">LTV Promedio</div>
-                    <div class="text-4xl font-bold text-emerald-400 stat-glow">Ôé¼847</div>
-                    <div class="text-xs text-slate-500 mt-2">Proyecci├│n a 12 meses</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Average LTV' if locale == 'en' else 'LTV Promedio' }}
+                    </div>
+                    <div class="text-4xl font-bold text-emerald-400 stat-glow">€847</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ '12-month projection' if locale == 'en' else 'Proyección
+                        a 12 meses' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Clientes VIP (Top 10%)</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'VIP Customers (Top 10%)' if locale == 'en' else
+                        'Clientes VIP (Top 10%)' }}</div>
                     <div class="text-4xl font-bold text-purple-400 stat-glow">434</div>
-                    <div class="text-xs text-slate-500 mt-2">Generan el 67% de ingresos</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Generate 67% of revenue' if locale == 'en' else
+                        'Generan el 67% de ingresos' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">En Riesgo de Fuga</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'At Risk of Churn' if locale == 'en' else 'En Riesgo de
+                        Fuga' }}</div>
                     <div class="text-4xl font-bold text-rose-400 stat-glow">612</div>
-                    <div class="text-xs text-slate-500 mt-2">Sin compra en 90+ d├¡as</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'No purchase in 90+ days' if locale == 'en' else 'Sin
+                        compra en 90+ días' }}</div>
                 </div>
             </div>
 
             <div class="insight-card rounded-2xl p-6">
                 <h3 class="font-semibold text-lg mb-4 flex items-center gap-2">
                     <span class="insight-badge text-xs px-2 py-1 rounded-full">INSIGHT</span>
-                    Segmentaci├│n RFM
+                    {{ 'RFM Segmentation' if locale == 'en' else 'Segmentación RFM' }}
                 </h3>
                 <div class="grid grid-cols-5 gap-4 text-center text-sm">
                     <div class="bg-emerald-500/20 rounded-xl p-4">
@@ -160,46 +179,56 @@
             <div class="flex items-center gap-4 mb-8">
                 <div
                     class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-3xl">
-                    ­ƒôè
+                    📊
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold">MMM: Optimizaci├│n de Presupuesto</h2>
-                    <p class="text-slate-400">Advertising Dataset ÔÇó 3 canales ÔÇó 200 semanas de datos</p>
+                    <h2 class="text-2xl font-bold">{{ 'MMM: Budget Optimization' if locale == 'en' else 'MMM:
+                        Optimización de Presupuesto' }}</h2>
+                    <p class="text-slate-400">{{ 'Advertising Dataset • 3 channels • 200 weeks of data' if locale ==
+                        'en' else 'Advertising Dataset • 3 canales • 200 semanas de datos' }}</p>
                 </div>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 mb-8">
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">ROAS Actual</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Current ROAS' if locale == 'en' else 'ROAS Actual' }}
+                    </div>
                     <div class="text-4xl font-bold text-blue-400 stat-glow">2.8x</div>
-                    <div class="text-xs text-slate-500 mt-2">Retorno promedio</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Average return' if locale == 'en' else 'Retorno
+                        promedio' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">ROAS Optimizado</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Optimized ROAS' if locale == 'en' else 'ROAS
+                        Optimizado' }}</div>
                     <div class="text-4xl font-bold text-emerald-400 stat-glow">3.4x</div>
-                    <div class="text-xs text-emerald-400 mt-2">+21% mejora potencial</div>
+                    <div class="text-xs text-emerald-400 mt-2">{{ '+21% potential improvement' if locale == 'en' else
+                        '+21% mejora potencial' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Canal con Mayor Saturaci├│n</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Highest Saturation Channel' if locale == 'en' else
+                        'Canal con Mayor Saturación' }}</div>
                     <div class="text-4xl font-bold text-amber-400 stat-glow">TV</div>
-                    <div class="text-xs text-slate-500 mt-2">Rendimiento decreciente</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Diminishing returns' if locale == 'en' else
+                        'Rendimiento decreciente' }}</div>
                 </div>
             </div>
 
             <div class="insight-card rounded-2xl p-6">
                 <h3 class="font-semibold text-lg mb-4 flex items-center gap-2">
-                    <span class="warning-badge text-xs px-2 py-1 rounded-full">RECOMENDACI├ôN</span>
-                    Reasignaci├│n de Presupuesto
+                    <span class="warning-badge text-xs px-2 py-1 rounded-full">{{ 'RECOMMENDATION' if locale == 'en'
+                        else 'RECOMENDACIÓN' }}</span>
+                    {{ 'Budget Reallocation' if locale == 'en' else 'Reasignación de Presupuesto' }}
                 </h3>
                 <div class="grid grid-cols-3 gap-6">
                     <div class="text-center">
                         <div class="text-lg font-medium text-slate-300">TV</div>
                         <div class="flex items-center justify-center gap-2 mt-2">
                             <span class="text-rose-400">45%</span>
-                            <span class="text-slate-500">ÔåÆ</span>
+                            <span class="text-slate-500">→</span>
                             <span class="text-emerald-400">32%</span>
                         </div>
-                        <div class="text-xs text-rose-400 mt-1">-13% recomendado</div>
+                        <div class="text-xs text-rose-400 mt-1">{{ '-13% recommended' if locale == 'en' else '-13%
+                            recomendado' }}</div>
                     </div>
                     <div class="text-center">
                         <div class="text-lg font-medium text-slate-300">Radio</div>
@@ -208,7 +237,8 @@
                             <span class="text-slate-500">ÔåÆ</span>
                             <span class="text-emerald-400">42%</span>
                         </div>
-                        <div class="text-xs text-emerald-400 mt-1">+7% recomendado</div>
+                        <div class="text-xs text-emerald-400 mt-1">{{ '+7% recommended' if locale == 'en' else '+7%
+                            recomendado' }}</div>
                     </div>
                     <div class="text-center">
                         <div class="text-lg font-medium text-slate-300">Newspaper</div>
@@ -217,7 +247,8 @@
                             <span class="text-slate-500">ÔåÆ</span>
                             <span class="text-emerald-400">26%</span>
                         </div>
-                        <div class="text-xs text-emerald-400 mt-1">+6% recomendado</div>
+                        <div class="text-xs text-emerald-400 mt-1">{{ '+6% recommended' if locale == 'en' else '+6%
+                            recomendado' }}</div>
                     </div>
                 </div>
             </div>
@@ -228,40 +259,50 @@
             <div class="flex items-center gap-4 mb-8">
                 <div
                     class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center text-3xl">
-                    ÔÜá´©Å
+                    ⚠️
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold">Churn Radar: Retenci├│n Predictiva</h2>
-                    <p class="text-slate-400">Telco Churn Dataset ÔÇó 7,043 clientes ÔÇó 26.5% tasa de fuga</p>
+                    <h2 class="text-2xl font-bold">{{ 'Churn Radar: Predictive Retention' if locale == 'en' else 'Churn
+                        Radar: Retención Predictiva' }}</h2>
+                    <p class="text-slate-400">{{ 'Telco Churn Dataset • 7,043 customers • 26.5% churn rate' if locale ==
+                        'en' else 'Telco Churn Dataset • 7,043 clientes • 26.5% tasa de fuga' }}</p>
                 </div>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 mb-8">
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Clientes en Riesgo Alto</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'High Risk Customers' if locale == 'en' else 'Clientes
+                        en Riesgo Alto' }}</div>
                     <div class="text-4xl font-bold text-rose-400 stat-glow">1,869</div>
-                    <div class="text-xs text-slate-500 mt-2">Probabilidad &gt;70% de fuga</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Probability >70% churn' if locale == 'en' else
+                        'Probabilidad >70% de fuga' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Capital en Riesgo</div>
-                    <div class="text-4xl font-bold text-amber-400 stat-glow">Ôé¼142K</div>
-                    <div class="text-xs text-slate-500 mt-2">Ingresos anuales amenazados</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Capital at Risk' if locale == 'en' else 'Capital en
+                        Riesgo' }}</div>
+                    <div class="text-4xl font-bold text-amber-400 stat-glow">€142K</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Threatened annual revenue' if locale == 'en' else
+                        'Ingresos anuales amenazados' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6 border-emerald-500/30 border">
-                    <div class="text-sm text-slate-400 mb-2">Precisi├│n de Detecci├│n (Prueba Real)</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Detection Accuracy (Real Test)' if locale == 'en' else
+                        'Precisión de Detección (Prueba Real)' }}</div>
                     <div class="text-4xl font-bold text-emerald-400 stat-glow">89%</div>
-                    <div class="text-xs text-emerald-400 mt-2">Recall validado contra Ground Truth</div>
+                    <div class="text-xs text-emerald-400 mt-2">{{ 'Recall validated against Ground Truth' if locale ==
+                        'en' else 'Recall validado contra Ground Truth' }}</div>
                 </div>
             </div>
 
             <div class="insight-card rounded-2xl p-6">
                 <h3 class="font-semibold text-lg mb-4 flex items-center gap-2">
-                    <span class="danger-badge text-xs px-2 py-1 rounded-full">ALERTA</span>
-                    Factores Predictivos de Fuga
+                    <span class="danger-badge text-xs px-2 py-1 rounded-full">{{ 'ALERT' if locale == 'en' else 'ALERTA'
+                        }}</span>
+                    {{ 'Predictive Churn Factors' if locale == 'en' else 'Factores Predictivos de Fuga' }}
                 </h3>
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
-                        <span class="text-slate-300">Contrato mes a mes</span>
+                        <span class="text-slate-300">{{ 'Month-to-month contract' if locale == 'en' else 'Contrato mes a
+                            mes' }}</span>
                         <div class="flex items-center gap-2">
                             <div class="w-48 h-2 bg-slate-700 rounded-full overflow-hidden">
                                 <div class="w-[89%] h-full bg-gradient-to-r from-rose-500 to-rose-400"></div>
@@ -278,29 +319,38 @@
             <div class="flex items-center gap-4 mb-8">
                 <div
                     class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-3xl">
-                    ­ƒÅª
+                    🏦
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold">Banking: Churn en Servicios Financieros</h2>
-                    <p class="text-slate-400">Financial Services Dataset ÔÇó 10,000 clientes ÔÇó Europa</p>
+                    <h2 class="text-2xl font-bold">{{ 'Banking: Churn in Financial Services' if locale == 'en' else
+                        'Banking: Churn en Servicios Financieros' }}</h2>
+                    <p class="text-slate-400">{{ 'Financial Services Dataset • 10,000 customers • Europe' if locale ==
+                        'en' else 'Financial Services Dataset • 10,000 clientes • Europa' }}</p>
                 </div>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6 mb-8">
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Principal Correlaci├│n</div>
-                    <div class="text-4xl font-bold text-amber-400 stat-glow">Edad</div>
-                    <div class="text-xs text-slate-500 mt-2">Mayor riesgo en segmento 45-60</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Main Correlation' if locale == 'en' else 'Principal
+                        Correlación' }}</div>
+                    <div class="text-4xl font-bold text-amber-400 stat-glow">{{ 'Age' if locale == 'en' else 'Edad' }}
+                    </div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Highest risk in segment 45-60' if locale == 'en' else
+                        'Mayor riesgo en segmento 45-60' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Impacto Credit Score</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Credit Score Impact' if locale == 'en' else 'Impacto
+                        Credit Score' }}</div>
                     <div class="text-4xl font-bold text-rose-400 stat-glow">-15%</div>
-                    <div class="text-xs text-slate-500 mt-2">Riesgo aumenta por debajo de 600 pts</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Risk increases below 600 pts' if locale == 'en' else
+                        'Riesgo aumenta por debajo de 600 pts' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Fidelidad por Producto</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Product Loyalty' if locale == 'en' else 'Fidelidad por
+                        Producto' }}</div>
                     <div class="text-4xl font-bold text-blue-400 stat-glow">2.4x</div>
-                    <div class="text-xs text-slate-500 mt-2">Retenci├│n con 3+ productos activos</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Retention with 3+ active products' if locale == 'en'
+                        else 'Retención con 3+ productos activos' }}</div>
                 </div>
             </div>
         </section>
@@ -310,11 +360,13 @@
             <div class="flex items-center gap-4 mb-8">
                 <div
                     class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-3xl">
-                    ­ƒÜÇ
+                    ☁️
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold">SaaS: Econom├¡a de Suscripci├│n</h2>
-                    <p class="text-slate-400">B2B SaaS Dataset ÔÇó 6,000+ suscripciones ÔÇó Recurrencia real</p>
+                    <h2 class="text-2xl font-bold">{{ 'SaaS: Subscription Economy' if locale == 'en' else 'SaaS:
+                        Economía de Suscripción' }}</h2>
+                    <p class="text-slate-400">{{ 'B2B SaaS Dataset • 6,000+ subscriptions • Real recurrence' if locale
+                        == 'en' else 'B2B SaaS Dataset • 6,000+ suscripciones • Recurrencia real' }}</p>
                 </div>
             </div>
 
@@ -322,17 +374,22 @@
                 <div class="insight-card rounded-2xl p-6">
                     <div class="text-sm text-slate-400 mb-2">NRR (Net Revenue Retention)</div>
                     <div class="text-4xl font-bold text-emerald-400 stat-glow">104%</div>
-                    <div class="text-xs text-slate-500 mt-2">Crecimiento org├ínico por expansi├│n</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Organic growth through expansion' if locale == 'en'
+                        else 'Crecimiento orgánico por expansión' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Ratio LTV/CAC</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'LTV/CAC Ratio' if locale == 'en' else 'Ratio LTV/CAC'
+                        }}</div>
                     <div class="text-4xl font-bold text-purple-400 stat-glow">4.2x</div>
-                    <div class="text-xs text-slate-500 mt-2">Eficiencia de captaci├│n validada</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Validated acquisition efficiency' if locale == 'en'
+                        else 'Eficiencia de captación validada' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Churn Mensual (MRR)</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Monthly Churn (MRR)' if locale == 'en' else 'Churn
+                        Mensual (MRR)' }}</div>
                     <div class="text-4xl font-bold text-rose-400 stat-glow">2.8%</div>
-                    <div class="text-xs text-slate-500 mt-2">Tasa de cancelaci├│n recurrente</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Recurring cancellation rate' if locale == 'en' else
+                        'Tasa de cancelación recurrente' }}</div>
                 </div>
             </div>
         </section>
@@ -342,11 +399,13 @@
             <div class="flex items-center gap-4 mb-8">
                 <div
                     class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-3xl">
-                    ­ƒô▒
+                    📱
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold">Digital MMM: Atribuci├│n Moderna</h2>
-                    <p class="text-slate-400">Digital-First Dataset ÔÇó Meta, Google & TikTok</p>
+                    <h2 class="text-2xl font-bold">{{ 'Digital MMM: Modern Attribution' if locale == 'en' else 'Digital
+                        MMM: Atribución Moderna' }}</h2>
+                    <p class="text-slate-400">{{ 'Digital-First Dataset • Meta, Google & TikTok' if locale == 'en' else
+                        'Digital-First Dataset • Meta, Google & TikTok' }}</p>
                 </div>
             </div>
 
@@ -354,28 +413,35 @@
                 <div class="insight-card rounded-2xl p-6">
                     <div class="text-sm text-slate-400 mb-2">Marginal ROAS: TikTok</div>
                     <div class="text-4xl font-bold text-cyan-400 stat-glow">3.1x</div>
-                    <div class="text-xs text-slate-500 mt-2">Mayor eficiencia incremental</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Highest incremental efficiency' if locale == 'en' else
+                        'Mayor eficiencia incremental' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Saturaci├│n en Meta</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Saturation on Meta' if locale == 'en' else 'Saturación
+                        en Meta' }}</div>
                     <div class="text-4xl font-bold text-amber-400 stat-glow">72%</div>
-                    <div class="text-xs text-slate-500 mt-2">Punto de retornos decrecientes</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Point of diminishing returns' if locale == 'en' else
+                        'Punto de retornos decrecientes' }}</div>
                 </div>
                 <div class="insight-card rounded-2xl p-6">
-                    <div class="text-sm text-slate-400 mb-2">Efecto Sinergia</div>
+                    <div class="text-sm text-slate-400 mb-2">{{ 'Synergy Effect' if locale == 'en' else 'Efecto
+                        Sinergia' }}</div>
                     <div class="text-4xl font-bold text-indigo-400 stat-glow">+18%</div>
-                    <div class="text-xs text-slate-500 mt-2">Impulso de b├║squeda por TikTok/Meta</div>
+                    <div class="text-xs text-slate-500 mt-2">{{ 'Search boost from TikTok/Meta' if locale == 'en' else
+                        'Impulso de búsqueda por TikTok/Meta' }}</div>
                 </div>
             </div>
         </section>
 
         <!-- CTA -->
         <section class="text-center py-12">
-            <h2 class="text-2xl font-bold mb-4">┬┐Listo para descubrir esto en tus datos?</h2>
-            <p class="text-slate-400 mb-8">Conecta tus fuentes y obt├®n insights en minutos</p>
-            <a href="/auth/signup"
+            <h2 class="text-2xl font-bold mb-4">{{ 'Ready to discover this in your data?' if locale == 'en' else '¿Listo
+                para descubrir esto en tus datos?' }}</h2>
+            <p class="text-slate-400 mb-8">{{ 'Connect your sources and get insights in minutes' if locale == 'en' else
+                'Conecta tus fuentes y obtén insights en minutos' }}</p>
+            <a href="{{ '/en' if locale == 'en' else '' }}/auth/signup"
                 class="inline-block px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold hover:opacity-90 transition">
-                Empezar Gratis
+                {{ 'Start Free' if locale == 'en' else 'Empezar Gratis' }}
             </a>
         </section>
     </main>

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calibration Audit | Tactics Intelligence 2.0</title>
+    <title>{{ 'Calibration Audit | Tactics Intelligence 2.0' if locale == 'en' else 'Auditoría de Calibración | Tactics
+        Intelligence 2.0' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -66,13 +67,15 @@
             <div>
                 <h1
                     class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                    Calibration Audit</h1>
-                <p class="text-slate-400 mt-1">Transparencia y Trazabilidad de Datos | Intelligence 2.0</p>
+                    {{ 'Calibration Audit' if locale == 'en' else 'Auditoría de Calibración' }}</h1>
+                <p class="text-slate-400 mt-1">{{ 'Data Transparency & Traceability | Intelligence 2.0' if locale ==
+                    'en' else 'Transparencia y Trazabilidad de Datos | Intelligence 2.0' }}</p>
             </div>
             <div class="flex gap-4">
-                <button @click="reloadData()"
-                    class="px-4 py-2 glass rounded-lg hover:bg-slate-700 transition">Sincronizar Auditor├¡a</button>
-                <div class="px-4 py-2 bg-blue-600 rounded-lg font-semibold">Tiers: Elite Ready</div>
+                <button @click="reloadData()" class="px-4 py-2 glass rounded-lg hover:bg-slate-700 transition">{{ 'Sync
+                    Audit' if locale == 'en' else 'Sincronizar Auditoría' }}</button>
+                <div class="px-4 py-2 bg-blue-600 rounded-lg font-semibold">{{ 'Tiers: Elite Ready' if locale == 'en'
+                    else 'Niveles: Elite Ready' }}</div>
             </div>
         </header>
 
@@ -96,16 +99,20 @@
                 <!-- Data Integrity Map (The Heatmap) -->
                 <div class="glass p-8 rounded-3xl">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold">Integrity Map</h2>
+                        <h2 class="text-xl font-bold">{{ 'Integrity Map' if locale == 'en' else 'Mapa de Integridad' }}
+                        </h2>
                         <div class="flex gap-4 text-xs">
                             <div class="flex items-center gap-1">
-                                <div class="w-3 h-3 cell-healthy"></div> Saludable
+                                <div class="w-3 h-3 cell-healthy"></div> {{ 'Healthy' if locale == 'en' else 'Saludable'
+                                }}
                             </div>
                             <div class="flex items-center gap-1">
-                                <div class="w-3 h-3 cell-warning"></div> Anomal├¡as
+                                <div class="w-3 h-3 cell-warning"></div> {{ 'Anomalies' if locale == 'en' else
+                                'Anomalías' }}
                             </div>
                             <div class="flex items-center gap-1">
-                                <div class="w-3 h-3 cell-critical"></div> Fallo Cr├¡tico
+                                <div class="w-3 h-3 cell-critical"></div> {{ 'Critical Failure' if locale == 'en' else
+                                'Fallo Crítico' }}
                             </div>
                         </div>
                     </div>
@@ -118,30 +125,32 @@
                         </template>
                     </div>
                     <div class="flex justify-between text-xs text-slate-500">
-                        <span>Hace 90 d├¡as</span>
-                        <span>Hoy</span>
+                        <span>{{ '90 days ago' if locale == 'en' else 'Hace 90 días' }}</span>
+                        <span>{{ 'Today' if locale == 'en' else 'Hoy' }}</span>
                     </div>
 
                     <div x-show="hoverDay"
                         class="mt-4 p-4 bg-slate-800 rounded-xl text-sm border border-slate-700 animate-slide-in">
-                        <p class="font-bold">Detalle del D├¡a <span x-text="hoverDay"></span></p>
+                        <p class="font-bold">{{ 'Day Detail' if locale == 'en' else 'Detalle del Día' }} <span
+                                x-text="hoverDay"></span></p>
                         <p class="text-slate-400" x-text="getDayInfo(hoverDay)"></p>
                     </div>
                 </div>
 
                 <!-- Audit Trail (Receipts) -->
                 <div class="glass p-8 rounded-3xl overflow-hidden">
-                    <h2 class="text-xl font-bold mb-6">Receipt of Truth: Audit Trail</h2>
+                    <h2 class="text-xl font-bold mb-6">{{ 'Receipt of Truth: Audit Trail' if locale == 'en' else 'Recibo
+                        de Verdad: Trail de Auditoría' }}</h2>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm">
                             <thead>
                                 <tr class="text-slate-400 border-b border-slate-700">
-                                    <th class="pb-4">Batch ID</th>
-                                    <th class="pb-4">Timestamp</th>
-                                    <th class="pb-4">Origen</th>
-                                    <th class="pb-4">Estado</th>
-                                    <th class="pb-4 text-right">Rows</th>
-                                    <th class="pb-4 text-right">Check</th>
+                                    <th class="pb-4">{{ 'Batch ID' if locale == 'en' else 'ID de Lote' }}</th>
+                                    <th class="pb-4">{{ 'Timestamp' if locale == 'en' else 'Marca de Tiempo' }}</th>
+                                    <th class="pb-4">{{ 'Source' if locale == 'en' else 'Origen' }}</th>
+                                    <th class="pb-4">{{ 'Status' if locale == 'en' else 'Estado' }}</th>
+                                    <th class="pb-4 text-right">{{ 'Rows' if locale == 'en' else 'Filas' }}</th>
+                                    <th class="pb-4 text-right">{{ 'Check' if locale == 'en' else 'Verificar' }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-800">
@@ -161,7 +170,8 @@
                                         </td>
                                         <td class="py-4 text-right" x-text="receipt.success_rows"></td>
                                         <td class="py-4 text-right"><button
-                                                class="text-indigo-400 hover:underline text-xs">Verify</button></td>
+                                                class="text-indigo-400 hover:underline text-xs">{{ 'Verify' if locale ==
+                                                'en' else 'Verificar' }}</button></td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -181,7 +191,8 @@
                                 </path>
                             </svg>
                         </div>
-                        <h2 class="text-xl font-bold">Anomalies Explorer</h2>
+                        <h2 class="text-xl font-bold">{{ 'Anomalies Explorer' if locale == 'en' else 'Explorador de
+                            Anomalías' }}</h2>
                     </div>
 
                     <div class="space-y-4">
@@ -193,30 +204,35 @@
                                         :class="issue.severity == 'critical' ? 'text-red-400' : 'text-amber-400'"
                                         x-text="issue.type"></span>
                                     <span class="text-[10px] text-slate-500"
-                                        x-text="issue.affected_rows + ' rows'"></span>
+                                        x-text="issue.affected_rows + ' {{ 'rows' if locale == 'en' else 'filas' }}'"></span>
                                 </div>
                                 <p class="text-sm text-slate-300" x-text="issue.message"></p>
                                 <div class="mt-3 flex gap-2">
                                     <button
-                                        class="text-[10px] px-2 py-1 bg-slate-700 rounded-md hover:bg-slate-600 transition">Trace
-                                        Origin</button>
+                                        class="text-[10px] px-2 py-1 bg-slate-700 rounded-md hover:bg-slate-600 transition">{{
+                                        'Trace Origin' if locale == 'en' else 'Trazar Origen' }}</button>
                                     <button
-                                        class="text-[10px] px-2 py-1 bg-red-900/30 text-red-300 rounded-md hover:bg-red-900/50 transition">Ignore</button>
+                                        class="text-[10px] px-2 py-1 bg-red-900/30 text-red-300 rounded-md hover:bg-red-900/50 transition">{{
+                                        'Ignore' if locale == 'en' else 'Ignorar' }}</button>
                                 </div>
                             </div>
                         </template>
                     </div>
 
                     <div class="mt-8 p-6 bg-indigo-600/10 rounded-3xl border border-indigo-500/20">
-                        <h4 class="font-bold text-indigo-300 mb-2 italic">Algorithm Awareness</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed">Intelligence 2.0 es resiliente. Estos fallos
-                            han sido inyectados en la propagaci├│n de incertidumbre de tus modelos LTV/MMM.</p>
+                        <h4 class="font-bold text-indigo-300 mb-2 italic">{{ 'Algorithm Awareness' if locale == 'en'
+                            else 'Conciencia del Algoritmo' }}</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">{{ 'Intelligence 2.0 is resilient. These
+                            failures have been injected into the uncertainty propagation of your LTV/MMM models.' if
+                            locale == 'en' else 'Intelligence 2.0 es resiliente. Estos fallos han sido inyectados en la
+                            propagación de incertidumbre de tus modelos LTV/MMM.' }}</p>
                     </div>
                 </div>
 
                 <!-- Traceability Details -->
                 <div x-show="selectedIssue" class="glass p-8 rounded-3xl animate-slide-in">
-                    <h3 class="font-bold mb-4">Deep Traceability</h3>
+                    <h3 class="font-bold mb-4">{{ 'Deep Traceability' if locale == 'en' else 'Trazabilidad Profunda' }}
+                    </h3>
                     <!-- Trace details here -->
                 </div>
             </div>
@@ -227,10 +243,10 @@
         function auditApp() {
             return {
                 stats: [
-                    { label: 'Integrity Score', value: '94.2%', trend: '+0.5%', trendColor: 'text-emerald-400', desc: 'vs last month' },
-                    { label: 'Data Gaps', value: '3', trend: '-2', trendColor: 'text-emerald-400', desc: 'resolved' },
-                    { label: 'Duplicates', value: '142', trend: 'Neutral', trendColor: 'text-slate-400', desc: 'flagged' },
-                    { label: 'Audit Trail', value: 'v1.4', trend: 'Healthy', trendColor: 'text-emerald-400', desc: 'integrity driver' }
+                    { label: "{{ 'Integrity Score' if locale == 'en' else 'Score de Integridad' }}", value: "94.2%", trend: "+0.5%", trendColor: "text-emerald-400", desc: "{{ 'vs last month' if locale == 'en' else 'vs mes anterior' }}" },
+                    { label: "{{ 'Data Gaps' if locale == 'en' else 'Gaps de Datos' }}", value: "3", trend: "-2", trendColor: "text-emerald-400", desc: "{{ 'resolved' if locale == 'en' else 'resueltos' }}" },
+                    { label: "{{ 'Duplicates' if locale == 'en' else 'Duplicados' }}", value: "142", trend: "{{ 'Neutral' if locale == 'en' else 'Neutral' }}", trendColor: "text-slate-400", desc: "{{ 'flagged' if locale == 'en' else 'marcados' }}" },
+                    { label: "{{ 'Audit Trail' if locale == 'en' else 'Trail de Auditoría' }}", value: "v1.4", trend: "{{ 'Healthy' if locale == 'en' else 'Saludable' }}", trendColor: "text-emerald-400", desc: "{{ 'integrity driver' if locale == 'en' else 'driver de integridad' }}" }
                 ],
                 hoverDay: null,
                 selectedIssue: null,
@@ -249,8 +265,8 @@
                     const iRes = await fetch(`/api/data/integrity/${company_id}?context=ventas`);
                     const iData = await iRes.json();
                     this.issues = iData.issues || [
-                        { type: 'GAP', severity: 'warning', message: 'Falta una semana de datos de Meta Ads (Ene 15-22)', affected_rows: 0 },
-                        { type: 'DUPLICATE', severity: 'critical', message: 'Detected logical overlaps on Order IDs', affected_rows: 42 }
+                        { type: 'GAP', severity: 'warning', message: "{{ 'Missing one week of Meta Ads data (Jan 15-22)' if locale == 'en' else 'Falta una semana de datos de Meta Ads (Ene 15-22)' }}", affected_rows: 0 },
+                        { type: 'DUPLICATE', severity: 'critical', message: "{{ 'Detected logical overlaps on Order IDs' if locale == 'en' else 'Se detectaron solapamientos lógicos en los IDs de Pedido' }}", affected_rows: 42 }
                     ];
                 },
 
@@ -262,9 +278,9 @@
                 },
 
                 getDayInfo(day) {
-                    if (day == 45) return "Fallo cr├¡tico de sincronizaci├│n (API Timeout). Tactics registr├│ el evento pero no recibi├│ el payload.";
-                    if (day > 70 && day < 75) return "Anomal├¡as menores detectadas: Duplicados en el archivo fuente 'manual_import_feb.csv'.";
-                    return "Todos los sistemas nominales. Integridad del 100%.";
+                    if (day == 45) return "{{ 'Critical synchronization failure (API Timeout). Tactics logged the event but did not receive the payload.' if locale == 'en' else 'Fallo crítico de sincronización (API Timeout). Tactics registró el evento pero no recibió el payload.' }}";
+                    if (day > 70 && day < 75) return "{{ 'Minor anomalies detected: Duplicates in the source file \'manual_import_feb.csv\'.' if locale == 'en' else 'Anomalías menores detectadas: Duplicados en el archivo fuente \'manual_import_feb.csv\'.' }}";
+                    return "{{ 'All systems nominal. 100% integrity.' if locale == 'en' else 'Todos los sistemas nominales. Integridad del 100%.' }}";
                 },
 
                 reloadData() {

@@ -31,8 +31,10 @@
                 <span class="text-xl">­ƒôè</span>
             </div>
             <div>
-                <h3 class="text-sm font-bold text-white">Salud de Tus Datos</h3>
-                <p class="text-[10px] text-slate-500">Calidad y algoritmos disponibles</p>
+                <h3 class="text-sm font-bold text-white">{{ 'Data Health' if locale == 'en' else 'Salud de Tus Datos' }}
+                </h3>
+                <p class="text-[10px] text-slate-500">{{ 'Quality and available algorithms' if locale == 'en' else
+                    'Calidad y algoritmos disponibles' }}</p>
             </div>
         </div>
         <button @click="init()" class="text-slate-500 hover:text-white text-xs">
@@ -45,7 +47,8 @@
 
     <!-- Loading State -->
     <div x-show="loading" class="py-8 text-center">
-        <div class="animate-pulse text-slate-500 text-sm">Analizando tus datos...</div>
+        <div class="animate-pulse text-slate-500 text-sm">{{ 'Analyzing your data...' if locale == 'en' else 'Analizando
+            tus datos...' }}</div>
     </div>
 
     <!-- Content -->
@@ -61,7 +64,7 @@
                           'text-emerald-400': health.overall?.score >= 70
                       }" x-text="health.overall?.score || 0"></span>
                 <span class="text-[10px] text-slate-500 uppercase tracking-widest"
-                    x-text="health.overall?.level || 'desconocido'"></span>
+                    x-text="health.overall?.level || '{{ 'unknown' if locale == 'en' else 'desconocido' }}'"></span>
             </div>
             <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
                 <div class="h-full transition-all duration-1000 rounded-full" :class="{
@@ -77,25 +80,27 @@
         <div class="grid grid-cols-3 gap-4 text-center py-4 border-y border-white/5">
             <div>
                 <div class="text-xl font-bold text-white" x-text="health.row_count?.toLocaleString() || 0"></div>
-                <div class="text-[10px] text-slate-500">Registros</div>
+                <div class="text-[10px] text-slate-500">{{ 'Records' if locale == 'en' else 'Registros' }}</div>
             </div>
             <div>
                 <div class="text-xl font-bold text-white" x-text="health.date_range?.span_months || 0"></div>
-                <div class="text-[10px] text-slate-500">Meses</div>
+                <div class="text-[10px] text-slate-500">{{ 'Months' if locale == 'en' else 'Meses' }}</div>
             </div>
             <div>
                 <div class="text-xl font-bold text-white" x-text="Math.round(health.completeness?.score || 0) + '%'">
                 </div>
-                <div class="text-[10px] text-slate-500">Completitud</div>
+                <div class="text-[10px] text-slate-500">{{ 'Completeness' if locale == 'en' else 'Completitud' }}</div>
             </div>
         </div>
 
         <!-- Algorithm Unlock Status -->
         <div x-show="algorithms">
             <div class="flex items-center justify-between mb-3">
-                <span class="text-xs text-slate-400">Algoritmos Disponibles</span>
+                <span class="text-xs text-slate-400">{{ 'Available Algorithms' if locale == 'en' else 'Algoritmos
+                    Disponibles' }}</span>
                 <span class="text-xs text-slate-500"
-                    x-text="algorithms.summary?.unlocked + '/' + algorithms.summary?.total + ' desbloqueados'"></span>
+                    x-text="algorithms.summary?.unlocked + '/' + algorithms.summary?.total + ' {{ " unlocked" if
+                    locale=="en" else "desbloqueados" }}'"></span>
             </div>
 
             <!-- Progress Ring -->
@@ -137,10 +142,12 @@
                 <span class="text-xl">­ƒÜÇ</span>
                 <div>
                     <div class="text-xs text-indigo-400 font-medium mb-1">
-                        Pr├│ximo Nivel: <span x-text="algorithms.next_tier?.next_tier"></span>
+                        {{ 'Next Level:' if locale == 'en' else 'Próximo Nivel:' }} <span
+                            x-text="algorithms.next_tier?.next_tier"></span>
                     </div>
                     <div class="text-[11px] text-slate-400" x-show="algorithms.next_tier?.months_needed > 0">
-                        <span x-text="algorithms.next_tier?.months_needed"></span> meses m├ís para desbloquear
+                        <span x-text="algorithms.next_tier?.months_needed"></span> {{ 'more months to unlock' if locale
+                        == 'en' else 'meses más para desbloquear' }}
                     </div>
                 </div>
             </div>
@@ -148,7 +155,8 @@
 
         <!-- Recommendations -->
         <div x-show="health.recommendations?.length > 0">
-            <div class="text-xs text-slate-400 mb-2">­ƒÆí Recomendaciones</div>
+            <div class="text-xs text-slate-400 mb-2">💡 {{ 'Recommendations' if locale == 'en' else 'Recomendaciones' }}
+            </div>
             <template x-for="rec in health.recommendations?.slice(0, 2)" :key="rec">
                 <div class="text-[11px] text-slate-500 mb-1 pl-3 border-l-2 border-slate-700" x-text="rec"></div>
             </template>
@@ -157,10 +165,12 @@
 
     <!-- Empty State -->
     <div x-show="!loading && !health?.row_count" class="text-center py-8">
-        <div class="text-4xl mb-4">­ƒô¡</div>
-        <div class="text-sm text-slate-400 mb-2">Sin datos conectados</div>
-        <a href="/app/connectors" class="text-xs text-indigo-400 hover:text-indigo-300">
-            Conectar fuente de datos ÔåÆ
+        <div class="text-4xl mb-4">📥</div>
+        <div class="text-sm text-slate-400 mb-2">{{ 'No data connected' if locale == 'en' else 'Sin datos conectados' }}
+        </div>
+        <a href="{{ '/en' if locale == 'en' else '' }}/app/connectors"
+            class="text-xs text-indigo-400 hover:text-indigo-300">
+            {{ 'Connect data source' if locale == 'en' else 'Conectar fuente de datos' }} →
         </a>
     </div>
 </div>

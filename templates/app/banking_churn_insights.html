@@ -1,6 +1,7 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}Tactics - Banking Churn Insights{% endblock %}
+{% block title %}Tactics - {{ 'Banking Churn Insights' if locale == 'en' else 'Insights de Churn Bancario' }}{% endblock
+%}
 
 {% block head %}
 <style>
@@ -24,26 +25,29 @@
 
 {% block content %}
 <div class="min-h-screen"
-    x-data="{ explainerModal: { open: false, title: '', content: null, loading: false, async explain(cat, id, val) { this.loading = true; this.open = true; try { const r = await fetch('/api/explain/' + cat + '/' + id + '/quick?value=' + val + '&locale=es'); this.content = await r.json(); this.title = this.content.metric_name; } catch(e) { this.content = { what_it_means: 'Error al cargar', how_calculated: '', caveats: [] }; } this.loading = false; } } }">
+    x-data="{ explainerModal: { open: false, title: '', content: null, loading: false, async explain(cat, id, val) { this.loading = true; this.open = true; try { const r = await fetch('/api/explain/' + cat + '/' + id + '/quick?value=' + val + '&locale={{ locale }}'); this.content = await r.json(); this.title = this.content.metric_name; } catch(e) { this.content = { what_it_means: '{{ 'Error loading' if locale == 'en' else 'Error al cargar' }}', how_calculated: '', caveats: [] }; } this.loading = false; } } }">
     <!-- Header -->
     <header class="py-8 px-6 border-b border-white/10">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div
                     class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-2xl">
-                    ­ƒÅª
+                    🏦
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tight">Banking: Churn Financiero</h1>
-                    <p class="text-slate-400 text-sm">High-Fidelity Financial Dataset ÔÇó 10,000 Customers</p>
+                    <h1 class="text-2xl font-bold tracking-tight">{{ 'Banking: Financial Churn' if locale == 'en' else
+                        'Banking: Churn Financiero' }}</h1>
+                    <p class="text-slate-400 text-sm">{{ 'High-Fidelity Financial Dataset • 10,000 Customers' if locale
+                        == 'en' else 'High-Fidelity Financial Dataset • 10,000 Clientes' }}</p>
                 </div>
             </div>
-            <a href="/app/showcase" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+            <a href="{{ '/en' if locale == 'en' else '' }}/app/showcase"
+                class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Volver a Galer├¡a
+                {{ 'Back to Gallery' if locale == 'en' else 'Volver a Galería' }}
             </a>
         </div>
     </header>
@@ -59,15 +63,19 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
-                        Prueba de Veracidad (Ground Truth)
+                        {{ 'Accuracy Proof (Ground Truth)' if locale == 'en' else 'Prueba de Veracidad (Ground Truth)'
+                        }}
                     </h2>
                     <p class="text-slate-300 text-sm leading-relaxed">
-                        Analizamos 10,000 registros hist├│ricos. La precisi├│n en la detecci├│n de fuga bancaria es del 92%
-                        para perfiles con balance alto pero baja actividad de producto.
+                        {{ 'We analyzed 10,000 historical records. The accuracy in detecting banking churn is 92% for
+                        profiles with high balance but low product activity.' if locale == 'en' else 'Analizamos 10,000
+                        registros históricos. La precisión en la detección de fuga bancaria es del 92% para perfiles con
+                        balance alto pero baja actividad de producto.' }}
                     </p>
                 </div>
                 <div class="bg-slate-900/50 rounded-xl p-4 border border-white/5 text-center min-w-[200px]">
-                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precisi├│n Sectorial</div>
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">{{ 'Sectoral Accuracy' if
+                        locale == 'en' else 'Precisión Sectorial' }}</div>
                     <div class="text-3xl font-black text-amber-400 stat-glow">92.1%</div>
                 </div>
             </div>
@@ -77,32 +85,37 @@
         <section
             class="insight-card rounded-2xl p-8 border-2 border-amber-500/40 bg-gradient-to-r from-amber-500/10 to-orange-500/5">
             <h2 class="text-lg font-bold mb-6 flex items-center gap-3">
-                <span class="text-2xl">­ƒÆ░</span>
-                Lo que Esto Significa para Tu Banco
+                <span class="text-2xl">💰</span>
+                {{ 'What This Means for Your Bank' if locale == 'en' else 'Lo que Esto Significa para Tu Banco' }}
             </h2>
             <div class="grid md:grid-cols-2 gap-8">
                 <div>
                     <div class="text-5xl font-black text-amber-400 stat-glow mb-2">2,040</div>
                     <div class="text-sm text-slate-300 leading-relaxed">
-                        <strong>Clientes en riesgo:</strong> De 10,000 clientes, el 20.4% tiene alta probabilidad de
-                        fuga.
-                        <em>Cada cliente bancario perdido puede costar Ôé¼15K+ en LTV perdido.</em>
+                        <strong>{{ 'Customers at risk:' if locale == 'en' else 'Clientes en riesgo:' }}</strong> {{ 'Out
+                        of 10,000 customers, 20.4% have a high probability of churn.' if locale == 'en' else 'De 10,000
+                        clientes, el 20.4% tiene alta probabilidad de fuga.' }}
+                        <em>{{ 'Each bank customer lost can cost €15K+ in lost LTV.' if locale == 'en' else 'Cada
+                            cliente bancario perdido puede costar €15K+ en LTV perdido.' }}</em>
                     </div>
                 </div>
                 <div>
                     <div class="text-5xl font-black text-emerald-400 stat-glow mb-2">2.4x</div>
                     <div class="text-sm text-slate-300 leading-relaxed">
-                        <strong>Efecto Cross-Sell:</strong> Clientes con 3+ productos tienen 2.4x menos probabilidad de
-                        irse.
-                        <em>La retenci├│n est├í en la profundidad del engagement, no en descuentos.</em>
+                        <strong>{{ 'Cross-Sell Effect:' if locale == 'en' else 'Efecto Cross-Sell:' }}</strong> {{
+                        'Customers with 3+ products are 2.4x less likely to leave.' if locale == 'en' else 'Clientes con
+                        3+ productos tienen 2.4x menos probabilidad de irse.' }}
+                        <em>{{ 'Retention is in the depth of engagement, not in discounts.' if locale == 'en' else 'La
+                            retención está en la profundidad del engagement, no en descuentos.' }}</em>
                     </div>
                 </div>
             </div>
             <div class="mt-6 pt-6 border-t border-white/10">
                 <p class="text-[11px] text-slate-500 italic">
-                    ┬┐C├│mo identificamos estos perfiles? <button
-                        @click="explainerModal.explain('ltv', 'churn_probability', 0.7)"
-                        class="text-indigo-400 underline hover:text-indigo-300">Ver metodolog├¡a ÔåÆ</button>
+                    {{ 'How do we identify these profiles?' if locale == 'en' else '¿Cómo identificamos estos perfiles?'
+                    }} <button @click="explainerModal.explain('ltv', 'churn_probability', 0.7)"
+                        class="text-indigo-400 underline hover:text-indigo-300">{{ 'View methodology' if locale == 'en'
+                        else 'Ver metodología' }} →</button>
                 </p>
             </div>
         </section>
@@ -110,66 +123,79 @@
 
         <div class="grid md:grid-cols-3 gap-6">
             <div class="insight-card rounded-2xl p-6">
-                <div class="text-sm text-slate-400 mb-2">Churn Rate Promedio</div>
+                <div class="text-sm text-slate-400 mb-2">{{ 'Average Churn Rate' if locale == 'en' else 'Churn Rate
+                    Promedio' }}</div>
                 <div class="text-4xl font-bold text-amber-400 stat-glow">20.4%</div>
-                <p class="text-[10px] text-slate-500 mt-2">Basado en 10K clientes bancarios</p>
+                <p class="text-[10px] text-slate-500 mt-2">{{ 'Based on 10K bank customers' if locale == 'en' else
+                    'Basado en 10K clientes bancarios' }}</p>
             </div>
             <div class="insight-card rounded-2xl p-6">
-                <div class="text-sm text-slate-400 mb-2">Impacto Edad (45-60)</div>
+                <div class="text-sm text-slate-400 mb-2">{{ 'Age Impact (45-60)' if locale == 'en' else 'Impacto Edad
+                    (45-60)' }}</div>
                 <div class="text-4xl font-bold text-rose-400 stat-glow">+15%</div>
-                <p class="text-[10px] text-slate-500 mt-2">Aumento de riesgo en este segmento</p>
+                <p class="text-[10px] text-slate-500 mt-2">{{ 'Increased risk in this segment' if locale == 'en' else
+                    'Aumento de riesgo en este segmento' }}</p>
             </div>
             <div class="insight-card rounded-2xl p-6">
-                <div class="text-sm text-slate-400 mb-2">Retenci├│n Cross-Product</div>
+                <div class="text-sm text-slate-400 mb-2">{{ 'Cross-Product Retention' if locale == 'en' else 'Retención
+                    Cross-Product' }}</div>
                 <div class="text-4xl font-bold text-emerald-400 stat-glow">2.4x</div>
-                <p class="text-[10px] text-slate-500 mt-2">Clientes con 3+ productos no se van</p>
+                <p class="text-[10px] text-slate-500 mt-2">{{ 'Customers with 3+ products do not leave' if locale ==
+                    'en' else 'Clientes con 3+ productos no se van' }}</p>
             </div>
         </div>
 
         <!-- Predictive Factors -->
         <div class="insight-card rounded-2xl p-8">
             <h3 class="text-lg font-semibold mb-6 flex items-center gap-2">
-                <span class="amber-badge text-[10px] px-2 py-1 rounded-full uppercase">An├ílisis</span>
-                Top Correlaciones Bancarias
+                <span class="amber-badge text-[10px] px-2 py-1 rounded-full uppercase">{{ 'Analysis' if locale == 'en'
+                    else 'Análisis' }}</span>
+                {{ 'Top Banking Correlations' if locale == 'en' else 'Top Correlaciones Bancarias' }}
             </h3>
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
-                    <span class="text-slate-300">Edad del Cliente (Punto Cr├¡tico: 52 a├▒os)</span>
+                    <span class="text-slate-300">{{ 'Customer Age (Critical Point: 52 years)' if locale == 'en' else
+                        'Edad del Cliente (Punto Crítico: 52 años)' }}</span>
                     <div class="flex items-center gap-4">
                         <div class="w-64 h-2 bg-slate-700 rounded-full overflow-hidden">
                             <div class="w-[82%] h-full bg-amber-500"></div>
                         </div>
-                        <span class="text-amber-400 text-xs font-bold">Riesgo 82%</span>
+                        <span class="text-amber-400 text-xs font-bold">{{ 'Risk' if locale == 'en' else 'Riesgo' }}
+                            82%</span>
                     </div>
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="text-slate-300">Balance > EUR 100K (Parad├│jico)</span>
+                    <span class="text-slate-300">{{ 'Balance > EUR 100K (Paradoxical)' if locale == 'en' else 'Balance >
+                        EUR 100K (Paradójico)' }}</span>
                     <div class="flex items-center gap-4">
                         <div class="w-64 h-2 bg-slate-700 rounded-full overflow-hidden">
                             <div class="w-[68%] h-full bg-amber-500"></div>
                         </div>
-                        <span class="text-amber-400 text-xs font-bold">Riesgo 68%</span>
+                        <span class="text-amber-400 text-xs font-bold">{{ 'Risk' if locale == 'en' else 'Riesgo' }}
+                            68%</span>
                     </div>
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="text-slate-300">Credit Score < 600</span>
-                            <div class="flex items-center gap-4">
-                                <div class="w-64 h-2 bg-slate-700 rounded-full overflow-hidden">
-                                    <div class="w-[55%] h-full bg-amber-500"></div>
-                                </div>
-                                <span class="text-amber-400 text-xs font-bold">Riesgo 55%</span>
-                            </div>
+                    <span class="text-slate-300">Credit Score &lt; 600</span>
+                    <div class="flex items-center gap-4">
+                        <div class="w-64 h-2 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="w-[55%] h-full bg-amber-500"></div>
+                        </div>
+                        <span class="text-amber-400 text-xs font-bold">{{ 'Risk' if locale == 'en' else 'Riesgo' }}
+                            55%</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- CTA Launch -->
         <div class="text-center pt-8">
-            <a href="/api/demo/activate/banking_churn"
+            <a href="{{ '/en' if locale == 'en' else '' }}/api/demo/activate/banking_churn"
                 class="inline-block px-10 py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold hover:opacity-90 transition shadow-lg shadow-amber-500/20">
-                Poner este Motor en Marcha ÔåÆ
+                {{ 'Put this Engine in Motion' if locale == 'en' else 'Poner este Motor en Marcha' }} →
             </a>
-            <p class="text-[10px] text-slate-500 mt-3 italic">Activa el dashboard completo con estos datos</p>
+            <p class="text-[10px] text-slate-500 mt-3 italic">{{ 'Activate the full dashboard with this data' if locale
+                == 'en' else 'Activa el dashboard completo con estos datos' }}</p>
         </div>
 
     </main>
@@ -184,36 +210,42 @@
             </div>
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400">­ƒºá
+                    <div class="size-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400">🧠
                     </div>
                     <div>
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Interpretaci├│n IA</h3>
-                        <p class="text-lg font-extrabold text-white" x-text="explainerModal.title || 'Analizando...'">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">{{ 'AI Interpretation' if
+                            locale == 'en' else 'Interpretación IA' }}</h3>
+                        <p class="text-lg font-extrabold text-white"
+                            x-text="explainerModal.title || '{{ 'Analyzing...' if locale == 'en' else 'Analizando...' }}'">
                         </p>
                     </div>
                 </div>
-                <button @click="explainerModal.open = false" class="text-slate-500 hover:text-white">Ô£ò</button>
+                <button @click="explainerModal.open = false" class="text-slate-500 hover:text-white">✕</button>
             </div>
-            <div x-show="explainerModal.loading" class="py-8 text-center text-slate-500 animate-pulse">Consultando motor
-                de IA...</div>
+            <div x-show="explainerModal.loading" class="py-8 text-center text-slate-500 animate-pulse">{{ 'Consulting AI
+                engine...' if locale == 'en' else 'Consultando motor de IA...' }}</div>
             <div x-show="!explainerModal.loading && explainerModal.content" class="space-y-4">
                 <div>
-                    <h4 class="text-[10px] text-amber-400 uppercase tracking-widest mb-1">Significado Real</h4>
+                    <h4 class="text-[10px] text-amber-400 uppercase tracking-widest mb-1">{{ 'Real Meaning' if locale ==
+                        'en' else 'Significado Real' }}</h4>
                     <p class="text-slate-300 text-sm" x-text="explainerModal.content?.what_it_means"></p>
                 </div>
                 <div>
-                    <h4 class="text-[10px] text-amber-400 uppercase tracking-widest mb-1">C├│mo se Calcula</h4>
+                    <h4 class="text-[10px] text-amber-400 uppercase tracking-widest mb-1">{{ 'How it is Calculated' if
+                        locale == 'en' else 'Cómo se Calcula' }}</h4>
                     <p class="text-slate-400 text-sm italic" x-text="explainerModal.content?.how_calculated"></p>
                 </div>
                 <div x-show="explainerModal.content?.business_impact"
                     class="bg-amber-500/10 p-4 rounded-xl border border-amber-500/20">
-                    <h4 class="text-[10px] text-amber-400 uppercase tracking-widest mb-1">­ƒÆ░ Impacto en Tu Negocio</h4>
+                    <h4 class="text-[10px] text-amber-400 uppercase tracking-widest mb-1">💰 {{ 'Impact on Your
+                        Business' if locale == 'en' else 'Impacto en Tu Negocio' }}</h4>
                     <p class="text-white text-sm font-medium" x-text="explainerModal.content?.business_impact"></p>
                 </div>
             </div>
             <div class="mt-6 pt-4 border-t border-white/10 text-right">
                 <button @click="explainerModal.open = false"
-                    class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2 px-6 rounded-lg">Entendido</button>
+                    class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2 px-6 rounded-lg">{{
+                    'Understood' if locale == 'en' else 'Entendido' }}</button>
             </div>
         </div>
     </div>

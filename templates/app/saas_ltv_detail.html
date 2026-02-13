@@ -1,6 +1,6 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}Tactics - SaaS LTV InsightsDetail{% endblock %}
+{% block title %}Tactics - {{ 'SaaS LTV Insights' if locale == 'en' else 'Insights de LTV para SaaS' }}{% endblock %}
 
 {% block head %}
 <style>
@@ -33,12 +33,13 @@
             <div class="flex items-center gap-4">
                 <div
                     class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-2xl">
-                    📁
+                    📂
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tight">SaaS LTV & Cohorts</h1>
+                    <h1 class="text-2xl font-bold tracking-tight">{{ 'SaaS LTV & Cohorts' if locale == 'en' else 'LTV y
+                        Cohortes SaaS' }}</h1>
                     <p class="text-slate-400 text-sm">{{ 'B2B Subscription Dataset • Growth Economics' if locale == 'en'
-                        else 'B2B Subscription Dataset • Growth Economics' }}</p>
+                        else 'Dataset de Suscripción B2B • Economía de Crecimiento' }}</p>
                 </div>
             </div>
             <a href="{{ '/en' if locale == 'en' else '' }}/app/showcase"
@@ -121,16 +122,17 @@
 
         <div class="grid md:grid-cols-3 gap-6">
             <div class="insight-card rounded-2xl p-6">
-                <div class="text-sm text-slate-400 mb-2">LTV / CAC Ratio</div>
+                <div class="text-sm text-slate-400 mb-2">{{ 'LTV / CAC Ratio' if locale == 'en' else 'Ratio LTV / CAC'
+                    }}</div>
                 <div class="text-4xl font-bold text-emerald-400 stat-glow">4.2x</div>
                 <p class="text-[10px] text-slate-500 mt-2">{{ 'Capital acquisition efficiency' if locale == 'en' else
                     'Eficiencia de captación de capital' }}</p>
             </div>
             <div class="insight-card rounded-2xl p-6">
-                <div class="text-sm text-slate-400 mb-2">Current NRR</div>
+                <div class="text-sm text-slate-400 mb-2">{{ 'Current NRR' if locale == 'en' else 'NRR Actual' }}</div>
                 <div class="text-4xl font-bold text-indigo-400 stat-glow">104%</div>
                 <p class="text-[10px] text-slate-500 mt-2">{{ 'Net Revenue Retention (Negative Net Churn)' if locale ==
-                    'en' else 'Net Revenue Retention (Net Churn Negativo)' }}</p>
+                    'en' else 'Retención de Ingresos Netos (Churn Neto Negativo)' }}</p>
             </div>
             <div class="insight-card rounded-2xl p-6">
                 <div class="text-sm text-slate-400 mb-2">{{ 'Monthly Churn (MRR)' if locale == 'en' else 'Churn Mensual
@@ -184,53 +186,6 @@
     </main>
 
     <!-- Explainer Modal -->
-    <div x-show="explainerModal.open"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
-        style="display: none;" @keydown.escape.window="explainerModal.open = false">
-        <div class="relative w-full max-w-lg bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-8"
-            @click.away="explainerModal.open = false">
-            <div class="h-1 w-full bg-gradient-to-r from-indigo-500 to-purple-500 absolute top-0 left-0 rounded-t-2xl">
-            </div>
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">🧠
-                    </div>
-                    <div>
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">{{ 'AI Interpretation' if
-                            locale == 'en' else 'Interpretación IA' }}</h3>
-                        <p class="text-lg font-extrabold text-white"
-                            x-text="explainerModal.title || (locale === 'en' ? 'Analyzing...' : 'Analizando...')">
-                        </p>
-                    </div>
-                </div>
-                <button @click="explainerModal.open = false" class="text-slate-500 hover:text-white">✕</button>
-            </div>
-            <div x-show="explainerModal.loading" class="py-8 text-center text-slate-500 animate-pulse">{{ 'Consulting AI
-                engine...' if locale == 'en' else 'Consultando motor de IA...' }}</div>
-            <div x-show="!explainerModal.loading && explainerModal.content" class="space-y-4">
-                <div>
-                    <h4 class="text-[10px] text-indigo-400 uppercase tracking-widest mb-1">{{ 'Real Meaning' if locale
-                        == 'en' else 'Significado Real' }}</h4>
-                    <p class="text-slate-300 text-sm" x-text="explainerModal.content?.what_it_means"></p>
-                </div>
-                <div>
-                    <h4 class="text-[10px] text-indigo-400 uppercase tracking-widest mb-1">{{ 'How it is Calculated' if
-                        locale == 'en' else 'Cómo se Calcula' }}</h4>
-                    <p class="text-slate-400 text-sm italic" x-text="explainerModal.content?.how_calculated"></p>
-                </div>
-                <div x-show="explainerModal.content?.business_impact"
-                    class="bg-indigo-500/10 p-4 rounded-xl border border-indigo-500/20">
-                    <h4 class="text-[10px] text-indigo-400 uppercase tracking-widest mb-1">💰 {{ 'Business Impact' if
-                        locale == 'en' else 'Impacto en Tu Negocio' }}</h4>
-                    <p class="text-white text-sm font-medium" x-text="explainerModal.content?.business_impact"></p>
-                </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-white/10 text-right">
-                <button @click="explainerModal.open = false"
-                    class="bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold py-2 px-6 rounded-lg">{{
-                    'Understood' if locale == 'en' else 'Entendido' }}</button>
-            </div>
-        </div>
-    </div>
+    {% include 'partials/explainer_modal.html' %}
 </div>
 {% endblock %}

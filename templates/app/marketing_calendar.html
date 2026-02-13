@@ -1,6 +1,6 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}Marketing Calendar | Tactics{% endblock %}
+{% block title %}{{ 'Marketing Calendar' if locale == 'en' else 'Calendario de Marketing' }} | Tactics{% endblock %}
 
 {% block content %}
 <div x-data="{ sidebarToggle: false, darkMode: false, page: 'calendar' }" :class="darkMode ? 'dark' : ''"
@@ -19,15 +19,17 @@
                 <!-- Breadcrumb Start -->
                 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-title-md2 font-bold text-black dark:text-white">
-                        Marketing Calendar
+                        {{ 'Marketing Calendar' if locale == 'en' else 'Calendario de Marketing' }}
                     </h2>
                     <nav>
                         <ol class="flex items-center gap-2">
                             <li>
                                 <a class="font-medium text-primary hover:text-black/50 dark:hover:text-white/50"
-                                    href="/dashboard">Dashboard /</a>
+                                    href="{{ '/en/app' if locale == 'en' else '/app' }}">{{ 'Dashboard' if locale ==
+                                    'en' else 'Dashboard' }} /</a>
                             </li>
-                            <li class="font-medium text-primary">Calendar</li>
+                            <li class="font-medium text-primary">{{ 'Calendar' if locale == 'en' else 'Calendario' }}
+                            </li>
                         </ol>
                     </nav>
                 </div>

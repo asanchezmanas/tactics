@@ -1,6 +1,7 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}Tactics - Predicci├│n de LTV y Optimizaci├│n de Marketing{% endblock %}
+{% block title %}Tactics - {{ 'LTV Prediction & Marketing Optimization' if locale == 'en' else 'Predicción de LTV y
+Optimización de Marketing' }}{% endblock %}
 
 {% block head %}
 <style>
@@ -37,25 +38,29 @@
             <div
                 class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 mb-8">
                 <span class="flex h-1.5 w-1.5 rounded-full bg-primary"></span>
-                <span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase">Elite Bayesian
-                    Scaling</span>
+                <span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase">{{ 'Elite Bayesian Scaling'
+                    if locale == 'en' else 'Escalado Bayesiano Elite' }}</span>
             </div>
             <h1
                 class="text-4xl md:text-5xl lg:text-7xl font-display font-bold tracking-tight text-text-main mb-8 leading-[1.1]">
-                Escala tu inversi├│n con <br /><span class="text-primary font-extrabold">Certeza Estad├¡stica</span>.
+                {{ 'Scale your investment with' if locale == 'en' else 'Escala tu inversión con' }} <br /><span
+                    class="text-primary font-extrabold">{{ 'Statistical Certainty' if locale == 'en' else 'Certeza
+                    Estadística' }}</span>.
             </h1>
             <p class="text-xl text-text-muted max-w-2xl mx-auto leading-relaxed font-light mb-12">
-                Abandone las conjeturas. Tactics despliega modelos Bayesianos de vanguardia para predecir el impacto de
-                cada euro invertido y automatizar su crecimiento con precisi├│n quir├║rgica.
+                {{ 'Abandon guesswork. Tactics deploys cutting-edge Bayesian models to predict the impact of every euro
+                invested and automate your growth with surgical precision.' if locale == 'en' else 'Abandone las
+                conjeturas. Tactics despliega modelos Bayesianos de vanguardia para predecir el impacto de cada euro
+                invertido y automatizar su crecimiento con precisión quirúrgica.' }}
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/app"
+                <a href="{{ '/en' if locale == 'en' else '' }}/app"
                     class="inline-flex items-center justify-center px-10 py-4 text-base font-bold text-white bg-primary hover:bg-primary-dark rounded-lg shadow-xl shadow-primary/20 transition-all">
-                    Empezar a Escalar
+                    {{ 'Start Scaling' if locale == 'en' else 'Empezar a Escalar' }}
                 </a>
-                <a href="/demo"
+                <a href="{{ '/en' if locale == 'en' else '' }}/demo"
                     class="inline-flex items-center justify-center px-10 py-4 text-base font-semibold text-text-main bg-white border border-border-light hover:bg-surface-highlight rounded-lg transition-all">
-                    Ver Demo
+                    {{ 'View Demo' if locale == 'en' else 'Ver Demo' }}
                 </a>
             </div>
         </div>
@@ -67,10 +72,11 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="text-center mb-16">
             <h2 class="text-3xl md:text-4xl font-display font-bold text-text-main mb-4">
-                Tres pilares. Un sistema.
+                {{ 'Three pillars. One system.' if locale == 'en' else 'Tres pilares. Un sistema.' }}
             </h2>
             <p class="text-text-muted max-w-xl mx-auto">
-                Cada m├│dulo est├í dise├▒ado para integrarse y amplificar el valor del anterior.
+                {{ 'Each module is designed to integrate and amplify the value of the previous one.' if locale == 'en'
+                else 'Cada módulo está diseñado para integrarse y amplificar el valor del anterior.' }}
             </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -79,10 +85,13 @@
                 <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center text-primary mb-6">
                     <span class="material-symbols-outlined">person_search</span>
                 </div>
-                <h3 class="font-display font-bold text-xl text-text-main mb-3">Predictive LTV</h3>
+                <h3 class="font-display font-bold text-xl text-text-main mb-3">{{ 'Predictive LTV' if locale == 'en'
+                    else 'LTV Predictivo' }}</h3>
                 <p class="text-text-muted text-sm leading-relaxed font-light">
-                    Inferencia probabil├¡stica para determinar el valor futuro de cada cliente. Identifique a sus
-                    usuarios de mayor impacto antes que su competencia.
+                    {{ 'Probabilistic inference to determine the future value of each customer. Identify your
+                    highest-impact users before your competition.' if locale == 'en' else 'Inferencia probabilística
+                    para determinar el valor futuro de cada cliente. Identifique a sus usuarios de mayor impacto antes
+                    que su competencia.' }}
                 </p>
             </div>
             <!-- Feature 2: Segments -->
@@ -90,10 +99,13 @@
                 <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-red-600 mb-6">
                     <span class="material-symbols-outlined">hub</span>
                 </div>
-                <h3 class="font-display font-bold text-xl text-text-main mb-3">Automated Segments</h3>
+                <h3 class="font-display font-bold text-xl text-text-main mb-3">{{ 'Automated Segments' if locale == 'en'
+                    else 'Segmentos Automáticos' }}</h3>
                 <p class="text-text-muted text-sm leading-relaxed font-light">
-                    Exportaci├│n directa de audiencias de alto valor a MetaAds, Google Ads y Klaviyo. Convierta los
-                    hallazgos de IA en acciones de retenci├│n inmediatas.
+                    {{ 'Direct export of high-value audiences to Meta Ads, Google Ads, and Klaviyo. Turn AI findings
+                    into immediate retention actions.' if locale == 'en' else 'Exportación directa de audiencias de alto
+                    valor a Meta Ads, Google Ads y Klaviyo. Convierta los hallazgos de IA en acciones de retención
+                    inmediatas.' }}
                 </p>
             </div>
             <!-- Feature 3: MMM -->
@@ -101,10 +113,13 @@
                 <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-6">
                     <span class="material-symbols-outlined">analytics</span>
                 </div>
-                <h3 class="font-display font-bold text-xl text-text-main mb-3">Bayesian MMM</h3>
+                <h3 class="font-display font-bold text-xl text-text-main mb-3">{{ 'Bayesian MMM' if locale == 'en' else
+                    'MMM Bayesiano' }}</h3>
                 <p class="text-text-muted text-sm leading-relaxed font-light">
-                    Modelado de Mix de Marketing con rangos de confianza (90% CI). Optimizaci├│n granular basada en
-                    causalidad estad├¡stica, no solo correlaci├│n.
+                    {{ 'Marketing Mix Modeling with confidence intervals (90% CI). Granular optimization based on
+                    statistical causality, not just correlation.' if locale == 'en' else 'Modelado de Mix de Marketing
+                    con rangos de confianza (90% CI). Optimización granular basada en causalidad estadística, no solo
+                    correlación.' }}
                 </p>
             </div>
         </div>
@@ -114,12 +129,13 @@
 <!-- Social Proof / Trust -->
 <section class="py-16 bg-surface border-y border-border-light">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <p class="text-center text-sm text-text-dim font-medium uppercase tracking-widest mb-8">Conf├¡an en Tactics</p>
+        <p class="text-center text-sm text-text-dim font-medium uppercase tracking-widest mb-8">{{ 'Trusted by Tactics'
+            if locale == 'en' else 'Confían en Tactics' }}</p>
         <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 opacity-60">
-            <span class="font-display font-bold text-xl text-text-dim">BrandA</span>
-            <span class="font-display font-bold text-xl text-text-dim">BrandB</span>
-            <span class="font-display font-bold text-xl text-text-dim">BrandC</span>
-            <span class="font-display font-bold text-xl text-text-dim">BrandD</span>
+            <span class="font-display font-bold text-xl text-text-dim">Internxt</span>
+            <span class="font-display font-bold text-xl text-text-dim">Zapi</span>
+            <span class="font-display font-bold text-xl text-text-dim">Boream</span>
+            <span class="font-display font-bold text-xl text-text-dim">Muroexe</span>
         </div>
     </div>
 </section>
@@ -128,15 +144,17 @@
 <section class="py-24 lg:py-32 bg-white">
     <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
         <h2 class="text-3xl md:text-5xl font-display font-bold text-text-main mb-8">
-            ┬┐Preparado para escalar con <span class="text-primary italic">precisi├│n</span>?
+            {{ 'Ready to scale with' if locale == 'en' else '¿Preparado para escalar con' }} <span
+                class="text-primary italic">{{ 'precision' if locale == 'en' else 'precisión' }}</span>?
         </h2>
         <p class="text-text-muted mb-12 max-w-xl mx-auto text-lg font-light leading-relaxed">
-            Solicite una demostraci├│n t├®cnica y descubra c├│mo Tactics puede transformar su toma de decisiones mediante
-            ingenier├¡a de datos avanzada.
+            {{ 'Request a technical demonstration and discover how Tactics can transform your decision-making through
+            advanced data engineering.' if locale == 'en' else 'Solicite una demostración técnica y descubra cómo
+            Tactics puede transformar su toma de decisiones mediante ingeniería de datos avanzada.' }}
         </p>
-        <a href="/demo"
+        <a href="{{ '/en' if locale == 'en' else '' }}/demo"
             class="inline-flex items-center justify-center px-12 py-5 text-lg font-bold text-white bg-primary hover:bg-primary-dark rounded-xl shadow-2xl shadow-primary/30 transition-all">
-            Solicitar Demo
+            {{ 'Request Demo' if locale == 'en' else 'Solicitar Demo' }}
         </a>
     </div>
 </section>

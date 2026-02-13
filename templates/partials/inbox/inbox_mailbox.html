@@ -1,0 +1,177 @@
+<div x-data="mailApp()"
+    class="flex h-screen flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] xl:h-full xl:w-4/5">
+    <div class="flex flex-col justify-between gap-3 border-b border-gray-200 p-4 dark:border-gray-800 sm:flex-row">
+        <div class="flex w-full items-center gap-2">
+            <div x-data="{openDropDown: false}" class="relative w-full sm:w-auto">
+                <button @click="openDropDown = !openDropDown"
+                    class="flex w-full items-center justify-between gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-800 sm:justify-center"
+                    :class="openDropDown ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white'">
+                    <label for="checkboxAll" class="flex cursor-pointer select-none items-center font-medium">
+                        <span class="relative">
+                            <input type="checkbox" id="checkboxAll" class="tableCheckbox sr-only" @change="toggleAll"
+                                :checked="allChecked" />
+                            <span
+                                class="box flex h-4 w-4 items-center justify-center rounded-sm border border-gray-300 bg-transparent text-white dark:border-gray-700">
+                                <span :class="allChecked ? 'opacity-100' : 'opacity-0'">
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 3L4.5 8.5L2 6" stroke="white" stroke-width="1.6666"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                            </span>
+                        </span>
+                    </label>
+
+                    <span :class="openDropDown && 'rotate-180'"
+                        class="text-gray-500 duration-300 ease-linear dark:text-gray-400">
+                        <svg class="stroke-current" width="16" height="16" viewBox="0 0 16 16" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.83325 5.91699L7.99992 10.0837L12.1666 5.91699" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </button>
+                <div x-show="openDropDown" @click.outside="openDropDown = false"
+                    class="absolute left-0 top-full z-40 mt-1 w-40 space-y-1 rounded-2xl border border-gray-200 bg-white p-2 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark">
+                    <button
+                        class="flex w-full rounded-lg px-3 py-2 text-left text-theme-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                        {{ 'All' if locale == 'en' else 'Todo' }}
+                    </button>
+                    <button
+                        class="flex w-full rounded-lg px-3 py-2 text-left text-theme-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                        {{ 'Read' if locale == 'en' else 'Leídos' }}
+                    </button>
+                    <button
+                        class="flex w-full rounded-lg px-3 py-2 text-left text-theme-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                        {{ 'Unread' if locale == 'en' else 'No leídos' }}
+                    </button>
+                </div>
+            </div>
+
+            <button
+                class="flex h-10 w-full max-w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-gray-800">
+                <span class="material-symbols-outlined">refresh</span>
+            </button>
+
+            <button
+                class="flex h-10 w-full max-w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 hover:text-red-600 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-gray-800">
+                <span class="material-symbols-outlined">delete</span>
+            </button>
+        </div>
+
+        <div class="relative w-full sm:max-w-[236px]">
+            <form>
+                <button class="absolute left-4 top-1/2 -translate-y-1/2">
+                    <span class="material-symbols-outlined text-gray-400">search</span>
+                </button>
+                <input type="text" placeholder="{{ 'Search...' if locale == 'en' else 'Buscar...' }}"
+                    class="dark:bg-dark-900 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pl-[42px] text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-indigo-300 focus:outline-hidden focus:ring-3 focus:ring-indigo-500/10 dark:border-gray-700 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-indigo-800" />
+            </form>
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+        <div class="custom-scrollbar block h-full max-h-full overflow-auto">
+            <template x-for="(item, index) in mails" :key="index">
+                <div x-data="{isStarred: false}"
+                    class="flex cursor-pointer items-center border-b border-gray-200 px-4 py-4 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-white/[0.03]">
+                    <div class="flex w-3/5 items-center sm:w-1/5">
+                        <label :for="'checkbox-' + index" class="cursor-pointer select-none">
+                            <span class="relative">
+                                <input type="checkbox" :id="'checkbox-' + index" class="tableCheckbox sr-only"
+                                    @change="toggleItem(index)" :checked="itemsChecked[index]" />
+                                <span
+                                    class="box mr-3 flex h-4 w-4 items-center justify-center rounded-sm border border-gray-300 bg-transparent text-white dark:border-gray-700">
+                                    <span :class="itemsChecked[index] ? 'opacity-100' : 'opacity-0'">
+                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10 3L4.5 8.5L2 6" stroke="white" stroke-width="1.6666"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                </span>
+                            </span>
+                        </label>
+
+                        <div class="flex items-center">
+                            <span class="pr-3 text-gray-300 cursor-pointer" @click="isStarred = !isStarred">
+                                <span class="material-symbols-outlined text-[20px]"
+                                    :class="isStarred ? 'text-yellow-400 fill-current' : ''"
+                                    x-text="isStarred ? 'star' : 'star_outline'"></span>
+                            </span>
+                            <span class="truncate text-sm font-bold text-gray-900 dark:text-white"
+                                x-text="item.subject"></span>
+                        </div>
+                    </div>
+                    <div class="flex w-1/5 items-center gap-3 sm:w-3/5">
+                        <p class="truncate text-sm text-gray-500 dark:text-gray-400" x-text="item.content"></p>
+                        <span x-show="item.badge"
+                            class="hidden rounded-full px-2 py-0.5 text-[10px] font-bold sm:inline-block"
+                            :class="item.badge === 'Important' ? 'text-red-600 bg-red-50' : item.badge === 'Social' ? 'text-emerald-600 bg-emerald-50' : 'text-indigo-600 bg-indigo-50'"
+                            x-text="item.badge === 'Important' ? '{{ 'Important' if locale == 'en' else 'Importante' }}' : item.badge === 'Social' ? '{{ 'Social' if locale == 'en' else 'Social' }}' : item.badge">
+                        </span>
+                    </div>
+                    <div class="w-1/5">
+                        <span class="block text-right text-xs text-gray-400" x-text="item.time"></span>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <div
+        class="sticky bottom-0 flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 dark:border-gray-800 dark:bg-black">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ 'Showing 1 of 159' if locale == 'en' else 'Mostrando 1 de 159' }}
+        </p>
+        <div class="flex items-center justify-end gap-2">
+            <button
+                class="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 dark:border-gray-800 dark:bg-white/[0.03]">
+                <span class="material-symbols-outlined text-sm">chevron_left</span>
+            </button>
+            <button
+                class="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 dark:border-gray-800 dark:bg-white/[0.03]">
+                <span class="material-symbols-outlined text-sm">chevron_right</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mailApp() {
+        return {
+            allChecked: false,
+            mails: [
+                {
+                    subject: "{{ 'Anomalous Spike detected' if locale == 'en' else 'Pico anómalo detectado' }}",
+                    content: "{{ 'A 250% increase in COGS was detected for Shopify. Possible data drift.' if locale == 'en' else 'Se detectó un aumento del 250% en COGS para Shopify. Posible deriva de datos.' }}",
+                    time: "12:16 pm",
+                    badge: "Important",
+                },
+                {
+                    subject: "{{ 'Synergy Optimization' if locale == 'en' else 'Optimización de Sinergia' }}",
+                    content: "{{ 'The synergy between Meta and Google Ads increased by 15% this week.' if locale == 'en' else 'La sinergia entre Meta y Google Ads aumentó un 15% esta semana.' }}",
+                    time: "11:30 am",
+                },
+                {
+                    subject: "{{ 'New Segment Detected' if locale == 'en' else 'Nuevo Segmento Detectado' }}",
+                    content: "{{ 'A high-impact cohort was identified in the Banking dataset.' if locale == 'en' else 'Se identificó una cohorte de alto impacto en el conjunto de datos bancarios.' }}",
+                    time: "{{ 'Yesterday' if locale == 'en' else 'Ayer' }}",
+                    badge: "Social",
+                }
+            ],
+            itemsChecked: [],
+            toggleAll() {
+                this.allChecked = !this.allChecked;
+                this.itemsChecked = this.mails.map(() => this.allChecked);
+            },
+            toggleItem(index) {
+                this.itemsChecked[index] = !this.itemsChecked[index];
+            },
+            init() {
+                this.itemsChecked = this.mails.map(() => false);
+            },
+        };
+    }
+</script>

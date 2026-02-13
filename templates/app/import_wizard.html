@@ -1,6 +1,6 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}Tactics - Importar Datos{% endblock %}
+{% block title %}Tactics - {{ 'Import Data' if locale == 'en' else 'Importar Datos' }}{% endblock %}
 
 {% block head %}
 <style>
@@ -49,16 +49,19 @@
                     ­ƒôÑ
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tight">Importar Datos</h1>
-                    <p class="text-slate-400 text-sm">3 pasos simples para conectar tus datos</p>
+                    <h1 class="text-2xl font-bold tracking-tight">{{ 'Import Data' if locale == 'en' else 'Importar
+                        Datos' }}</h1>
+                    <p class="text-slate-400 text-sm">{{ '3 simple steps to connect your data' if locale == 'en' else '3
+                        pasos simples para conectar tus datos' }}</p>
                 </div>
             </div>
-            <a href="/app" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+            <a href="{{ '/en' if locale == 'en' else '' }}/app"
+                class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Volver al Dashboard
+                {{ 'Back to Dashboard' if locale == 'en' else 'Volver al Dashboard' }}
             </a>
         </div>
     </header>
@@ -94,8 +97,10 @@
         <!-- STEP 1: Upload File -->
         <div x-show="step === 1" class="space-y-8">
             <div class="text-center mb-8">
-                <h2 class="text-xl font-bold mb-2">Sube tu archivo de datos</h2>
-                <p class="text-slate-400 text-sm">Acepta CSV, Excel (.xlsx) o JSON</p>
+                <h2 class="text-xl font-bold mb-2">{{ 'Upload your data file' if locale == 'en' else 'Sube tu archivo de
+                    datos' }}</h2>
+                <p class="text-slate-400 text-sm">{{ 'Accepts CSV, Excel (.xlsx) or JSON' if locale == 'en' else 'Acepta
+                    CSV, Excel (.xlsx) o JSON' }}</p>
             </div>
 
             <!-- Drop Zone -->
@@ -106,21 +111,24 @@
                     class="hidden">
 
                 <div x-show="!file" class="space-y-4">
-                    <div class="text-5xl">­ƒôä</div>
-                    <div class="text-lg font-medium text-slate-300">Arrastra tu archivo aqu├¡</div>
-                    <div class="text-sm text-slate-500">o haz click para seleccionar</div>
+                    <div class="text-5xl">📄</div>
+                    <div class="text-lg font-medium text-slate-300">{{ 'Drag your file here' if locale == 'en' else
+                        'Arrastra tu archivo aquí' }}</div>
+                    <div class="text-sm text-slate-500">{{ 'or click to select' if locale == 'en' else 'o haz click para
+                        seleccionar' }}</div>
                     <div class="text-[10px] text-slate-600 mt-4">
-                        Formatos soportados: CSV, Excel, JSON ÔÇó M├íximo 50MB
+                        {{ 'Supported formats: CSV, Excel, JSON • Max 50MB' if locale == 'en' else 'Formatos soportados:
+                        CSV, Excel, JSON • Máximo 50MB' }}
                     </div>
                 </div>
 
                 <div x-show="file" class="space-y-4">
-                    <div class="text-5xl">Ô£à</div>
+                    <div class="text-5xl">✅</div>
                     <div class="text-lg font-medium text-emerald-400" x-text="file?.name"></div>
                     <div class="text-sm text-slate-500">
-                        <span x-text="formatFileSize(file?.size)"></span> ÔÇó
-                        <button @click.stop="file = null; preview = null"
-                            class="text-rose-400 hover:text-rose-300">Cambiar archivo</button>
+                        <span x-text="formatFileSize(file?.size)"></span> •
+                        <button @click.stop="file = null; preview = null" class="text-rose-400 hover:text-rose-300">{{
+                            'Change file' if locale == 'en' else 'Cambiar archivo' }}</button>
                     </div>
                 </div>
             </div>
@@ -128,8 +136,10 @@
             <!-- Preview Table -->
             <div x-show="preview && preview.length" class="wizard-step rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="text-sm font-medium text-white">Vista previa (primeras 5 filas)</div>
-                    <div class="text-[10px] text-slate-500" x-text="preview.length + ' columnas detectadas'"></div>
+                    <div class="text-sm font-medium text-white">{{ 'Preview (first 5 rows)' if locale == 'en' else
+                        'Vista previa (primeras 5 filas)' }}</div>
+                    <div class="text-[10px] text-slate-500" x-text="preview.length + ' {{ " columns detected" if
+                        locale=="en" else "columnas detectadas" }}'"></div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-xs">
@@ -156,7 +166,7 @@
             <div class="flex justify-end">
                 <button @click="goToStep(2)" :disabled="!file || !preview"
                     class="px-8 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-medium transition">
-                    Continuar ÔåÆ
+                    {{ 'Continue' if locale == 'en' else 'Continuar' }} →
                 </button>
             </div>
         </div>
@@ -164,25 +174,29 @@
         <!-- STEP 2: Column Mapping -->
         <div x-show="step === 2" class="space-y-8">
             <div class="text-center mb-8">
-                <h2 class="text-xl font-bold mb-2">Confirma el mapeo de columnas</h2>
-                <p class="text-slate-400 text-sm">Hemos detectado autom├íticamente tus columnas. Verifica que sean
-                    correctas.</p>
+                <h2 class="text-xl font-bold mb-2">{{ 'Confirm column mapping' if locale == 'en' else 'Confirma el mapeo
+                    de columnas' }}</h2>
+                <p class="text-slate-400 text-sm">{{ 'We have automatically detected your columns. Verify that they are
+                    correct.' if locale == 'en' else 'Hemos detectado automáticamente tus columnas. Verifica que sean
+                    correctas.' }}</p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-6">
                 <!-- Date Column -->
                 <div class="wizard-step rounded-xl p-6">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="size-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">­ƒôà
+                        <div class="size-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">📅
                         </div>
                         <div>
-                            <div class="text-sm font-medium text-white">Columna de Fecha</div>
-                            <div class="text-[10px] text-slate-500">Campo con fecha de transacci├│n</div>
+                            <div class="text-sm font-medium text-white">{{ 'Date Column' if locale == 'en' else 'Columna
+                                de Fecha' }}</div>
+                            <div class="text-[10px] text-slate-500">{{ 'Field with transaction date' if locale == 'en'
+                                else 'Campo con fecha de transacción' }}</div>
                         </div>
                     </div>
                     <select x-model="mapping.date"
                         class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm">
-                        <option value="">-- Seleccionar --</option>
+                        <option value="">-- {{ 'Select' if locale == 'en' else 'Seleccionar' }} --</option>
                         <template x-for="col in preview" :key="col.name">
                             <option :value="col.name" x-text="col.name" :selected="col.detected === 'date'"></option>
                         </template>
@@ -194,15 +208,17 @@
                     <div class="flex items-center gap-3 mb-4">
                         <div
                             class="size-10 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                            ­ƒæñ</div>
+                            👤</div>
                         <div>
-                            <div class="text-sm font-medium text-white">Columna de Cliente</div>
-                            <div class="text-[10px] text-slate-500">ID o identificador del cliente</div>
+                            <div class="text-sm font-medium text-white">{{ 'Customer Column' if locale == 'en' else
+                                'Columna de Cliente' }}</div>
+                            <div class="text-[10px] text-slate-500">{{ 'ID or customer identifier' if locale == 'en'
+                                else 'ID o identificador del cliente' }}</div>
                         </div>
                     </div>
                     <select x-model="mapping.customer_id"
                         class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm">
-                        <option value="">-- Seleccionar --</option>
+                        <option value="">-- {{ 'Select' if locale == 'en' else 'Seleccionar' }} --</option>
                         <template x-for="col in preview" :key="col.name">
                             <option :value="col.name" x-text="col.name" :selected="col.detected === 'id'"></option>
                         </template>
@@ -214,15 +230,17 @@
                     <div class="flex items-center gap-3 mb-4">
                         <div
                             class="size-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                            ­ƒÆ░</div>
+                            💸</div>
                         <div>
-                            <div class="text-sm font-medium text-white">Columna de Valor</div>
-                            <div class="text-[10px] text-slate-500">Importe, precio o revenue</div>
+                            <div class="text-sm font-medium text-white">{{ 'Value Column' if locale == 'en' else
+                                'Columna de Valor' }}</div>
+                            <div class="text-[10px] text-slate-500">{{ 'Amount, price or revenue' if locale == 'en' else
+                                'Importe, precio o revenue' }}</div>
                         </div>
                     </div>
                     <select x-model="mapping.value"
                         class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm">
-                        <option value="">-- Seleccionar --</option>
+                        <option value="">-- {{ 'Select' if locale == 'en' else 'Seleccionar' }} --</option>
                         <template x-for="col in preview" :key="col.name">
                             <option :value="col.name" x-text="col.name" :selected="col.detected === 'value'"></option>
                         </template>
@@ -233,15 +251,17 @@
                 <div class="wizard-step rounded-xl p-6">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="size-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400">
-                            ­ƒôó</div>
+                            📣</div>
                         <div>
-                            <div class="text-sm font-medium text-white">Canal (Opcional)</div>
-                            <div class="text-[10px] text-slate-500">Fuente o canal de marketing</div>
+                            <div class="text-sm font-medium text-white">{{ 'Channel (Optional)' if locale == 'en' else
+                                'Canal (Opcional)' }}</div>
+                            <div class="text-[10px] text-slate-500">{{ 'Source or marketing channel' if locale == 'en'
+                                else 'Fuente o canal de marketing' }}</div>
                         </div>
                     </div>
                     <select x-model="mapping.channel"
                         class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm">
-                        <option value="">-- No aplica --</option>
+                        <option value="">-- {{ 'Not applicable' if locale == 'en' else 'No aplica' }} --</option>
                         <template x-for="col in preview" :key="col.name">
                             <option :value="col.name" x-text="col.name"></option>
                         </template>
@@ -251,20 +271,21 @@
 
             <!-- Validation Messages -->
             <div x-show="mappingErrors.length" class="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4">
-                <div class="text-rose-400 text-sm font-medium mb-2">ÔÜá´©Å Corrige estos campos:</div>
+                <div class="text-rose-400 text-sm font-medium mb-2">⚠️ {{ 'Correct these fields:' if locale == 'en' else
+                    'Corrige estos campos:' }}</div>
                 <template x-for="err in mappingErrors" :key="err">
-                    <div class="text-rose-300 text-xs" x-text="ÔÇó " + err"></div>
+                    <div class="text-rose-300 text-xs" x-text="'• ' + err"></div>
                 </template>
             </div>
 
             <div class="flex justify-between">
                 <button @click="goToStep(1)"
                     class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium transition">
-                    ÔåÉ Volver
+                    ← {{ 'Back' if locale == 'en' else 'Volver' }}
                 </button>
                 <button @click="analyzeAndProceed()" :disabled="!mapping.date || !mapping.value"
                     class="px-8 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-medium transition">
-                    <span x-show="!analyzing">Analizar Datos ÔåÆ</span>
+                    <span x-show="!analyzing">{{ 'Analyze Data' if locale == 'en' else 'Analizar Datos' }} →</span>
                     <span x-show="analyzing" class="flex items-center gap-2">
                         <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
@@ -272,7 +293,7 @@
                             <path class="opacity-75" fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
-                        Analizando...
+                        {{ 'Analyzing...' if locale == 'en' else 'Analizando...' }}
                     </span>
                 </button>
             </div>
@@ -282,9 +303,11 @@
         <div x-show="step === 3" class="space-y-8">
             <div class="text-center mb-8">
                 <div class="text-5xl mb-4"
-                    x-text="report?.overall?.score >= 70 ? '­ƒÄë' : (report?.overall?.score >= 40 ? '­ƒæì' : 'ÔÜá´©Å')"></div>
-                <h2 class="text-xl font-bold mb-2">An├ílisis Completado</h2>
-                <p class="text-slate-400 text-sm">Aqu├¡ est├í el resumen de tus datos y algoritmos disponibles</p>
+                    x-text="report?.overall?.score >= 70 ? '🎉' : (report?.overall?.score >= 40 ? '👍' : '⚠️')"></div>
+                <h2 class="text-xl font-bold mb-2">{{ 'Analysis Completed' if locale == 'en' else 'Análisis Completado'
+                    }}</h2>
+                <p class="text-slate-400 text-sm">{{ 'Here is the summary of your data and available algorithms' if
+                    locale == 'en' else 'Aquí está el resumen de tus datos y algoritmos disponibles' }}</p>
             </div>
 
             <!-- Health Score -->
@@ -295,59 +318,62 @@
                          'text-blue-400': report?.overall?.score >= 50 && report?.overall?.score < 70,
                          'text-emerald-400': report?.overall?.score >= 70
                      }" x-text="report?.overall?.score || 0"></div>
-                <div class="text-sm text-slate-400 uppercase tracking-widest"
-                    x-text="'Calidad: ' + (report?.overall?.level || 'desconocido')"></div>
+                <div class="text-sm text-slate-400 uppercase tracking-widest" x-text="'{{ " Quality" if locale=="en"
+                    else "Calidad" }}: ' + (report?.overall?.level || ' {{ "unknown" if locale=="en" else "desconocido"
+                    }}')"></div>
 
                 <div class="grid grid-cols-3 gap-8 mt-8 pt-8 border-t border-white/10">
-                    <div>
-                        <div class="text-2xl font-bold text-white" x-text="report?.row_count?.toLocaleString() || 0">
+                    <div class="text-2xl font-bold text-white" x-text="report?.row_count?.toLocaleString() || 0">
+                    </div>
+                    <div class="text-xs text-slate-500">{{ 'Records' if locale == 'en' else 'Registros' }}</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-white" x-text="report?.date_range?.span_months || 0"></div>
+                    <div class="text-xs text-slate-500">{{ 'Months of History' if locale == 'en' else 'Meses de
+                        Historial' }}</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-white"
+                        x-text="Math.round(report?.completeness?.score || 0) + '%'"></div>
+                    <div class="text-xs text-slate-500">{{ 'Completeness' if locale == 'en' else 'Completitud' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Algorithms Unlocked -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Unlocked -->
+            <div class="wizard-step completed rounded-xl p-6">
+                <div class="text-sm font-medium text-emerald-400 mb-4 flex items-center gap-2">
+                    <span>✅</span> {{ 'Algorithms Unlocked' if locale == 'en' else 'Algoritmos Desbloqueados' }} (<span
+                        x-text="report?.algorithms?.unlocked || 0"></span>)
+                </div>
+                <div class="space-y-2">
+                    <template x-for="algo in algorithms?.unlocked_list?.slice(0, 6)" :key="algo.id">
+                        <div class="flex items-center gap-3 text-sm">
+                            <span x-text="algo.icon"></span>
+                            <span class="text-white" x-text="algo.name"></span>
                         </div>
-                        <div class="text-xs text-slate-500">Registros</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold text-white" x-text="report?.date_range?.span_months || 0"></div>
-                        <div class="text-xs text-slate-500">Meses de Historial</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold text-white"
-                            x-text="Math.round(report?.completeness?.score || 0) + '%'"></div>
-                        <div class="text-xs text-slate-500">Completitud</div>
-                    </div>
+                    </template>
                 </div>
             </div>
 
-            <!-- Algorithms Unlocked -->
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Unlocked -->
-                <div class="wizard-step completed rounded-xl p-6">
-                    <div class="text-sm font-medium text-emerald-400 mb-4 flex items-center gap-2">
-                        <span>Ô£ô</span> Algoritmos Desbloqueados (<span
-                            x-text="report?.algorithms?.unlocked || 0"></span>)
-                    </div>
-                    <div class="space-y-2">
-                        <template x-for="algo in algorithms?.unlocked_list?.slice(0, 6)" :key="algo.id">
-                            <div class="flex items-center gap-3 text-sm">
-                                <span x-text="algo.icon"></span>
-                                <span class="text-white" x-text="algo.name"></span>
-                            </div>
-                        </template>
-                    </div>
+            <!-- Locked -->
+            <div class="wizard-step rounded-xl p-6">
+                <div class="text-sm font-medium text-slate-500 mb-4 flex items-center gap-2">
+                    <span>🔒</span> {{ 'Coming Soon' if locale == 'en' else 'Próximamente' }} (<span
+                        x-text="report?.algorithms?.locked || 0"></span>)
                 </div>
-
-                <!-- Locked -->
-                <div class="wizard-step rounded-xl p-6">
-                    <div class="text-sm font-medium text-slate-500 mb-4 flex items-center gap-2">
-                        <span>­ƒöÆ</span> Pr├│ximamente (<span x-text="report?.algorithms?.locked || 0"></span>)
-                    </div>
-                    <div class="space-y-2">
-                        <template x-for="algo in algorithms?.locked_list?.slice(0, 4)" :key="algo.id">
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center gap-3">
-                                    <span class="opacity-50" x-text="algo.icon"></span>
-                                    <span class="text-slate-500" x-text="algo.name"></span>
-                                </div>
-                                <span class="text-[10px] text-slate-600"
-                                    x-text="algo.status?.months_needed ? '+' + algo.status.months_needed + ' meses' : ''"></span>
+                <div class="space-y-2">
+                    <template x-for="algo in algorithms?.locked_list?.slice(0, 4)" :key="algo.id">
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-3">
+                                <span class="opacity-50" x-text="algo.icon"></span>
+                                <span class="text-slate-500" x-text="algo.name"></span>
+                            </div>
+                            <span class="text-[10px] text-slate-600"
+                                x-text="algo.status?.months_needed ? '+' + algo.status.months_needed + ' {{ " months" if
+                                locale=="en" else "meses" }}' : ''"></span>
                             </div>
                         </template>
                     </div>
@@ -355,29 +381,31 @@
             </div>
 
             <!-- Recommendations -->
-            <div x-show="report?.recommendations?.length" class="wizard-step rounded-xl p-6">
-                <div class="text-sm font-medium text-white mb-4 flex items-center gap-2">
-                    <span>­ƒÆí</span> Recomendaciones para Mejorar
-                </div>
-                <div class="space-y-3">
-                    <template x-for="rec in report?.recommendations" :key="rec">
-                        <div class="text-sm text-slate-400 pl-4 border-l-2 border-indigo-500/30" x-text="rec"></div>
-                    </template>
-                </div>
-            </div>
+            <div x-show=" report?.recommendations?.length" class="wizard-step rounded-xl p-6">
+                                <div class="text-sm font-medium text-white mb-4 flex items-center gap-2">
+                                    <span>💡</span> {{ 'Recommendations to Improve' if locale == 'en' else
+                                    'Recomendaciones para Mejorar' }}
+                                </div>
+                                <div class="space-y-3">
+                                    <template x-for="rec in report?.recommendations" :key="rec">
+                                        <div class="text-sm text-slate-400 pl-4 border-l-2 border-indigo-500/30"
+                                            x-text="rec"></div>
+                                    </template>
+                                </div>
+                        </div>
 
-            <!-- Actions -->
-            <div class="flex justify-between pt-6">
-                <button @click="goToStep(1); reset()"
-                    class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium transition">
-                    Importar Otro Archivo
-                </button>
-                <a href="/app"
-                    class="px-8 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition inline-flex items-center gap-2">
-                    Ir al Dashboard ÔåÆ
-                </a>
-            </div>
-        </div>
+                        <!-- Actions -->
+                        <div class="flex justify-between pt-6">
+                            <button @click="goToStep(1); reset()"
+                                class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium transition">
+                                {{ 'Import Another File' if locale == 'en' else 'Importar Otro Archivo' }}
+                            </button>
+                            <a href="{{ '/en' if locale == 'en' else '' }}/app"
+                                class="px-8 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition inline-flex items-center gap-2">
+                                {{ 'Go to Dashboard' if locale == 'en' else 'Ir al Dashboard' }} →
+                            </a>
+                        </div>
+                </div>
     </main>
 </div>
 
@@ -386,9 +414,9 @@
         return {
             step: 1,
             steps: [
-                { title: 'Subir Archivo', subtitle: 'CSV, Excel o JSON' },
-                { title: 'Mapear Columnas', subtitle: 'Confirma la estructura' },
-                { title: 'Resultados', subtitle: 'Algoritmos disponibles' }
+                { title: '{{ "Upload File" if locale == "en" else "Subir Archivo" }}', subtitle: 'CSV, Excel {{ "or" if locale == "en" else "o" }} JSON' },
+                { title: '{{ "Map Columns" if locale == "en" else "Mapear Columnas" }}', subtitle: '{{ "Confirm structure" if locale == "en" else "Confirma la estructura" }}' },
+                { title: '{{ "Results" if locale == "en" else "Resultados" }}', subtitle: '{{ "Available algorithms" if locale == "en" else "Algoritmos disponibles" }}' }
             ],
 
             // Step 1
@@ -475,8 +503,8 @@
 
             async analyzeAndProceed() {
                 this.mappingErrors = [];
-                if (!this.mapping.date) this.mappingErrors.push('Selecciona una columna de fecha');
-                if (!this.mapping.value) this.mappingErrors.push('Selecciona una columna de valor');
+                if (!this.mapping.date) this.mappingErrors.push('{{ "Select a date column" if locale == "en" else "Selecciona una columna de fecha" }}');
+                if (!this.mapping.value) this.mappingErrors.push('{{ "Select a value column" if locale == "en" else "Selecciona una columna de valor" }}');
 
                 if (this.mappingErrors.length) return;
 
@@ -503,7 +531,7 @@
 
                 } catch (e) {
                     console.error('Analysis failed:', e);
-                    this.mappingErrors.push('Error al analizar el archivo. Verifica el formato.');
+                    this.mappingErrors.push('{{ "Error analyzing file. Check format." if locale == "en" else "Error al analizar el archivo. Verifica el formato." }}');
                 }
 
                 this.analyzing = false;

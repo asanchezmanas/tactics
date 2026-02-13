@@ -1,0 +1,75 @@
+<div x-show="isTaskModalModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999"
+    x-cloak>
+    <div class="fixed inset-0 h-full w-full bg-gray-900/50 backdrop-blur-sm" @click="isTaskModalModal = false"></div>
+    <div @click.outside="isTaskModalModal = false"
+        class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-11 shadow-2xl">
+        <div class="px-2">
+            <h4 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
+                {{ 'Add a new task' if locale == 'en' else 'Añadir nueva tarea' }}
+            </h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+                {{ 'Effortlessly manage your to-do list: add a new task' if locale == 'en' else 'Gestione su lista de
+                tareas sin esfuerzo: añada una nueva tarea' }}
+            </p>
+        </div>
+
+        <button @click="isTaskModalModal = false"
+            class="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <form class="flex flex-col">
+            <div class="h-[450px] overflow-y-auto px-2 custom-scrollbar">
+                <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label class="mb-1.5 block text-sm font-bold text-gray-700 dark:text-gray-400">
+                            {{ 'Task Title' if locale == 'en' else 'Título de la Tarea' }}
+                        </label>
+                        <input type="text"
+                            placeholder="{{ 'Ex: Scale Lookalike Audience' if locale == 'en' else 'Ej: Escalar Audiencia Lookalike' }}"
+                            class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:text-white" />
+                    </div>
+
+                    <div>
+                        <label class="mb-1.5 block text-sm font-bold text-gray-700 dark:text-gray-400">
+                            {{ 'Due Date' if locale == 'en' else 'Fecha de Vencimiento' }}
+                        </label>
+                        <input type="date"
+                            class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:text-white" />
+                    </div>
+
+                    <div>
+                        <label class="mb-1.5 block text-sm font-bold text-gray-700 dark:text-gray-400">
+                            {{ 'Status' if locale == 'en' else 'Estado' }}
+                        </label>
+                        <select
+                            class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:text-white dark:bg-gray-900">
+                            <option value="todo">{{ 'To Do' if locale == 'en' else 'Por hacer' }}</option>
+                            <option value="inprogress">{{ 'In Progress' if locale == 'en' else 'En progreso' }}</option>
+                            <option value="completed">{{ 'Completed' if locale == 'en' else 'Completado' }}</option>
+                        </select>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="mb-1.5 block text-sm font-bold text-gray-700 dark:text-gray-400">
+                            {{ 'Description' if locale == 'en' else 'Descripción' }}
+                        </label>
+                        <textarea rows="4"
+                            class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:text-white"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center w-full gap-3 mt-8 sm:justify-end px-2">
+                <button @click="isTaskModalModal = false" type="button"
+                    class="flex h-11 items-center justify-center rounded-lg border border-gray-300 px-6 text-sm font-bold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400">
+                    {{ 'Cancel' if locale == 'en' else 'Cancelar' }}
+                </button>
+                <button type="button"
+                    class="flex h-11 items-center justify-center rounded-lg bg-indigo-600 px-6 text-sm font-bold text-white hover:bg-indigo-700">
+                    {{ 'Create Task' if locale == 'en' else 'Crear Tarea' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

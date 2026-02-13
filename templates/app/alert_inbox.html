@@ -1,10 +1,11 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}Anomaly Inbox | Tactics{% endblock %}
+{% block title %}{{ 'Anomaly Inbox | Tactics Intelligence' if locale == 'en' else 'Buzón de Anomalías | Tactics
+Intelligence' }}{% endblock %}
 
 {% block content %}
 <div x-data="{ sidebarToggle: false, darkMode: false, page: 'inbox' }" :class="darkMode ? 'dark' : ''"
-    class="flex h-screen overflow-hidden">
+    class="flex h-screen overflow-hidden bg-gray-light dark:bg-black">
     <!-- Sidebar -->
     {% include 'partials/sidebar_app.html' %}
 
@@ -18,16 +19,16 @@
             <div class="relative flex flex-1 flex-col">
                 <!-- Breadcrumb Start -->
                 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <h2 class="text-title-md2 font-bold text-black dark:text-white">
-                        Anomaly Inbox
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+                        {{ 'Anomaly Inbox' if locale == 'en' else 'Buzón de Anomalías' }}
                     </h2>
                     <nav>
-                        <ol class="flex items-center gap-2">
+                        <ol class="flex items-center gap-2 text-sm">
                             <li>
-                                <a class="font-medium text-primary hover:text-black/50 dark:hover:text-white/50"
-                                    href="/dashboard">Dashboard /</a>
+                                <a class="font-bold text-indigo-600 hover:text-indigo-700"
+                                    href="{{ '/en/app' if locale == 'en' else '/app' }}">Dashboard /</a>
                             </li>
-                            <li class="font-medium text-primary">Inbox</li>
+                            <li class="font-medium text-gray-500">{{ 'Inbox' if locale == 'en' else 'Buzón' }}</li>
                         </ol>
                     </nav>
                 </div>
@@ -42,6 +43,7 @@
                         <!-- Inbox Mailbox Start -->
                         {% include "partials/inbox/inbox_mailbox.html" %}
                         <!-- Inbox Mailbox End -->
+
                     </div>
                 </div>
             </div>
