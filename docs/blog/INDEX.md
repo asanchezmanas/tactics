@@ -4,6 +4,20 @@
 
 ---
 
+## Serie Elite: Inteligencia 2.0
+
+Exploramos las fronteras de la ciencia de datos aplicada a la estrategia de negocio avanzada.
+
+| Artículo | Tema |
+|----------|------|
+| [Atribución Causal: El Fin de la Correlación](./atribucion_causal.md) | Sinergias y efectos eco en el marketing mix |
+| [Cinética del Gasto: Velocidad y Momentum](./cinetica_gasto.md) | Predicción de churn mediante aceleración del valor |
+| [IA Transparente: Cajas Negras y Riesgo](./ia_transparente.md) | Interpretabilidad y mecanismos de atención |
+| [El Radar de Rentabilidad: Ver lo Invisible](./radar_rentabilidad_instantaneo.md) | Detección de patrones y Gateway Products |
+| [Resiliencia de Datos: Filtrando el Ruido](./resiliencia_datos.md) | Robust Scaling y protección de modelos predictivos |
+
+---
+
 ## Fundamentos
 
 Artículos que establecen los conceptos base de la analítica de marketing moderna.

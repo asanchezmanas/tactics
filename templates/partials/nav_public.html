@@ -1,0 +1,41 @@
+<nav
+    class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a href="{{ '/en' if locale == 'en' else '/' }}" class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <span class="text-white font-display font-bold">T</span>
+            </div>
+            <span class="font-display text-xl font-bold tracking-tight">Tactics</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-10">
+            <a href="{{ '/en' if locale == 'en' else '' }}/blog"
+                class="text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">
+                {{ 'Insights' if locale == 'en' else 'Insights' }}
+            </a>
+            <a href="{{ '/en' if locale == 'en' else '' }}/demo/diagnostic"
+                class="text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">
+                {{ 'Diagnosis' if locale == 'en' else 'Diagnóstico' }}
+            </a>
+            <a href="{{ '/en' if locale == 'en' else '' }}/soporte"
+                class="text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">
+                {{ 'Support' if locale == 'en' else 'Soporte' }}
+            </a>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button onclick="toggleLanguage()"
+                class="text-xs font-bold px-3 py-1 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 transition-all mr-2">
+                {{ 'ES' if locale == 'en' else 'EN' }}
+            </button>
+            <a href="{{ '/en' if locale == 'en' else '' }}/login"
+                class="text-sm font-bold text-slate-900 dark:text-white hover:text-indigo-600 px-4 py-2">
+                {{ 'Login' if locale == 'en' else 'Ingresar' }}
+            </a>
+            <a href="{{ '/en' if locale == 'en' else '' }}/demo/diagnostic"
+                class="bg-indigo-600 text-white text-sm font-bold px-5 py-2.5 rounded-lg hover:bg-indigo-700 transition-all shadow-sm">
+                {{ 'Get Started' if locale == 'en' else 'Comenzar' }}
+            </a>
+        </div>
+    </div>
+</nav>

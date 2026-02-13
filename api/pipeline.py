@@ -1,4 +1,4 @@
-"""
+﻿"""
 Resilient Data Pipeline for Tactics
 
 Uses the resilient database layer for fault-tolerant operation:
@@ -28,6 +28,7 @@ from core.segmentation import segment_customers
 from core.optimizer import BudgetOptimizer
 from core.resilience import DataGuard
 from core.secure_vault import SecureVault
+from core.engine import DataScienceCore
 
 
 class PipelineTier(str, Enum):
@@ -138,6 +139,42 @@ async def run_full_pipeline(company_id: str,
                 except Exception as e:
                     result["errors"].append(f"GSC sync: {e}")
 
+            # Fitness & Wellness Connectors
+            if 'mindbody' in tokens:
+                try:
+                    mb = tokens['mindbody']
+                    from .connectors import sync_mindbody
+                    sync_mindbody(company_id, mb['site_id'], mb['api_key'])
+                    result["steps_completed"].append("sync_mindbody")
+                except Exception as e:
+                    result["errors"].append(f"Mindbody sync: {e}")
+
+            if 'glofox' in tokens:
+                try:
+                    gf = tokens['glofox']
+                    from .connectors import sync_glofox
+                    sync_glofox(company_id, gf['api_key'], gf['api_secret'], gf['branch_id'])
+                    result["steps_completed"].append("sync_glofox")
+                except Exception as e:
+                    result["errors"].append(f"Glofox sync: {e}")
+
+            if 'gcal_fitness' in tokens:
+                try:
+                    gc = tokens['gcal_fitness']
+                    from .connectors import sync_google_calendar_fitness
+                    sync_google_calendar_fitness(company_id, gc['credentials_path'])
+                    result["steps_completed"].append("sync_gcal_fitness")
+                except Exception as e:
+                    result["errors"].append(f"Google Calendar fitness sync: {e}")
+
+            if 'stripe_fitness' in tokens:
+                try:
+                    sf = tokens['stripe_fitness']
+                    from .connectors import sync_stripe_fitness
+                    sync_stripe_fitness(sf['api_key'], company_id)
+                    result["steps_completed"].append("sync_stripe_fitness")
+                except Exception as e:
+                    result["errors"].append(f"Stripe fitness sync: {e}")
         else:
             print(f"[Pipeline] Offline mode - using cached data for {company_id}")
             result["offline_mode"] = True

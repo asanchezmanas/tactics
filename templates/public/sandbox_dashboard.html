@@ -1,0 +1,233 @@
+{% extends "app/dashboard.html" %}
+
+{% block title %}Tactics AI | Sandbox de Diagnóstico{% endblock %}
+
+{% block content %}
+<div class="p-6 lg:p-10 bg-surface min-h-screen" x-data="sandboxApp()">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div>
+                <h2 class="text-3xl font-display font-bold text-text-main flex items-center">
+                    <span class="material-symbols-outlined text-primary mr-3 text-4xl">analytics</span>
+                    Análisis Tactics <span class="text-primary ml-2">Intelligence 2.0</span>
+                </h2>
+                <p class="text-text-muted mt-1">Viendo resultados simulados para <span class="font-bold text-primary"
+                        x-text="fileName"></span></p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/login"
+                    class="px-6 py-3 bg-primary text-white font-bold rounded-xl premium-shadow hover:bg-primary-dark transition-all flex items-center">
+                    <span class="material-symbols-outlined mr-2">rocket_launch</span>
+                    Desbloquear Plataforma Completa
+                </a>
+            </div>
+        </div>
+
+        <!-- Sandbox Warning Banner -->
+        <div class="bg-primary-soft border border-primary/20 p-4 rounded-2xl mb-10 flex items-center gap-4">
+            <span class="material-symbols-outlined text-primary text-3xl">info</span>
+            <div class="text-sm">
+                <p class="text-primary font-bold">Sesión de Sandbox Temporal</p>
+                <p class="text-text-muted">Estás viendo una previsualización de alto impacto basada en <span
+                        x-text="metrics.sample_size"></span> registros. Crea una cuenta para persistir estos datos y ver
+                    el reporte de LTV detallado.</p>
+            </div>
+        </div>
+
+        <!-- Grid of Insights -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <!-- Pareto Card -->
+            <div class="glass-panel p-6 rounded-3xl premium-shadow"
+                :class="metrics.pareto.is_concentrated ? 'border-red-500/30' : ''">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="material-symbols-outlined text-text-dim">groups</span>
+                    <span x-show="metrics.pareto.is_concentrated"
+                        class="px-2 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-lg animate-pulse">ALTO
+                        RIESGO</span>
+                </div>
+                <h4 class="text-text-dim text-sm font-medium uppercase tracking-wider">Concentración Pareto</h4>
+                <div class="text-3xl font-display font-extrabold text-text-main mt-2">
+                    <span x-text="(metrics.pareto.ratio_top_20 * 100).toFixed(0)"></span>%
+                </div>
+                <p class="text-xs text-text-muted mt-3">De tus ingresos dependen del 20% de tus clientes.</p>
+            </div>
+
+            <!-- Retention Card -->
+            <div class="glass-panel p-6 rounded-3xl premium-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="material-symbols-outlined text-text-dim">loop</span>
+                </div>
+                <h4 class="text-text-dim text-sm font-medium uppercase tracking-wider">Retención Estimada</h4>
+                <div class="text-3xl font-display font-extrabold text-text-main mt-2">
+                    <span x-text="(metrics.retention * 100).toFixed(1)"></span>%
+                </div>
+                <p class="text-xs text-text-muted mt-3">Tasa de fidelidad detectada en tus patrones históricos.</p>
+            </div>
+
+            <!-- AOV Card -->
+            <div class="glass-panel p-6 rounded-3xl premium-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="material-symbols-outlined text-text-dim">payments</span>
+                </div>
+                <h4 class="text-text-dim text-sm font-medium uppercase tracking-wider">Ticket Promedio (AOV)</h4>
+                <div class="text-3xl font-display font-extrabold text-text-main mt-2">
+                    $<span x-text="metrics.aov.toFixed(2)"></span>
+                </div>
+                <p class="text-xs text-text-muted mt-3">Promedio de valor transaccionado por pedido.</p>
+            </div>
+
+            <!-- LTV Potential Card -->
+            <div class="glass-panel p-6 rounded-3xl premium-shadow bg-primary text-white">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="material-symbols-outlined">trending_up</span>
+                </div>
+                <h4 class="opacity-80 text-sm font-medium uppercase tracking-wider">Valor Predictivo 12m</h4>
+                <div class="text-3xl font-display font-extrabold mt-2">
+                    +<span x-text="((metrics.retention * metrics.aov) * 5).toFixed(0)"></span>%
+                </div>
+                <p class="text-xs opacity-70 mt-3">Crecimiento potencial aplicando optimización de Retención Tactics.
+                </p>
+            </div>
+        </div>
+
+        <!-- Big Chart Simulation -->
+        <div class="glass-panel p-8 rounded-3xl premium-shadow mb-10">
+            <h3 class="text-xl font-display font-bold text-text-main mb-6">Proyección de Crecimiento Tactics vs Orgánico
+            </h3>
+            <div id="sandboxChart"></div>
+        </div>
+
+        <!-- Basket Affinity Section (Gold Insight) -->
+        <div class="glass-panel p-8 rounded-3xl premium-shadow mb-10 border-l-4 border-primary">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-xl font-display font-bold text-text-main flex items-center">
+                        <span class="material-symbols-outlined text-primary mr-2">shopping_basket</span>
+                        Afinidad de Cesta (Market Basket Analysis)
+                    </h3>
+                    <p class="text-text-muted text-sm mt-1">Detectamos qué productos se compran juntos con mayor
+                        frecuencia.</p>
+                </div>
+                <span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">GOLD INSIGHT</span>
+            </div>
+
+            <div class="overflow-hidden">
+                <template x-if="metrics.basket_affinity && metrics.basket_affinity.length > 0">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <template x-for="pair in metrics.basket_affinity" :key="pair.product_a + pair.product_b">
+                            <div
+                                class="bg-surface p-5 rounded-2xl border border-border-light hover:border-primary/30 transition-all">
+                                <div
+                                    class="flex items-center justify-between mb-3 text-xs font-bold text-text-dim uppercase">
+                                    <span>COMBINACIÓN DETECTADA</span>
+                                    <span class="text-primary" x-text="'Lift: ' + pair.lift + 'x'"></span>
+                                </div>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-full h-1 bg-primary/20 rounded-full overflow-hidden">
+                                        <div class="h-full bg-primary"
+                                            :style="'width: ' + (pair.confidence * 100) + '%'"></div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <div class="text-sm font-bold text-text-main flex items-center">
+                                        <span class="truncate" x-text="pair.product_a"></span>
+                                        <span class="material-symbols-outlined mx-2 text-xs">add</span>
+                                        <span class="truncate" x-text="pair.product_b"></span>
+                                    </div>
+                                    <p class="text-xs text-text-muted mt-2">
+                                        Comprados juntos en <span class="font-bold text-text-main"
+                                            x-text="pair.combined_orders"></span> pedidos.
+                                    </p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template x-if="!metrics.basket_affinity || metrics.basket_affinity.length === 0">
+                    <div class="text-center py-10">
+                        <span class="material-symbols-outlined text-4xl text-text-dim mb-2">inventory_2</span>
+                        <p class="text-text-muted italic">Datos insuficientes para detectar afinidades significativas.
+                        </p>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div
+            class="glass-panel p-10 rounded-3xl premium-shadow bg-gray-dark text-white flex flex-col md:flex-row items-center gap-10">
+            <div class="flex-1">
+                <h3 class="text-2xl font-display font-bold mb-4 text-white">¿Te gusta lo que ves?</h3>
+                <p class="opacity-70">Esto es solo la superficie. Al conectar Shopify o Meta, Tactics Intelligence 2.0
+                    activa el Optimización de Presupuesto en tiempo real y detecta tus "Gateway Products".</p>
+            </div>
+            <div class="flex flex-col gap-3">
+                <a href="/login"
+                    class="px-10 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-primary-dark transition-all text-center">Crear
+                    Cuenta Permanente</a>
+                <p class="text-xs opacity-50 text-center">Es gratis. Sin tarjeta. Setup en 2 minutos.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sandboxApp() {
+        return {
+            metrics: JSON.parse(sessionStorage.getItem('sandbox_metrics') || '{}'),
+            fileName: 'Ventas_Procesadas.csv',
+
+            init() {
+                if (!this.metrics.growth) {
+                    alert('No hay datos de sesión. Redirigiendo al diagnóstico.');
+                    window.location.href = '/demo/diagnostic';
+                    return;
+                }
+                this.renderChart();
+            },
+
+            renderChart() {
+                const options = {
+                    series: [{
+                        name: 'Proyección Tactics (Optimizado)',
+                        data: [31, 40, 58, 81, 102, 140]
+                    }, {
+                        name: 'Tendencia Orgánica',
+                        data: [31, 35, 38, 42, 45, 48]
+                    }],
+                    chart: {
+                        height: 350,
+                        type: 'area',
+                        toolbar: { show: false },
+                        fontFamily: 'Inter, sans-serif'
+                    },
+                    colors: ['#4F46E5', '#94A3B8'],
+                    stroke: { curve: 'smooth', width: 3 },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.45,
+                            opacityTo: 0.05,
+                            stops: [20, 100, 100, 100]
+                        }
+                    },
+                    dataLabels: { enabled: false },
+                    xaxis: {
+                        categories: ['Mes 0', 'Mes 2', 'Mes 4', 'Mes 6', 'Mes 8', 'Mes 12'],
+                        labels: { style: { colors: '#94A3B8' } }
+                    },
+                    yaxis: {
+                        labels: { style: { colors: '#94A3B8' } }
+                    },
+                    grid: { borderColor: '#F1F5F9' }
+                };
+
+                const chart = new ApexCharts(document.querySelector("#sandboxChart"), options);
+                chart.render();
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -28,8 +28,26 @@ class ExplainerRegistry:
     def __new__(cls) -> "ExplainerRegistry":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
+            cls._instance._bootstrap()
         return cls._instance
     
+    def _bootstrap(self) -> None:
+        """Auto-registers core explainers."""
+        from .ltv_explainer import LTVExplainer
+        from .mmm_explainer import MMMExplainer
+        from .eclat_explainer import ECLATExplainer
+        from .bandit_explainer import ThompsonExplainer, LinUCBExplainer
+        from .profit_explainer import ProfitExplainer
+        from .integrity_explainer import IntegrityExplainer
+        
+        self.register("ltv", LTVExplainer())
+        self.register("mmm", MMMExplainer())
+        self.register("eclat", ECLATExplainer())
+        self.register("thompson", ThompsonExplainer())
+        self.register("linucb", LinUCBExplainer())
+        self.register("profit", ProfitExplainer())
+        self.register("integrity", IntegrityExplainer())
+
     @classmethod
     def register(cls, category: str, explainer: ExplainerBase) -> None:
         """

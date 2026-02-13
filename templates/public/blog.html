@@ -1,0 +1,248 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Tactics | Blog de Estrategia e Inteligencia{% endblock %}
+
+{% block head %}
+<style>
+    .search-input-wrapper:focus-within {
+        border-color: #4F46E5;
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block nav %}
+{% include 'partials/nav_public.html' %}
+{% endblock %}
+
+{% block content %}
+<main class="flex-grow">
+    <!-- Hero Section -->
+    <section class="relative pt-20 pb-16 px-6 lg:px-8">
+        <div class="mx-auto max-w-[1280px]">
+            <div class="max-w-2xl">
+                <h1
+                    class="font-display text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl mb-6">
+                    {{ 'Insights & Strategy' if locale == 'en' else 'Insights & Estrategia' }}
+                </h1>
+                <p class="text-lg text-slate-600 dark:text-gray-400 mb-10 leading-relaxed font-light">
+                    {{ 'Explore the latest strategies in automated experimentation, applied data science, and AI-driven
+                    ROI optimization.' if locale == 'en' else 'Explora las últimas estrategias en experimentación
+                    automatizada, ciencia de datos aplicada y optimización de ROI impulsada por IA.' }}
+                </p>
+            </div>
+
+            <!-- Search & Filter -->
+            <div
+                class="flex flex-col lg:flex-row gap-6 lg:items-center justify-between mt-8 border-b border-slate-200 dark:border-gray-800 pb-8">
+                <div
+                    class="search-input-wrapper flex items-center w-full lg:w-[420px] bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-xl px-4 py-3 transition-all duration-200 shadow-sm">
+                    <span class="material-symbols-outlined text-slate-400 mr-3">search</span>
+                    <input
+                        class="bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 w-full focus:ring-0 p-0 font-display text-sm"
+                        placeholder="{{ 'Search articles...' if locale == 'en' else 'Buscar artículos...' }}"
+                        type="text" />
+                </div>
+                <div class="flex flex-wrap gap-2 overflow-x-auto pb-2 lg:pb-0 no-scrollbar">
+                    <button
+                        class="whitespace-nowrap rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20 px-4 py-2 text-sm font-bold transition-all transition-all">{{
+                        'All' if locale == 'en' else 'Todos' }}</button>
+                    <button
+                        class="whitespace-nowrap rounded-full border border-slate-200 dark:border-gray-800 px-4 py-2 text-sm font-medium text-slate-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-200 dark:hover:border-gray-700 transition-all">{{
+                        'Success Stories' if locale == 'en' else 'Casos de Éxito' }}</button>
+                    <button
+                        class="whitespace-nowrap rounded-full border border-slate-200 dark:border-gray-800 px-4 py-2 text-sm font-medium text-slate-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-200 dark:hover:border-gray-700 transition-all">{{
+                        'Engineering' if locale == 'en' else 'Ingeniería' }}</button>
+                    <button
+                        class="whitespace-nowrap rounded-full border border-slate-200 dark:border-gray-800 px-4 py-2 text-sm font-medium text-slate-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-200 dark:hover:border-gray-700 transition-all">{{
+                        'Product' if locale == 'en' else 'Producto' }}</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Post -->
+    <section class="px-6 lg:px-8 pb-16">
+        <div class="mx-auto max-w-[1280px]">
+            <h2 class="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-6">
+                {{ 'Featured Story' if locale == 'en' else 'Historia Destacada' }}</h2>
+            <a class="group grid lg:grid-cols-2 gap-8 lg:gap-12 items-center bg-white dark:bg-white/[0.03] rounded-2xl p-6 lg:p-8 border border-slate-200 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-gray-700 transition-all duration-300 shadow-sm"
+                href="{{ '/en' if locale == 'en' else '' }}/blog/ciencia-de-la-sutileza">
+                <div class="aspect-[16/10] w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-gray-800">
+                    <div class="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBJiDtPfDJzoTuWZVkkJzAQkE4pl-1dVuBCUUh9NSRl-_kNtmmAHLxk0ztNxo7LZBZZ0mBMYhA3p-lSXqyHeeFaLruAYphWSqYyhm6m15_OOYUVG-9ZesUhY6flKbQJ60aHcGuKPzDjRbk7DaarIM0G6OS6zYw70MlZvrmQUrhwp14RMoDytw8CfNUW3ASeBLxBOce7IcsDvujqpe7LbF-d9QBz_IqeDjlTnczmZfJhW0gvfKbJo7wy37rDCsqeOBe_QFeQaxnW');">
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span
+                            class="rounded-full bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20">
+                            {{ 'AI TRENDS' if locale == 'en' else 'TENDENCIAS IA' }}
+                        </span>
+                        <span class="text-[11px] text-slate-500 dark:text-gray-400 font-medium">
+                            {{ 'Oct 24, 2023 • 8 min read' if locale == 'en' else 'Oct 24, 2023 • 8 min lectura' }}
+                        </span>
+                    </div>
+                    <h3
+                        class="font-display text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-4 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {{ 'The Evolution of Automated A/B Testing in 2024' if locale == 'en' else 'La Evolución del A/B
+                        Testing Automatizado en 2024' }}</h3>
+                    <p class="text-slate-600 dark:text-gray-400 mb-6 leading-relaxed line-clamp-3 text-sm">
+                        {{ 'As digital environments saturate, the margin for error in user experience optimization
+                        narrows significantly. Discover how AI is changing the paradigm from manual segmentation to
+                        automated continuous optimization.' if locale == 'en' else 'A medida que los entornos digitales
+                        se saturan, el margen de error en la optimización de la experiencia de usuario se estrecha
+                        significativamente. Descubre cómo la IA está cambiando el paradigma de la segmentación manual a
+                        la optimización continua automatizada.' }}
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 overflow-hidden rounded-full border border-slate-200 dark:border-gray-700">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyF6VncZ5uEpBL4iAxREles5-0eOChtQge6PB-eSw6SL9xS0Cp4-Vqjf_CWYOfvGE5vHMf3bHstssfc6Icpl4VqKRjXARR7K92IcgANXFNT9sHL4431zomtGXkqTL8pBVCIo90bWmRu0Nfpr8IWCbAOP13DYbav5ReZeUvZ73Mrn4PvasN6vWUAyae8Ar5eyzkM068aq_3z0cGfTBM5qeJzoRcg6LYheuRjbZgGxabbgQfqZaAef5NbnRrqmiGA_C1n1ib_OHq"
+                                class="h-full w-full object-cover" />
+                        </div>
+                        <span class="text-sm font-bold text-slate-700 dark:text-gray-300">Elena Fischer</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Article Grid -->
+    <section class="px-6 lg:px-8 pb-24">
+        <div class="mx-auto max-w-[1280px]">
+            <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Article: New Strategic Insights -->
+                <article
+                    class="glass-panel rounded-3xl overflow-hidden premium-shadow hover:translate-y-[-4px] transition-all duration-300">
+                    <div
+                        class="h-48 bg-gradient-to-br from-primary to-indigo-900 flex items-center justify-center relative">
+                        <span class="material-symbols-outlined text-6xl text-white/20">strategy</span>
+                        <div
+                            class="absolute top-4 right-4 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-[10px] font-bold text-white uppercase tracking-widest">
+                            {{ 'STRATEGY' if locale == 'en' else 'ESTRATEGIA' }}</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-[10px] font-bold text-primary uppercase tracking-widest">Intelligence
+                                2.0</span>
+                            <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                            <span class="text-[10px] text-slate-500 uppercase tracking-widest">{{ '4 min read' if locale
+                                == 'en' else '4 min lectura' }}</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3 leading-tight">
+                            {{ 'The Opportunity Cost of Intuition' if locale == 'en' else 'El Coste de Oportunidad de la
+                            Intuición' }}
+                        </h3>
+                        <p class="text-slate-600 dark:text-gray-400 text-sm mb-6 line-clamp-2">
+                            {{ 'Why relying on "gut feeling" is stalling your brand scale and how intelligence fixes
+                            it.' if locale == 'en' else 'Por qué confiar en el "olfato" está estancando tu escalado y
+                            cómo la inteligencia lo soluciona.' }}
+                        </p>
+                        <a href="{{ '/en' if locale == 'en' else '' }}/blog/{{ 'opportunity-cost-intuition' if locale == 'en' else 'oportunidad-coste-intuicion' }}"
+                            class="text-indigo-600 font-bold text-sm flex items-center hover:gap-2 transition-all">
+                            {{ 'Read article' if locale == 'en' else 'Leer artículo' }} <span
+                                class="material-symbols-outlined ml-1 text-sm">arrow_forward</span>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 1: Radar de Rentabilidad -->
+                <article
+                    class="glass-panel rounded-3xl overflow-hidden premium-shadow hover:translate-y-[-4px] transition-all duration-300">
+                    <div
+                        class="h-48 bg-gradient-to-br from-primary to-indigo-900 flex items-center justify-center relative">
+                        <span class="material-symbols-outlined text-6xl text-white/20">radar</span>
+                        <div
+                            class="absolute top-4 right-4 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-[10px] font-bold text-white uppercase tracking-widest">
+                            {{ 'Strategy' if locale == 'en' else 'Estrategia' }}</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-[10px] font-bold text-primary uppercase tracking-widest">Intelligence
+                                2.0</span>
+                            <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                            <span class="text-[10px] text-slate-500 uppercase tracking-widest">{{ '5 min read' if locale
+                                == 'en' else '5 min lectura' }}</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3 leading-tight">
+                            {{ 'The Profitability Radar: See what others ignore' if locale == 'en' else 'El Radar de
+                            Rentabilidad: Cómo ver lo que otros ignoran' }}
+                        </h3>
+                        <p class="text-slate-600 dark:text-gray-400 text-sm mb-6 line-clamp-2">
+                            {{ 'Discover how Deep Learning models detect invisible patterns and Gateway Products.' if
+                            locale == 'en' else 'Descubre cómo los modelos de Deep Learning detectan patrones de compra
+                            y Gateway Products invisibles.' }}
+                        </p>
+                        <a href="{{ '/en' if locale == 'en' else '' }}/blog/{{ 'profit-radar' if locale == 'en' else 'radar-rentabilidad' }}"
+                            class="text-indigo-600 font-bold text-sm flex items-center hover:gap-2 transition-all">
+                            {{ 'Read article' if locale == 'en' else 'Leer artículo' }} <span
+                                class="material-symbols-outlined ml-1 text-sm">arrow_forward</span>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 2: LTV -->
+                <article class="flex flex-col group">
+                    <a class="block overflow-hidden rounded-xl bg-slate-100 dark:bg-gray-800 mb-5 aspect-[3/2]"
+                        href="{{ '/en' if locale == 'en' else '' }}/blog/{{ 'what-is-ltv' if locale == 'en' else 'que-es-el-ltv' }}">
+                        <div class="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCJlRjUuX1sclmhA_lNVPsSd9El2vHR969Tj_li4GH1ZJbGgsaHn5L17pJ-xmHzwx_nKVqWjfzdCP8jmTZYbTF907Pq-rtLhw2Lq14zxW4vfyFD8yDqeUReRf-jitnL3h4jZSSkWOnTzKp8tIFuTEFNcXfWCTmj0xgJ0EiR1DEHcHgt_-oPnwWAXvIZ5tL5jBx05PKlNym5VebI7OY7a37rCFztrPYxV7wfjpyERcULNi0_qv0CC4fukW6amYsMA96RBZSTxJAB');">
+                        </div>
+                    </a>
+                    <div class="flex flex-col flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span
+                                class="text-indigo-600 dark:text-indigo-400 font-bold text-[10px] uppercase tracking-wider">{{
+                                'Methodology' if locale == 'en' else 'Metodología' }}</span>
+                            <span class="text-slate-300 dark:text-gray-700">•</span>
+                            <span class="text-slate-500 dark:text-gray-500 text-[11px] font-medium">Nov 02, 2023</span>
+                        </div>
+                        <a class="block group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
+                            href="{{ '/en' if locale == 'en' else '' }}/blog/{{ 'what-is-ltv' if locale == 'en' else 'que-es-el-ltv' }}">
+                            <h3 class="font-display text-lg font-bold text-slate-900 dark:text-white mb-3">
+                                {{ 'What is Customer Lifetime Value and why does it matter?' if locale == 'en' else
+                                '¿Qué es el Customer Lifetime Value y por qué importa?' }}
+                            </h3>
+                        </a>
+                        <p class="text-sm text-slate-600 dark:text-gray-400 leading-relaxed line-clamp-2 mb-4">
+                            {{ 'A deep analysis of the infrastructure needed to run thousands of concurrent
+                            experiments.' if locale == 'en' else 'Un análisis profundo de la infraestructura necesaria
+                            para ejecutar miles de experimentos.' }}
+                        </p>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Pagination (Simplified for now) -->
+        </div>
+    </section>
+
+    <!-- CTAs Section -->
+    <section class="border-t border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-black/20 py-20 px-6">
+        <div class="mx-auto max-w-[1280px]">
+            <div
+                class="relative overflow-hidden rounded-3xl bg-indigo-600 px-6 py-16 sm:px-12 xl:py-20 shadow-2xl shadow-indigo-500/20">
+                <div class="relative z-10 mx-auto max-w-2xl text-center">
+                    <h3 class="mb-4 text-3xl font-extrabold tracking-tight text-white font-display">
+                        {{ 'Join the Optimization Elite' if locale == 'en' else 'Únete a la élite de la optimización' }}
+                    </h3>
+                    <p class="mb-8 text-indigo-100 text-lg font-light leading-relaxed">
+                        {{ 'Receive weekly insights on experimental design and statistical analysis directly to your
+                        inbox.' if locale == 'en' else 'Recibe insights semanales sobre diseño experimental y análisis
+                        estadístico directamente en tu bandeja de entrada.' }}
+                    </p>
+                    <form class="mx-auto flex max-w-md flex-col gap-3 sm:flex-row">
+                        <input
+                            class="flex-1 rounded-xl border-none bg-white/10 px-4 py-3 text-sm text-white placeholder-indigo-200 outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-md"
+                            placeholder="{{ 'Work Email' if locale == 'en' else 'Email de trabajo' }}" required=""
+                            type="email" />
+                        <button
+                            class="rounded-xl bg-white px-6 py-3 text-sm font-bold text-indigo-600 shadow-lg hover:bg-indigo-50 transition-all active:scale-95"
+                            type="submit">{{ 'Subscribe' if locale == 'en' else 'Suscribirse' }}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

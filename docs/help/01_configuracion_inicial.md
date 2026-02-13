@@ -11,7 +11,17 @@ Para que Tactics funcione, necesitas conectar:
 1. **Tu tienda online** (Shopify, WooCommerce, etc.)
 2. **Tus plataformas de publicidad** (Meta Ads, Google Ads - opcionales)
 
-Una vez conectado, Tactics analiza tu historial automáticamente y genera tu primer informe en menos de 24 horas.
+---
+
+## Paso 0: Prueba el Live Sandbox (Fricción Cero)
+
+¿No estás listo para conectar tus cuentas? No hay problema. Hemos diseñado el **Live Sandbox** para que veas el poder de Tactics Intelligence 2.0 en 30 segundos usando solo un archivo CSV.
+
+1. Ve a [Tactics Live Sandbox](file:///c:/Users/Artur/tactics/demo/diagnostic)
+2. Sube un archivo CSV con tus ventas (mínimo 20 filas).
+3. Obtén un análisis inmediato de **Concentración de Pareto** y **Afinidad de Cesta**.
+
+> 💡 **Ideal para**: Evaluar la herramienta sin comprometer credenciales de API o para obtener un "diagnóstico rápido" de salud de datos.
 
 ---
 

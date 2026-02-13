@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="{{ locale if locale else 'es' }}" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tactics | Inteligencia Estrat├®gica para E-commerce{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&family=Manrope:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS (via CDN for simplicity in recovery, but usually local) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        surface: 'var(--surface)',
+                        'text-main': 'var(--text-main)',
+                        'text-muted': 'var(--text-muted)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                        body: ['Manrope', 'sans-serif'],
+                    },
+                }
+            }
+        }
+
+        function toggleLanguage() {
+            const currentPath = window.location.pathname;
+            const pathParts = currentPath.split('/').filter(p => p !== '');
+            const currentLocale = pathParts[0];
+
+            if (currentLocale === 'en') {
+                // Remove /en from the start
+                window.location.pathname = '/' + pathParts.slice(1).join('/');
+            } else {
+                // Add /en to the start
+                window.location.pathname = '/en' + (currentPath === '/' ? '' : currentPath);
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --surface: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+        }
+
+        .dark {
+            --surface: #0F172A;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--surface);
+            color: var(--text-main);
+        }
+
+        .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body class="min-h-screen flex flex-col transition-colors duration-300">
+
+    {% block nav %}{% endblock %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800 py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-display font-bold">T</span>
+                    </div>
+                    <span class="font-display text-xl font-bold tracking-tight">Tactics</span>
+                </div>
+                <p class="text-slate-500 dark:text-gray-400 max-w-sm">
+                    {{ 'Precision intelligence for brands seeking real profitability over metric vanity.' if locale ==
+                    'en' else 'Inteligencia de precisión para marcas que buscan rentabilidad real sobre vanidad
+                    métrica.' }}
+                </p>
+            </div>
+            <div>
+                <h4 class="font-display font-bold mb-6 text-sm uppercase tracking-widest text-slate-400">{{ 'Product' if
+                    locale == 'en' else 'Producto' }}</h4>
+                <ul class="space-y-4 text-sm text-slate-600 dark:text-gray-400">
+                    <li><a href="{{ '/en' if locale == 'en' else '' }}/demo/diagnostic" class="hover:text-indigo-600">{{
+                            'Diagnosis' if locale == 'en' else 'Diagnóstico' }}</a></li>
+                    <li><a href="{{ '/en' if locale == 'en' else '' }}/app" class="hover:text-indigo-600">Dashboard</a>
+                    </li>
+                    <li><a href="{{ '/en' if locale == 'en' else '' }}/#precios" class="hover:text-indigo-600">{{
+                            'Pricing' if locale == 'en' else 'Precios' }}</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-display font-bold mb-6 text-sm uppercase tracking-widest text-slate-400">{{ 'Resources'
+                    if locale == 'en' else 'Recursos' }}</h4>
+                <ul class="space-y-4 text-sm text-slate-600 dark:text-gray-400">
+                    <li><a href="{{ '/en' if locale == 'en' else '' }}/blog" class="hover:text-indigo-600">Insights</a>
+                    </li>
+                    <li><a href="{{ '/en' if locale == 'en' else '' }}/soporte" class="hover:text-indigo-600">{{
+                            'Support' if locale == 'en' else 'Soporte' }}</a></li>
+                    <li><a href="https://internxt.com" target="_blank" class="hover:text-indigo-600">{{ 'Security' if
+                            locale == 'en' else 'Seguridad' }}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div
+            class="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="text-xs text-slate-400">© 2024 Tactics AI. Craftsmanship-grade analytics from Europe.</p>
+            <div class="flex gap-6 text-xs text-slate-400">
+                <a href="#" class="hover:text-slate-600">{{ 'Privacy' if locale == 'en' else 'Privacidad' }}</a>
+                <a href="#" class="hover:text-slate-600">{{ 'Terms' if locale == 'en' else 'Términos' }}</a>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

@@ -21,6 +21,14 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any, Tuple
 from pathlib import Path
 
+# Try to import Ingestion Audit & Integrity Guard
+try:
+    from .ingestion_audit import IngestionAuditor
+    from core.integrity_guard import IntegrityGuard
+    INTEGRITY_AVAILABLE = True
+except ImportError:
+    INTEGRITY_AVAILABLE = False
+
 # Try to import database, fallback gracefully
 try:
     from .database import supabase
@@ -92,19 +100,28 @@ SOURCE_TEMPLATES = {
     "shopify": {
         "ventas": {
             "Name": "order_id",
+            "Pedido": "order_id",
             "Email": "customer_id",
+            "Correo": "customer_id",
             "Created at": "order_date",
+            "Fecha": "order_date",
             "Total": "revenue",
-            "Source name": "canal_origen"
+            "Monto": "revenue",
+            "Source name": "canal_origen",
+            "Fuente": "canal_origen"
         },
         "date_format": "%Y-%m-%d %H:%M:%S"
     },
     "woocommerce": {
         "ventas": {
             "Order ID": "order_id",
+            "ID de pedido": "order_id",
             "Customer Email": "customer_id",
+            "Email del cliente": "customer_id",
             "Order Date": "order_date",
-            "Order Total": "revenue"
+            "Fecha de pedido": "order_date",
+            "Order Total": "revenue",
+            "Total del pedido": "revenue"
         },
         "date_format": "%Y-%m-%d"
     },
@@ -242,6 +259,8 @@ class DataIngestion:
         self.errors: List[str] = []
         self.warnings: List[str] = []
         self.stats = {"inserted": 0, "updated": 0, "skipped": 0, "errors": 0}
+        self.current_batch_id: Optional[str] = None
+        self.auditor = IngestionAuditor(company_id) if INTEGRITY_AVAILABLE else None
     
     # ─────────────────────────────────────────────────────────
     # CSV INGESTION
@@ -263,7 +282,13 @@ class DataIngestion:
             Dict with stats, vault_id (if backed up), and any errors
         """
         vault_info = None
+        checksum = "unknown"
+        self.current_batch_id = self.auditor.create_batch_id() if self.auditor else "manual"
         
+        # Calculate checksum for audit
+        if self.auditor:
+            checksum = self.auditor.calculate_checksum(csv_content.encode())
+
         # Backup to vault BEFORE processing (Zero-Knowledge backup)
         if backup_to_vault and VAULT_AVAILABLE:
             try:
@@ -277,10 +302,33 @@ class DataIngestion:
                 self.warnings.append(f"Vault backup failed: {e}")
         
         try:
-            reader = csv.DictReader(io.StringIO(csv_content))
+            # Automated Delimiter & Format Detection
+            sample = csv_content[:4096]
+            if not sample:
+                return {"success": False, "error": "CSV content is empty"}
+                
+            try:
+                dialect = csv.Sniffer().sniff(sample, delimiters=[',', ';', '\t', '|'])
+            except Exception:
+                # Fallback to comma if detection fails
+                dialect = csv.excel
+                
+            reader = csv.DictReader(io.StringIO(csv_content), dialect=dialect)
+            
+            # Header Cleaning: Trim whitespace and normalize case
+            original_headers = reader.fieldnames
+            if not original_headers:
+                return {"success": False, "error": "Could not extract headers from CSV"}
+                
+            clean_headers = [h.strip().lower() for h in original_headers]
+            
+            # Re-read with normalized headers to simplify mapping
+            reader = csv.DictReader(io.StringIO(csv_content), fieldnames=clean_headers, dialect=dialect)
+            next(reader) # Skip original header row
+            
             rows = list(reader)
         except Exception as e:
-            return {"success": False, "error": f"CSV parse error: {e}"}
+            return {"success": False, "error": f"CSV parse/repair error: {e}"}
         
         if not rows:
             return {"success": False, "error": "CSV is empty"}
@@ -301,6 +349,7 @@ class DataIngestion:
                 normalized = self._map_row(row, mapping, data_type, date_format)
                 if normalized:
                     normalized["company_id"] = self.company_id
+                    normalized["batch_id"] = self.current_batch_id # Traceability tag
                     normalized_rows.append(normalized)
             except Exception as e:
                 self.errors.append(f"Row {i+1}: {e}")
@@ -310,6 +359,21 @@ class DataIngestion:
         if normalized_rows:
             self._batch_insert(data_type, normalized_rows)
         
+        # Create final Audit Receipt
+        receipt = None
+        if self.auditor:
+            receipt = self.auditor.generate_receipt(
+                batch_id=self.current_batch_id,
+                data_type=data_type,
+                source=source,
+                input_row_count=len(rows),
+                success_count=self.stats["inserted"],
+                error_count=self.stats["errors"],
+                checksum=checksum,
+                errors=self.errors,
+                filename=filename if 'filename' in locals() else None
+            )
+
         result = {
             "success": True,
             "stats": self.stats,
@@ -324,6 +388,14 @@ class DataIngestion:
                 "vault_id": vault_info.get("vault_id"),
                 "encrypted": vault_info.get("encrypted", False),
                 "timestamp": vault_info.get("timestamp")
+            }
+        
+        # Add audit info
+        if receipt:
+            result["audit_receipt"] = {
+                "batch_id": receipt.batch_id,
+                "status": receipt.status,
+                "success_rate": f"{(receipt.success_count / receipt.input_row_count * 100):.1f}%" if receipt.input_row_count > 0 else "0%"
             }
         
         return result

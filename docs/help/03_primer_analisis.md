@@ -25,17 +25,50 @@ Al entrar por primera vez, verás tres secciones principales:
 | **Inversión total** | Lo que has gastado en publicidad (si conectaste Meta/Google) |
 | **Ventas atribuidas** | Ventas que Tactics atribuye a esa publicidad |
 | **ROAS** | Retorno por cada euro invertido (ej: ROAS 3x = 3€ por cada 1€) |
+| **POAS** | El beneficio real (Ingreso - Coste Producto) por cada euro invertido. |
 
-**Acción rápida**: Si un canal tiene ROAS < 1, estás perdiendo dinero ahí.
+**Acción rápida**: Si un canal tiene ROAS < 1, estás perdiendo dinero ahí. Prioriza canales con **alto POAS** incluso si su ROAS parece menor.
 
-### 3. Productos Destacados 📦
+### 2.1 Inteligencia 2.0: Más allá de los números 🧠
+
+Tactics no solo te da números, te da **razonamientos**.
+
+*   **Razones de Refuerzo**: En las tarjetas de LTV, verás un texto que explica *por qué* la IA ha ajustado un valor (ej: "Ajustado por patrón de retención positivo"). Lee esto para entender el "instinto" del algoritmo.
+*   **Afinidad de Cesta**: Mira qué productos se compran juntos. Si el **Item A** tiene un fuerte vínculo con el **Item B**, crea una oferta combinada.
+
+---
+
+## Paso 0: Interpretando el Sandbox (Diagnóstico Rápido)
+
+Si vienes de subir un CSV en el Sandbox, tu dashboard será una versión simplificada:
+1. **Concentración de Pareto**: Si el 20% de tus clientes hace más del 60% de tus ventas, tu negocio es muy dependiente. ¡Cuidado con el riesgo de fuga!
+2. **Afinidad de Cesta**: Los primeros pares de productos que veas son tus mejores candidatos para "cross-selling" inmediato.
 
 | Métrica | Qué significa |
 |---------|---------------|
 | **Top rentables** | Productos que más beneficio generan |
 | **Productos con pérdida** | Productos que te cuestan dinero (si tienes costes cargados) |
 
-**Acción rápida**: Evita promocionar productos con pérdida.
+---
+
+## He visto mis resultados en el Sandbox... ¿ahora qué?
+
+El diagnóstico es solo el principio. Aquí tienes 3 acciones inmediatas que puedes tomar hoy mismo basadas en lo que has visto:
+
+### 1. Activa tu "Afinidad de Cesta" (Cross-selling)
+Si Tactics ha detectado que el **Producto A** y el **Producto B** tienen un **Lift > 2.0**:
+- **Acción**: Crea un "Bundle" o pack con descuento en tu tienda (ej. Shopify Bundles).
+- **Resultado**: Aumento inmediato del Ticket Medio (AOV).
+
+### 2. Protege tu "Pareto" (VIPS en Riesgo)
+Si tu **Concentración de Pareto** es alta (>60%) y ves clientes en la zona de riesgo:
+- **Acción**: Exporta esa lista de emails y crea una campaña de "Win-back" en Klaviyo o Mailchimp con una oferta que no puedan rechazar.
+- **Resultado**: Reducción drástica del Churn y protección de tus ingresos principales.
+
+### 3. Ejecuta el "Corte POAS" (Eficiencia Publicitaria)
+Si has visto que un canal tiene un **POAS bajo** comparado con otros:
+- **Acción**: Reduce un 15% el presupuesto de ese canal y muévelo al canal con mayor POAS.
+- **Resultado**: Más beneficio neto con la misma inversión total.
 
 ---
 

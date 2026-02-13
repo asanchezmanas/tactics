@@ -1,0 +1,163 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ 'Tactics - Frequently Asked Questions' if locale == 'en' else 'Tactics - Preguntas Frecuentes' }}{%
+endblock %}
+
+{% block head %}
+<style>
+    details>summary {
+        list-style: none;
+    }
+
+    details>summary::-webkit-details-marker {
+        display: none;
+    }
+
+    details[open] summary .expand-icon {
+        transform: rotate(180deg);
+    }
+
+    details[open] .accordion-content {
+        animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block nav %}
+{% include 'partials/nav_public.html' %}
+{% endblock %}
+
+{% block main_class %}flex-grow pt-32 pb-24 lg:pt-40{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 mb-6">
+            <span class="flex h-1.5 w-1.5 rounded-full bg-primary"></span>
+            <span class="text-[11px] font-bold text-primary tracking-widest uppercase">{{ 'Support center' if locale ==
+                'en' else 'Centro de Soporte' }}</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-display font-bold tracking-tight text-text-main mb-6">
+            {{ 'How can we ' if locale == 'en' else '¿Cómo podemos ' }}<span class="text-primary">{{ 'help you?' if
+                locale == 'en' else 'ayudarle?' }}</span>
+        </h1>
+        <p class="text-lg text-text-muted max-w-2xl mx-auto leading-relaxed font-light">
+            {{ 'Explore our knowledge base on technical integration, statistical methodology, and experiment
+            management.' if locale == 'en' else 'Explore nuestra base de conocimiento sobre integración técnica,
+            metodología estadística y gestión de experimentos.' }}
+        </p>
+    </div>
+
+    <div class="space-y-12">
+        <!-- Section: General -->
+        <section>
+            <div class="flex items-center gap-4 mb-6">
+                <h2 class="text-sm font-bold text-text-dim uppercase tracking-widest">{{ 'General & Methodology' if
+                    locale == 'en' else 'General & Metodología' }}</h2>
+                <div class="h-px bg-border-light flex-grow"></div>
+            </div>
+            <div class="divide-y divide-border-light border-y border-border-light">
+                <details class="group">
+                    <summary
+                        class="flex justify-between items-center cursor-pointer py-6 pr-4 hover:bg-surface-highlight/50 transition-colors rounded-lg -mx-4 px-4">
+                        <h3 class="text-base font-bold text-text-main group-hover:text-primary transition-colors">
+                            {{ 'What sets Tactics apart from other attribution tools?' if locale == 'en' else '¿Qué
+                            diferencia a Tactics de otras herramientas de atribución?' }}
+                        </h3>
+                        <span
+                            class="w-10 h-10 flex items-center justify-center rounded-full bg-surface border border-border-light text-text-muted group-hover:border-primary group-hover:text-primary transition-all duration-300 expand-icon">
+                            <span class="material-symbols-outlined text-xl">keyboard_arrow_down</span>
+                        </span>
+                    </summary>
+                    <div class="accordion-content pb-8 pr-8 pl-4">
+                        <p class="text-text-muted leading-relaxed font-light text-lg">
+                            {{ 'While other systems analyze the past (classic attribution), ' if locale == 'en' else
+                            'Mientras otros sistemas analizan el pasado (atribución clásica), ' }}<strong
+                                class="text-text-main font-semibold">{{ 'Tactics anticipates the future' if locale ==
+                                'en' else 'Tactics anticipa el futuro' }}</strong>{{ '. We employ Bayesian inference to
+                            reveal true causality, not just superficial correlation. This allowing you to simulate
+                            scenarios and predict precise results before any budget reallocation.' if locale == 'en'
+                            else '. Empleamos inferencia Bayesiana para desvelar la causalidad real, no solo la
+                            correlación superficial. Esto le permite simular escenarios y predecir resultados precisos
+                            ante cualquier reasignación de presupuesto.' }}
+                        </p>
+                    </div>
+                </details>
+                <details class="group">
+                    <summary
+                        class="flex justify-between items-center cursor-pointer py-6 pr-4 hover:bg-surface-highlight/50 transition-colors rounded-lg -mx-4 px-4">
+                        <h3 class="text-base font-bold text-text-main group-hover:text-primary transition-colors">
+                            {{ 'What is the statistical rigor of the models?' if locale == 'en' else '¿Cuál es el rigor
+                            estadístico de los modelos?' }}
+                        </h3>
+                        <span
+                            class="w-10 h-10 flex items-center justify-center rounded-full bg-surface border border-border-light text-text-muted group-hover:border-primary group-hover:text-primary transition-all duration-300 expand-icon">
+                            <span class="material-symbols-outlined text-xl">keyboard_arrow_down</span>
+                        </span>
+                    </summary>
+                    <div class="accordion-content pb-8 pr-8 pl-4">
+                        <p class="text-text-muted leading-relaxed font-light text-lg">
+                            {{ 'Our methodology is based on ' if locale == 'en' else 'Nuestra metodología se sustenta en
+                            modelos ' }}<strong class="text-text-main font-semibold">BG/NBD {{ 'and' if locale == 'en'
+                                else 'y' }} Gamma-Gamma</strong>{{ ' models for LTV, along with Hill saturation
+                            functions for MMM. We don\'t deliver statistical averages; each prediction includes ' if
+                            locale == 'en' else ' para LTV, junto con funciones de saturación Hill para MMM. No
+                            entregamos promedios estáticos; cada predicción incluye ' }}<strong
+                                class="text-text-main font-semibold">{{ '90% confidence intervals' if locale == 'en'
+                                else 'intervalos de confianza del 90%' }}</strong>{{ ', validated through rigorous
+                            holdout testing.' if locale == 'en' else ', validados mediante pruebas de holdout
+                            rigurosas.' }}
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- Section: Planes -->
+        <section>
+            <div class="flex items-center gap-4 mb-6">
+                <h2 class="text-sm font-bold text-text-dim uppercase tracking-widest">{{ 'Plans & Billing' if locale ==
+                    'en' else 'Planes & Facturación' }}</h2>
+                <div class="h-px bg-border-light flex-grow"></div>
+            </div>
+            <div class="divide-y divide-border-light border-y border-border-light">
+                <details class="group">
+                    <summary
+                        class="flex justify-between items-center cursor-pointer py-6 pr-4 hover:bg-surface-highlight/50 transition-colors rounded-lg -mx-4 px-4">
+                        <h3 class="text-base font-bold text-text-main group-hover:text-primary transition-colors">
+                            {{ 'Can I try the elite version before committing?' if locale == 'en' else '¿Puedo probar la
+                            versión elite antes de comprometerme?' }}
+                        </h3>
+                        <span
+                            class="w-10 h-10 flex items-center justify-center rounded-full bg-surface border border-border-light text-text-muted group-hover:border-primary group-hover:text-primary transition-all duration-300 expand-icon">
+                            <span class="material-symbols-outlined text-xl">keyboard_arrow_down</span>
+                        </span>
+                    </summary>
+                    <div class="accordion-content pb-8 pr-8 pl-4">
+                        <p class="text-text-muted leading-relaxed font-light text-lg">
+                            {{ 'Yes, we offer a 14-day dedicated pilot for businesses that meet our data volume
+                            requirements. During the pilot, you will have access to all Elite features including the MMM
+                            engine and LTV predictor.' if locale == 'en' else 'Sí, ofrecemos un piloto dedicado de 14
+                            días para negocios que cumplen con nuestros requisitos de volumen de datos. Durante el
+                            piloto, tendrás acceso a todas las funciones Elite, incluyendo el motor MMM y el predictor
+                            de LTV.' }}
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

@@ -80,6 +80,18 @@ Paradójicamente, esta limitación ha impulsado metodologías más robustas: en 
 
 ---
 
+## LTV 2.0: El Salto a la Inteligencia Profunda
+
+En Tactics, hemos llevado el cálculo del LTV más allá de los modelos estadísticos tradicionales (como Pareto/NBD). Con la llegada de **Intelligence 2.0**, introducimos dos tecnologías disruptivas:
+
+### 1. El Olvido Inteligente (LSTM)
+A diferencia de las fórmulas que dan el mismo peso a todas las compras, nuestra IA utiliza redes **LSTM (Long Short-Term Memory)**. Estas redes son capaces de entender que una compra realizada hace un año puede ser menos relevante que un cambio repentino en el comportamiento del mes pasado.
+
+### 2. Capas de Atención (Attention Layers)
+Nuestra IA no mira tus datos como una masa uniforme. Utiliza "Capas de Atención" para iluminar eventos críticos: esa campaña de Black Friday que atrajo a clientes de alta calidad o aquel periodo de hibernación de un cliente VIP. La IA "presta atención" a lo que realmente importa para predecir el futuro con una precisión del 92%.
+
+---
+
 ## Conclusión
 
 El Customer Lifetime Value representa un cambio de paradigma: de pensar en ventas a pensar en relaciones; de optimizar transacciones a optimizar el valor acumulado en el tiempo.

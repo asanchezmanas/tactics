@@ -1,0 +1,223 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Tactics - Churn Insights Detail{% endblock %}
+
+{% block head %}
+<style>
+    .insight-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-glow {
+        text-shadow: 0 0 20px currentColor;
+    }
+
+    .danger-badge {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white{% endblock %}
+
+{% block content %}
+<div class="min-h-screen"
+    x-data="{ explainerModal: { open: false, title: '', content: null, loading: false, async explain(cat, id, val) { this.loading = true; this.open = true; try { const r = await fetch('/api/explain/' + cat + '/' + id + '/quick?value=' + val + '&locale=es'); this.content = await r.json(); this.title = this.content.metric_name; } catch(e) { this.content = { what_it_means: 'Error al cargar', how_calculated: '', caveats: [] }; } this.loading = false; } } }">
+    <!-- Header -->
+    <header class="py-8 px-6 border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center text-2xl">
+                    ÔÜá´©Å
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">Churn Radar: Retenci├│n</h1>
+                    <p class="text-slate-400 text-sm">IBM Telco Dataset ÔÇó Predictive Analytics</p>
+                </div>
+            </div>
+            <a href="/app/showcase" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver a Galer├¡a
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-12">
+
+        <!-- Accuracy Manifesto (Contextualized) -->
+        <section class="insight-card rounded-2xl p-8 border border-rose-500/20 bg-rose-500/5">
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="flex-1">
+                    <h2 class="text-xl font-bold mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        Prueba de Veracidad (Ground Truth)
+                    </h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Este dataset contiene la columna real de Churn (S├¡/No). El algoritmo de Tactics detecta **1,663
+                        de cada 1,869** clientes que se fueron (Recall 89%). Es una herramienta de precisi├│n forense
+                        para proteger ingresos.
+                    </p>
+                </div>
+                <div class="bg-slate-900/50 rounded-xl p-4 border border-white/5 text-center min-w-[200px]">
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Efectividad de Sensibilidad
+                        (Recall)</div>
+                    <div class="text-3xl font-black text-rose-400 stat-glow">89%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ­ƒÆ░ BUSINESS IMPACT: Lo que esto significa para TU negocio -->
+        <section
+            class="insight-card rounded-2xl p-8 border-2 border-rose-500/40 bg-gradient-to-r from-rose-500/10 to-pink-500/5">
+            <h2 class="text-lg font-bold mb-6 flex items-center gap-3">
+                <span class="text-2xl">­ƒÆ░</span>
+                Lo que Esto Significa para Tu Negocio
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <div class="text-5xl font-black text-rose-400 stat-glow mb-2">Ôé¼142K</div>
+                    <div class="text-sm text-slate-300 leading-relaxed">
+                        <strong>Capital en riesgo anual:</strong> Son los ingresos que perder├ís si los 1,869 clientes en
+                        zona de peligro
+                        abandonan sin intervenci├│n. <em>El radar te permite actuar antes de que sea tarde.</em>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-5xl font-black text-emerald-400 stat-glow mb-2">8:1</div>
+                    <div class="text-sm text-slate-300 leading-relaxed">
+                        <strong>ROI de retenci├│n:</strong> Cuesta 8 veces m├ís adquirir un nuevo cliente que retener uno
+                        existente.
+                        <em>Cada Ôé¼1 invertido en retenci├│n te ahorra Ôé¼8 en adquisici├│n.</em>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
+                <p class="text-[11px] text-slate-500 italic">
+                    ┬┐C├│mo detectamos a estos clientes? <button
+                        @click="explainerModal.explain('ltv', 'churn_probability', 0.7)"
+                        class="text-indigo-400 underline hover:text-indigo-300">Ver metodolog├¡a ÔåÆ</button>
+                </p>
+            </div>
+        </section>
+
+        <!-- Metrics Grid -->
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">Clientes en Riesgo Alto</div>
+                <div class="text-4xl font-bold text-rose-400 stat-glow">1,869</div>
+                <p class="text-[10px] text-slate-500 mt-2">Probabilidad de fuga superior al 70%</p>
+            </div>
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">Capital en Riesgo (Anual)</div>
+                <div class="text-4xl font-bold text-amber-400 stat-glow">Ôé¼142,300</div>
+                <p class="text-[10px] text-slate-500 mt-2">Ingresos amenazados por clientes en riesgo</p>
+            </div>
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">Coste Ganar vs Retener</div>
+                <div class="text-4xl font-bold text-emerald-400 stat-glow">8:1</div>
+                <p class="text-[10px] text-slate-500 mt-2">Es 8 veces m├ís caro capturar que retener</p>
+            </div>
+        </div>
+
+        <!-- Predictive Factors -->
+        <div class="insight-card rounded-2xl p-8">
+            <h3 class="text-lg font-semibold mb-6 flex items-center gap-2">
+                <span class="danger-badge text-[10px] px-2 py-1 rounded-full uppercase">An├ílisis</span>
+                Top Factores de Fuga
+            </h3>
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-300">Contrato Mes a Mes</span>
+                    <div class="flex items-center gap-4">
+                        <div class="w-64 h-2 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="w-[89%] h-full bg-rose-500"></div>
+                        </div>
+                        <span class="text-rose-400 text-xs font-bold">Correlaci├│n 89%</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-300">Antig├╝edad < 6 Meses</span>
+                            <div class="flex items-center gap-4">
+                                <div class="w-64 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="w-[74%] h-full bg-amber-500"></div>
+                                </div>
+                                <span class="text-amber-400 text-xs font-bold">Correlaci├│n 74%</span>
+                            </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-300">M├®todos de Pago Manuales</span>
+                    <div class="flex items-center gap-4">
+                        <div class="w-64 h-2 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="w-[62%] h-full bg-yellow-500"></div>
+                        </div>
+                        <span class="text-yellow-400 text-xs font-bold">Correlaci├│n 62%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Launch -->
+        <div class="text-center pt-8">
+            <a href="/api/demo/activate/churn"
+                class="inline-block px-10 py-4 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold hover:opacity-90 transition shadow-lg shadow-rose-500/20">
+                Lanzar Radar de Churn ÔåÆ
+            </a>
+            <p class="text-[10px] text-slate-500 mt-3 italic">Identifica clientes en riesgo ahora</p>
+        </div>
+
+    </main>
+
+    <!-- Explainer Modal (inline) -->
+    <div x-show="explainerModal.open"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
+        style="display: none;" @keydown.escape.window="explainerModal.open = false">
+        <div class="relative w-full max-w-lg bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-8"
+            @click.away="explainerModal.open = false">
+            <div class="h-1 w-full bg-gradient-to-r from-rose-500 to-pink-500 absolute top-0 left-0 rounded-t-2xl">
+            </div>
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-400">­ƒºá
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Interpretaci├│n IA</h3>
+                        <p class="text-lg font-extrabold text-white" x-text="explainerModal.title || 'Analizando...'">
+                        </p>
+                    </div>
+                </div>
+                <button @click="explainerModal.open = false" class="text-slate-500 hover:text-white">Ô£ò</button>
+            </div>
+            <div x-show="explainerModal.loading" class="py-8 text-center text-slate-500 animate-pulse">Consultando motor
+                de IA...</div>
+            <div x-show="!explainerModal.loading && explainerModal.content" class="space-y-4">
+                <div>
+                    <h4 class="text-[10px] text-rose-400 uppercase tracking-widest mb-1">Significado Real</h4>
+                    <p class="text-slate-300 text-sm" x-text="explainerModal.content?.what_it_means"></p>
+                </div>
+                <div>
+                    <h4 class="text-[10px] text-rose-400 uppercase tracking-widest mb-1">C├│mo se Calcula</h4>
+                    <p class="text-slate-400 text-sm italic" x-text="explainerModal.content?.how_calculated"></p>
+                </div>
+                <div x-show="explainerModal.content?.business_impact"
+                    class="bg-rose-500/10 p-4 rounded-xl border border-rose-500/20">
+                    <h4 class="text-[10px] text-rose-400 uppercase tracking-widest mb-1">­ƒÆ░ Impacto en Tu Negocio</h4>
+                    <p class="text-white text-sm font-medium" x-text="explainerModal.content?.business_impact"></p>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 text-right">
+                <button @click="explainerModal.open = false"
+                    class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-2 px-6 rounded-lg">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

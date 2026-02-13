@@ -1,0 +1,209 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Tactics - SaaS LTV InsightsDetail{% endblock %}
+
+{% block head %}
+<style>
+    .insight-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-glow {
+        text-shadow: 0 0 20px currentColor;
+    }
+
+    .indigo-badge {
+        background: linear-gradient(135deg, #6366f1, #4338ca);
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white{% endblock %}
+
+{% block content %}
+<div class="min-h-screen"
+    x-data="{ explainerModal: { open: false, title: '', content: null, loading: false, async explain(cat, id, val) { this.loading = true; this.open = true; try { const r = await fetch('/api/explain/' + cat + '/' + id + '/quick?value=' + val + '&locale=es'); this.content = await r.json(); this.title = this.content.metric_name; } catch(e) { this.content = { what_it_means: 'Error al cargar', how_calculated: '', caveats: [] }; } this.loading = false; } } }">
+    <!-- Header -->
+    <header class="py-8 px-6 border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-2xl">
+                    ­ƒÜÇ
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">SaaS LTV & Cohorts</h1>
+                    <p class="text-slate-400 text-sm">B2B Subscription Dataset ÔÇó Growth Economics</p>
+                </div>
+            </div>
+            <a href="/app/showcase" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver a Galer├¡a
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-12">
+
+        <!-- Accuracy Manifesto (Contextualized) -->
+        <section class="insight-card rounded-2xl p-8 border border-indigo-500/20 bg-indigo-500/5">
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="flex-1">
+                    <h2 class="text-xl font-bold mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Prueba de Veracidad (Ground Truth)
+                    </h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Validamos la proyecci├│n LTV compar├índola con las cohortes reales de 24 meses. El margen de error
+                        en la predicci├│n de Net Revenue Retention (NRR) es inferior al 3%.
+                    </p>
+                </div>
+                <div class="bg-slate-900/50 rounded-xl p-4 border border-white/5 text-center min-w-[200px]">
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precisi├│n de Proyecci├│n</div>
+                    <div class="text-3xl font-black text-indigo-400 stat-glow">97.2%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ­ƒÆ░ BUSINESS IMPACT -->
+        <section
+            class="insight-card rounded-2xl p-8 border-2 border-indigo-500/40 bg-gradient-to-r from-indigo-500/10 to-purple-500/5">
+            <h2 class="text-lg font-bold mb-6 flex items-center gap-3">
+                <span class="text-2xl">­ƒÆ░</span>
+                Lo que Esto Significa para Tu SaaS
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <div class="text-5xl font-black text-emerald-400 stat-glow mb-2">4.2x</div>
+                    <div class="text-sm text-slate-300 leading-relaxed">
+                        <strong>LTV/CAC Ratio:</strong> Por cada Ôé¼1 que gastas en adquirir un cliente,
+                        recuperas Ôé¼4.2 en su vida ├║til. <em>Tienes licencia para escalar agresivamente.</em>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-5xl font-black text-indigo-400 stat-glow mb-2">Mes 8</div>
+                    <div class="text-sm text-slate-300 leading-relaxed">
+                        <strong>Meseta de Fidelidad:</strong> Despu├®s del mes 8, el churn se estabiliza casi a cero.
+                        <em>Tu prioridad # 1 debe ser sobrevivir los primeros 8 meses con cada cliente.</em>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-white/10">
+                <p class="text-[11px] text-slate-500 italic">
+                    ┬┐C├│mo proyectamos el LTV? <button @click="explainerModal.explain('ltv', 'clv', 4200)"
+                        class="text-indigo-400 underline hover:text-indigo-300">Ver metodolog├¡a ÔåÆ</button>
+                </p>
+            </div>
+        </section>
+
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">LTV / CAC Ratio</div>
+                <div class="text-4xl font-bold text-emerald-400 stat-glow">4.2x</div>
+                <p class="text-[10px] text-slate-500 mt-2">Eficiencia de captaci├│n de capital</p>
+            </div>
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">Current NRR</div>
+                <div class="text-4xl font-bold text-indigo-400 stat-glow">104%</div>
+                <p class="text-[10px] text-slate-500 mt-2">Net Revenue Retention (Net Churn Negativo)</p>
+            </div>
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">Churn Mensual (MRR)</div>
+                <div class="text-4xl font-bold text-rose-400 stat-glow">2.8%</div>
+                <p class="text-[10px] text-slate-500 mt-2">Tasa de cancelaci├│n recurrente</p>
+            </div>
+        </div>
+
+        <!-- Cohort Insights -->
+        <div class="insight-card rounded-2xl p-8">
+            <h3 class="text-lg font-semibold mb-6 flex items-center gap-2">
+                <span class="indigo-badge text-[10px] px-2 py-1 rounded-full uppercase">An├ílisis</span>
+                An├ílisis de Cohortes (Retention)
+            </h3>
+            <div class="h-48 flex items-end gap-1 px-4">
+                <div class="flex-1 bg-indigo-500/80 rounded-t-sm h-[100%]"></div>
+                <div class="flex-1 bg-indigo-500/70 rounded-t-sm h-[92%]"></div>
+                <div class="flex-1 bg-indigo-500/60 rounded-t-sm h-[88%]"></div>
+                <div class="flex-1 bg-indigo-500/50 rounded-t-sm h-[85%]"></div>
+                <div class="flex-1 bg-indigo-500/40 rounded-t-sm h-[82%]"></div>
+                <div class="flex-1 bg-indigo-500/30 rounded-t-sm h-[80%]"></div>
+                <div class="flex-1 bg-indigo-500/25 rounded-t-sm h-[78%]"></div>
+                <div class="flex-1 bg-indigo-500/20 rounded-t-sm h-[77%]"></div>
+                <div class="flex-1 bg-indigo-500/15 rounded-t-sm h-[76%]"></div>
+                <div class="flex-1 bg-indigo-500/10 rounded-t-sm h-[75%]"></div>
+            </div>
+            <div class="flex justify-between mt-4 text-[10px] text-slate-500 px-4 uppercase tracking-tighter">
+                <span>Mes 1</span>
+                <span>Mes 12</span>
+            </div>
+            <p class="text-sm text-slate-400 mt-6 italic text-center">
+                Tactics detecta una "meseta de fidelidad" a partir del mes 8, donde el churn se detiene casi por
+                completo.
+            </p>
+        </div>
+
+        <!-- CTA Launch -->
+        <div class="text-center pt-8">
+            <a href="/api/demo/activate/saas_ltv"
+                class="inline-block px-10 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold hover:opacity-90 transition shadow-lg shadow-indigo-500/20">
+                Ver M├®tricas SaaS ÔåÆ
+            </a>
+            <p class="text-[10px] text-slate-500 mt-3 italic">Calcula NRR y LTV autom├íticamente</p>
+        </div>
+
+    </main>
+
+    <!-- Explainer Modal -->
+    <div x-show="explainerModal.open"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
+        style="display: none;" @keydown.escape.window="explainerModal.open = false">
+        <div class="relative w-full max-w-lg bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-8"
+            @click.away="explainerModal.open = false">
+            <div class="h-1 w-full bg-gradient-to-r from-indigo-500 to-purple-500 absolute top-0 left-0 rounded-t-2xl">
+            </div>
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">­ƒºá
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Interpretaci├│n IA</h3>
+                        <p class="text-lg font-extrabold text-white" x-text="explainerModal.title || 'Analizando...'">
+                        </p>
+                    </div>
+                </div>
+                <button @click="explainerModal.open = false" class="text-slate-500 hover:text-white">Ô£ò</button>
+            </div>
+            <div x-show="explainerModal.loading" class="py-8 text-center text-slate-500 animate-pulse">Consultando motor
+                de IA...</div>
+            <div x-show="!explainerModal.loading && explainerModal.content" class="space-y-4">
+                <div>
+                    <h4 class="text-[10px] text-indigo-400 uppercase tracking-widest mb-1">Significado Real</h4>
+                    <p class="text-slate-300 text-sm" x-text="explainerModal.content?.what_it_means"></p>
+                </div>
+                <div>
+                    <h4 class="text-[10px] text-indigo-400 uppercase tracking-widest mb-1">C├│mo se Calcula</h4>
+                    <p class="text-slate-400 text-sm italic" x-text="explainerModal.content?.how_calculated"></p>
+                </div>
+                <div x-show="explainerModal.content?.business_impact"
+                    class="bg-indigo-500/10 p-4 rounded-xl border border-indigo-500/20">
+                    <h4 class="text-[10px] text-indigo-400 uppercase tracking-widest mb-1">­ƒÆ░ Impacto en Tu Negocio</h4>
+                    <p class="text-white text-sm font-medium" x-text="explainerModal.content?.business_impact"></p>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 text-right">
+                <button @click="explainerModal.open = false"
+                    class="bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold py-2 px-6 rounded-lg">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,298 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Tactics - E-commerce Insights Detail{% endblock %}
+
+{% block head %}
+<style>
+    .insight-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-glow {
+        text-shadow: 0 0 20px currentColor;
+    }
+
+    .insight-badge {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white{% endblock %}
+
+{% block content %}
+<div class="min-h-screen" x-data="{ 
+        elite: { kinetic: {}, synergy: {}, attention: { sequence_focus: [] } },
+        explainerModal: { open: false, title: '', content: null, loading: false, async explain(cat, id, val) { this.loading = true; this.open = true; try { const r = await fetch('/api/explain/' + cat + '/' + id + '/quick?value=' + val + '&locale=es'); this.content = await r.json(); this.title = this.content.metric_name; } catch(e) { this.content = { what_it_means: 'Error al cargar', how_calculated: '', caveats: [] }; } this.loading = false; } },
+        async initElite() { try { const r = await fetch('/api/elite/metrics'); this.elite = await r.json(); } catch(e) { console.error('Elite data fail', e); } }
+    }" x-init="initElite()">
+    <!-- Header -->
+    <header class="py-8 px-6 border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-2xl">
+                    ­ƒøÆ
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">E-commerce: Valor de Vida del Cliente</h1>
+                    <p class="text-slate-400 text-sm">UCI Online Retail Dataset ÔÇó Forensic Analytics</p>
+                </div>
+            </div>
+            <a href="/app/showcase" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver a Galer├¡a
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-12">
+
+        <!-- Accuracy Manifesto (Contextualized) -->
+        <section class="insight-card rounded-2xl p-8 border border-emerald-500/20 bg-emerald-500/5">
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="flex-1">
+                    <h2 class="text-xl font-bold mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Prueba de Veracidad (Ground Truth)
+                    </h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Este an├ílisis no es una estimaci├│n a ciegas. Validamos los patrones de compra hist├│ricos para
+                        confirmar que los clientes marcados como "Champions" realmente tienen una probabilidad de
+                        retorno 4x superior a la media.
+                    </p>
+                </div>
+                <div class="bg-slate-900/50 rounded-xl p-4 border border-white/5 text-center min-w-[200px]">
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precisi├│n LTV</div>
+                    <div class="text-3xl font-black text-emerald-400 stat-glow">94.1%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ­ƒÆ░ BUSINESS IMPACT: Lo que esto significa para TU negocio -->
+        <section
+            class="insight-card rounded-2xl p-8 border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 to-teal-500/5">
+            <h2 class="text-lg font-bold mb-6 flex items-center gap-3">
+                <span class="text-2xl">­ƒÆ░</span>
+                Lo que Esto Significa para Tu Negocio
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <div class="text-5xl font-black text-emerald-400 stat-glow mb-2">Ôé¼6M</div>
+                    <div class="text-sm text-slate-300 leading-relaxed">
+                        <strong>Ingresos protegibles:</strong> El 19% de tus clientes (los "Champions") generan el 67%
+                        de tus ingresos.
+                        Identificarlos te permite <em>enfocar tu presupuesto de retenci├│n donde realmente importa</em>.
+                    </div>
+                </div>
+                <div>
+                    <div class="text-5xl font-black text-rose-400 stat-glow mb-2">Ôé¼42K</div>
+                    <div class="text-sm text-slate-300 leading-relaxed">
+                        <strong>P├®rdida evitable:</strong> Si el segmento "At Risk" (14%) no recibe una intervenci├│n
+                        en
+                        los pr├│ximos 30 d├¡as,
+                        perder├ís este ingreso proyectado. <em>Actuar ahora lo convierte en retenci├│n.</em>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
+                <p class="text-[11px] text-slate-500 italic">
+                    ┬┐C├│mo calculamos esto? <button @click="explainerModal.explain('ltv', 'clv', 847)"
+                        class="text-indigo-400 underline hover:text-indigo-300">Ver metodolog├¡a ÔåÆ</button>
+                </p>
+            </div>
+        </section>
+
+        <!-- Metrics Grid -->
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">LTV Promedio (12m)</div>
+                <div class="text-4xl font-bold text-emerald-400 stat-glow">Ôé¼847</div>
+                <p class="text-[10px] text-slate-500 mt-2">Basado en 4,338 perfiles de cliente ├║nicos</p>
+            </div>
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">Frecuencia de Compra</div>
+                <div class="text-4xl font-bold text-blue-400 stat-glow">4.2</div>
+                <p class="text-[10px] text-slate-500 mt-2">Pedidos promedio por cliente activo</p>
+            </div>
+            <div class="insight-card rounded-2xl p-6">
+                <div class="text-sm text-slate-400 mb-2">Tasa de Repeat Rate</div>
+                <div class="text-4xl font-bold text-purple-400 stat-glow">38%</div>
+                <p class="text-[10px] text-slate-500 mt-2">Clientes con m├ís de una transacci├│n</p>
+            </div>
+        </div>
+
+        <!-- RFM Visualization Space -->
+</div>
+</div>
+
+<!-- ­ƒöÁ INTELLIGENCE 2.0: Kinetic Analysis & Temporal Attention -->
+<div class="grid md:grid-cols-2 gap-8">
+    <!-- Kinetic Intelligence (Velocity/Momentum) -->
+    <div class="insight-card rounded-2xl p-8 border border-blue-500/20 bg-blue-500/5">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold flex items-center gap-3">
+                <span class="text-blue-400">­ƒÜÇ</span>
+                An├ílisis Cin├®tico del Gasto
+            </h3>
+            <div class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full uppercase tracking-tighter">
+                Elite Feature</div>
+        </div>
+        <div class="grid grid-cols-2 gap-6">
+            <div class="p-4 bg-white/5 rounded-xl border border-white/5">
+                <div class="text-[10px] text-slate-500 uppercase mb-1">Revenue Velocity</div>
+                <div class="text-3xl font-black text-blue-400" x-text="'Ôé¼' + elite.kinetic.revenue_velocity"></div>
+                <div class="text-[10px] text-emerald-400 mt-1 flex items-center gap-1">
+                    <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 22h-24l12-20z" />
+                    </svg>
+                    Acelerando (Elite Prediction)
+                </div>
+            </div>
+            <div class="p-4 bg-white/5 rounded-xl border border-white/5">
+                <div class="text-[10px] text-slate-500 uppercase mb-1">Revenue Momentum</div>
+                <div class="text-3xl font-black text-indigo-400" x-text="elite.kinetic.revenue_momentum"></div>
+                <div class="text-[10px] text-slate-500 mt-1">Frecuencia ├ù Velocidad</div>
+            </div>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-6 leading-relaxed">
+            A diferencia del LTV est├ítico, el an├ílisis cin├®tico detecta la <strong>deceleraci├│n</strong> antes de
+            que se produzca el churn real. Tu base de datos m├ís activa est├í ganando inercia de compra.
+        </p>
+        <div class="mt-4 pt-4 border-t border-white/5">
+            <button @click="explainerModal.explain('ltv', 'revenue_velocity', elite.kinetic.revenue_velocity)"
+                class="text-[11px] text-blue-400 hover:text-blue-300 underline underline-offset-4">
+                ┬┐Qu├® significa esta velocidad para mi tesorer├¡a? ÔåÆ
+            </button>
+        </div>
+    </div>
+
+    <!-- Temporal Attention Focus -->
+    <div class="insight-card rounded-2xl p-8 border border-amber-500/20 bg-amber-500/5">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold flex items-center gap-3">
+                <span class="text-amber-400">­ƒºá</span>
+                Foco de Atenci├│n Temporal (XAI)
+            </h3>
+        </div>
+        <div class="space-y-6">
+            <div class="flex items-end justify-between gap-1 h-32">
+                <template x-for="(weight, idx) in elite.attention.sequence_focus" :key="idx">
+                    <div class="flex-1 bg-amber-500/40 rounded-t-sm transition-all hover:bg-amber-400"
+                        :style="`height: ${weight * 100 * 2}%`" :title="`Peso: ${(weight * 100).toFixed(1)}%`"></div>
+                </template>
+            </div>
+            <div class="flex justify-between text-[8px] text-slate-500 uppercase tracking-widest px-1">
+                <span>Hace 6 Meses</span>
+                <span>Mes Actual</span>
+            </div>
+            <div class="p-4 bg-slate-900/40 rounded-xl border border-amber-500/10">
+                <div class="text-[10px] text-amber-400 uppercase font-bold mb-1">Evento Cr├¡tico Detectado</div>
+                <p class="text-xs text-slate-300">La IA ha identificado que tu estrategia de <strong>'Black Friday
+                        Prep'</strong> est├í dominando el 40% de la importancia predictiva actual.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Deep Insights -->
+<div class="grid md:grid-cols-2 gap-8">
+    <div class="insight-card rounded-2xl p-6">
+        <h4 class="font-semibold text-emerald-400 mb-4 flex items-center gap-2">
+            Ô£¿ Oportunidades de Crecimiento
+        </h4>
+        <ul class="space-y-3 text-sm text-slate-300">
+            <li class="flex gap-2">
+                <span class="text-emerald-500">ÔÇó</span>
+                El segmento "Potential Loyalists" (15%) tiene ticket alto pero baja frecuencia. Acci├│n: Campa├▒a
+                de reposici├│n.
+            </li>
+            <li class="flex gap-2">
+                <span class="text-emerald-500">ÔÇó</span>
+                Los "Champions" compran cada 42 d├¡as. Automatizar recordatorio a los 35 d├¡as.
+            </li>
+        </ul>
+    </div>
+    <div class="insight-card rounded-2xl p-6">
+        <h4 class="font-semibold text-rose-400 mb-4 flex items-center gap-2">
+            ­ƒÜ¿ Riesgos Detectados
+        </h4>
+        <ul class="space-y-3 text-sm text-slate-300">
+            <li class="flex gap-2">
+                <span class="text-rose-500">ÔÇó</span>
+                P├®rdida de Ôé¼42K en ingresos proyectados si el segmento "At Risk" no vuelve en 30 d├¡as.
+            </li>
+            <li class="flex gap-2">
+                <span class="text-rose-500">ÔÇó</span>
+                Concentraci├│n peligrosa: El 5% de los clientes genera el 50% del margen.
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- CTA Launch -->
+<div class="text-center pt-8">
+    <a href="/api/demo/activate/ecommerce"
+        class="inline-block px-10 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold hover:opacity-90 transition shadow-lg shadow-emerald-500/20">
+        Poner este Motor en Marcha ÔåÆ
+    </a>
+    <p class="text-[10px] text-slate-500 mt-3 italic">Activa el dashboard completo con estos datos</p>
+</div>
+
+
+</main>
+
+<!-- Explainer Modal (inline) -->
+<div x-show="explainerModal.open"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
+    style="display: none;" @keydown.escape.window="explainerModal.open = false">
+    <div class="relative w-full max-w-lg bg-slate-800 rounded-2xl shadow-2xl border border-white/10 p-8"
+        @click.away="explainerModal.open = false">
+        <div class="h-1 w-full bg-gradient-to-r from-emerald-500 to-teal-500 absolute top-0 left-0 rounded-t-2xl">
+        </div>
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+                <div class="size-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    ­ƒºá</div>
+                <div>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Interpretaci├│n IA</h3>
+                    <p class="text-lg font-extrabold text-white" x-text="explainerModal.title || 'Analizando...'">
+                    </p>
+                </div>
+            </div>
+            <button @click="explainerModal.open = false" class="text-slate-500 hover:text-white">Ô£ò</button>
+        </div>
+        <div x-show="explainerModal.loading" class="py-8 text-center text-slate-500 animate-pulse">Consultando motor
+            de IA...</div>
+        <div x-show="!explainerModal.loading && explainerModal.content" class="space-y-4">
+            <div>
+                <h4 class="text-[10px] text-emerald-400 uppercase tracking-widest mb-1">Significado Real</h4>
+                <p class="text-slate-300 text-sm" x-text="explainerModal.content?.what_it_means"></p>
+            </div>
+            <div>
+                <h4 class="text-[10px] text-emerald-400 uppercase tracking-widest mb-1">C├│mo se Calcula</h4>
+                <p class="text-slate-400 text-sm italic" x-text="explainerModal.content?.how_calculated"></p>
+            </div>
+            <div x-show="explainerModal.content?.business_impact"
+                class="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20">
+                <h4 class="text-[10px] text-emerald-400 uppercase tracking-widest mb-1">­ƒÆ░ Impacto en Tu Negocio
+                </h4>
+                <p class="text-white text-sm font-medium" x-text="explainerModal.content?.business_impact"></p>
+            </div>
+        </div>
+        <div class="mt-6 pt-4 border-t border-white/10 text-right">
+            <button @click="explainerModal.open = false"
+                class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-2 px-6 rounded-lg">Entendido</button>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

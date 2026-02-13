@@ -138,6 +138,20 @@ Tactics te indicará automáticamente si hay problemas con tus datos:
 
 ---
 
+## Inteligencia de Mapeo (Fuzzy Mapping)
+
+Una de las mayores preocupaciones al subir un archivo es: "¿Estará mi CSV en el formato correcto?".
+
+En Tactics Intelligence 2.0, el sistema no busca nombres de columna exactos. Nuestro motor de **Fuzzy Mapping** utiliza lógica semántica para identificar tus datos:
+
+- **Fecha**: Reconocemos `fecha`, `timestamp`, `order_date`, `created_at`, o incluso `día`.
+- **Cliente**: Identificamos `email`, `cliente_id`, `user_hash`, o `id_usuario`.
+- **Ventas**: Detectamos `monto`, `revenue`, `total`, `precio`, o `subtotal`.
+
+> 💡 **No importa si tu CSV tiene 50 columnas extra**: Tactics ignorará el ruido y extraerá solo lo que necesita. No necesitas limpiar tu archivo antes de subirlo.
+
+---
+
 ## Preguntas frecuentes
 
 ### "¿Tactics accede a datos bancarios o de tarjetas?"

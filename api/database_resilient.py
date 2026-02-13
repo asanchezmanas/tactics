@@ -1,4 +1,4 @@
-"""
+﻿"""
 Resilient Database Layer for Tactics
 
 Architecture:
@@ -519,6 +519,46 @@ def get_company_tokens(company_id: str) -> dict:
             data['api_key'] = _decrypt_token(data['api_key'])
             
     return tokens
+
+
+@with_retry_queue(table_name="integrations")
+def save_company_token(company_id: str, service_name: str, \
+                     access_token: str = None, api_key: str = None, \
+                     account_id: str = None, shop_url: str = None, \
+                     credentials: dict = None) -> bool:
+    """
+    Saves or updates an integration record with mandatory encryption.
+    """
+    supabase = get_supabase()
+    if not supabase:
+        raise ConnectionError("Supabase not configured")
+    
+    # Encrypt sensitive fields
+    data = {
+        "company_id": company_id,
+        "service_name": service_name,
+        "updated_at": pd.Timestamp.now().isoformat()
+    }
+    
+    if access_token:
+        data["access_token"] = _encrypt_token(access_token)
+    if api_key:
+        data["api_key"] = _encrypt_token(api_key)
+    if account_id:
+        data["account_id"] = account_id
+    if shop_url:
+        data["shop_url"] = shop_url
+    if credentials:
+        data["credentials"] = credentials # credentials are typically non-standard/complex blobs
+        
+    try:
+        supabase.table("integrations") \
+            .upsert(data) \
+            .execute()
+        return True
+    except Exception as e:
+        print(f"[DB] Failed to save token for {service_name}: {e}")
+        return False
 
 
 @with_fallback(cache_key_fn=lambda company_id: f"metrics:{company_id}", ttl_hours=1)

@@ -1,0 +1,143 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Tactics - Predicci├│n de LTV y Optimizaci├│n de Marketing{% endblock %}
+
+{% block head %}
+<style>
+    .hero-surface {
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+    }
+
+    .glass-panel {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-panel:hover {
+        border-color: #CBD5E1;
+        box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block nav %}
+{% include 'partials/nav_public.html' %}
+{% endblock %}
+
+{% block main_class %}flex-grow pt-20{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-surface pt-16 pb-24 lg:pt-32 lg:pb-40 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="text-center max-w-3xl mx-auto">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 mb-8">
+                <span class="flex h-1.5 w-1.5 rounded-full bg-primary"></span>
+                <span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase">Elite Bayesian
+                    Scaling</span>
+            </div>
+            <h1
+                class="text-4xl md:text-5xl lg:text-7xl font-display font-bold tracking-tight text-text-main mb-8 leading-[1.1]">
+                Escala tu inversi├│n con <br /><span class="text-primary font-extrabold">Certeza Estad├¡stica</span>.
+            </h1>
+            <p class="text-xl text-text-muted max-w-2xl mx-auto leading-relaxed font-light mb-12">
+                Abandone las conjeturas. Tactics despliega modelos Bayesianos de vanguardia para predecir el impacto de
+                cada euro invertido y automatizar su crecimiento con precisi├│n quir├║rgica.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/app"
+                    class="inline-flex items-center justify-center px-10 py-4 text-base font-bold text-white bg-primary hover:bg-primary-dark rounded-lg shadow-xl shadow-primary/20 transition-all">
+                    Empezar a Escalar
+                </a>
+                <a href="/demo"
+                    class="inline-flex items-center justify-center px-10 py-4 text-base font-semibold text-text-main bg-white border border-border-light hover:bg-surface-highlight rounded-lg transition-all">
+                    Ver Demo
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid -->
+<section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-display font-bold text-text-main mb-4">
+                Tres pilares. Un sistema.
+            </h2>
+            <p class="text-text-muted max-w-xl mx-auto">
+                Cada m├│dulo est├í dise├▒ado para integrarse y amplificar el valor del anterior.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1: LTV -->
+            <div class="glass-panel p-8 rounded-2xl">
+                <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center text-primary mb-6">
+                    <span class="material-symbols-outlined">person_search</span>
+                </div>
+                <h3 class="font-display font-bold text-xl text-text-main mb-3">Predictive LTV</h3>
+                <p class="text-text-muted text-sm leading-relaxed font-light">
+                    Inferencia probabil├¡stica para determinar el valor futuro de cada cliente. Identifique a sus
+                    usuarios de mayor impacto antes que su competencia.
+                </p>
+            </div>
+            <!-- Feature 2: Segments -->
+            <div class="glass-panel p-8 rounded-2xl">
+                <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-red-600 mb-6">
+                    <span class="material-symbols-outlined">hub</span>
+                </div>
+                <h3 class="font-display font-bold text-xl text-text-main mb-3">Automated Segments</h3>
+                <p class="text-text-muted text-sm leading-relaxed font-light">
+                    Exportaci├│n directa de audiencias de alto valor a MetaAds, Google Ads y Klaviyo. Convierta los
+                    hallazgos de IA en acciones de retenci├│n inmediatas.
+                </p>
+            </div>
+            <!-- Feature 3: MMM -->
+            <div class="glass-panel p-8 rounded-2xl">
+                <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-6">
+                    <span class="material-symbols-outlined">analytics</span>
+                </div>
+                <h3 class="font-display font-bold text-xl text-text-main mb-3">Bayesian MMM</h3>
+                <p class="text-text-muted text-sm leading-relaxed font-light">
+                    Modelado de Mix de Marketing con rangos de confianza (90% CI). Optimizaci├│n granular basada en
+                    causalidad estad├¡stica, no solo correlaci├│n.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Social Proof / Trust -->
+<section class="py-16 bg-surface border-y border-border-light">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <p class="text-center text-sm text-text-dim font-medium uppercase tracking-widest mb-8">Conf├¡an en Tactics</p>
+        <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 opacity-60">
+            <span class="font-display font-bold text-xl text-text-dim">BrandA</span>
+            <span class="font-display font-bold text-xl text-text-dim">BrandB</span>
+            <span class="font-display font-bold text-xl text-text-dim">BrandC</span>
+            <span class="font-display font-bold text-xl text-text-dim">BrandD</span>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-24 lg:py-32 bg-white">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-5xl font-display font-bold text-text-main mb-8">
+            ┬┐Preparado para escalar con <span class="text-primary italic">precisi├│n</span>?
+        </h2>
+        <p class="text-text-muted mb-12 max-w-xl mx-auto text-lg font-light leading-relaxed">
+            Solicite una demostraci├│n t├®cnica y descubra c├│mo Tactics puede transformar su toma de decisiones mediante
+            ingenier├¡a de datos avanzada.
+        </p>
+        <a href="/demo"
+            class="inline-flex items-center justify-center px-12 py-5 text-lg font-bold text-white bg-primary hover:bg-primary-dark rounded-xl shadow-2xl shadow-primary/30 transition-all">
+            Solicitar Demo
+        </a>
+    </div>
+</section>
+{% endblock %}

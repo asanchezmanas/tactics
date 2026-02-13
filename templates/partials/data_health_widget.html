@@ -1,0 +1,166 @@
+﻿<!-- Data Health Widget - Salud de Datos y Algoritmos Desbloqueados -->
+<!-- Uso: {% include 'partials/data_health_widget.html' %} -->
+<!-- Requiere x-data="dataHealth" en un contenedor padre -->
+
+<div class="insight-card rounded-2xl p-6 border border-white/10" x-data="{ 
+         loading: true,
+         health: null,
+         algorithms: null,
+         async init() {
+             try {
+                 // Fetch data health
+                 const companyId = document.querySelector('[data-company-id]')?.dataset.companyId || 'demo';
+                 const healthRes = await fetch('/api/data/health/' + companyId);
+                 this.health = await healthRes.json();
+                 
+                 // Fetch algorithm status
+                 const algoRes = await fetch('/api/algorithms/status?months=' + (this.health?.date_range?.span_months || 0) + '&records=' + (this.health?.row_count || 0));
+                 this.algorithms = await algoRes.json();
+             } catch(e) {
+                 console.error('Error loading data health:', e);
+             }
+             this.loading = false;
+         }
+     }" x-init="init()">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+            <div
+                class="size-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center">
+                <span class="text-xl">­ƒôè</span>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-white">Salud de Tus Datos</h3>
+                <p class="text-[10px] text-slate-500">Calidad y algoritmos disponibles</p>
+            </div>
+        </div>
+        <button @click="init()" class="text-slate-500 hover:text-white text-xs">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    <div x-show="loading" class="py-8 text-center">
+        <div class="animate-pulse text-slate-500 text-sm">Analizando tus datos...</div>
+    </div>
+
+    <!-- Content -->
+    <div x-show="!loading && health" class="space-y-6">
+
+        <!-- Score Bar -->
+        <div>
+            <div class="flex items-end justify-between mb-2">
+                <span class="text-4xl font-black" :class="{
+                          'text-rose-400': health.overall?.score < 30,
+                          'text-amber-400': health.overall?.score >= 30 && health.overall?.score < 50,
+                          'text-blue-400': health.overall?.score >= 50 && health.overall?.score < 70,
+                          'text-emerald-400': health.overall?.score >= 70
+                      }" x-text="health.overall?.score || 0"></span>
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest"
+                    x-text="health.overall?.level || 'desconocido'"></span>
+            </div>
+            <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full transition-all duration-1000 rounded-full" :class="{
+                         'bg-rose-500': health.overall?.score < 30,
+                         'bg-amber-500': health.overall?.score >= 30 && health.overall?.score < 50,
+                         'bg-blue-500': health.overall?.score >= 50 && health.overall?.score < 70,
+                         'bg-emerald-500': health.overall?.score >= 70
+                     }" :style="'width: ' + (health.overall?.score || 0) + '%'"></div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-3 gap-4 text-center py-4 border-y border-white/5">
+            <div>
+                <div class="text-xl font-bold text-white" x-text="health.row_count?.toLocaleString() || 0"></div>
+                <div class="text-[10px] text-slate-500">Registros</div>
+            </div>
+            <div>
+                <div class="text-xl font-bold text-white" x-text="health.date_range?.span_months || 0"></div>
+                <div class="text-[10px] text-slate-500">Meses</div>
+            </div>
+            <div>
+                <div class="text-xl font-bold text-white" x-text="Math.round(health.completeness?.score || 0) + '%'">
+                </div>
+                <div class="text-[10px] text-slate-500">Completitud</div>
+            </div>
+        </div>
+
+        <!-- Algorithm Unlock Status -->
+        <div x-show="algorithms">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs text-slate-400">Algoritmos Disponibles</span>
+                <span class="text-xs text-slate-500"
+                    x-text="algorithms.summary?.unlocked + '/' + algorithms.summary?.total + ' desbloqueados'"></span>
+            </div>
+
+            <!-- Progress Ring -->
+            <div class="flex items-center gap-4">
+                <div class="relative w-16 h-16">
+                    <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" stroke-width="3"
+                            class="text-slate-800"></circle>
+                        <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" stroke-width="3"
+                            class="text-emerald-500" stroke-dasharray="100"
+                            :stroke-dashoffset="100 - (algorithms.summary?.unlock_percentage || 0)"></circle>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-lg font-bold text-emerald-400"
+                            x-text="algorithms.summary?.unlock_percentage + '%'"></span>
+                    </div>
+                </div>
+
+                <div class="flex-1 space-y-1">
+                    <template x-for="algo in algorithms.unlocked_list?.slice(0, 3)" :key="algo.id">
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-emerald-400">Ô£ô</span>
+                            <span class="text-slate-300" x-text="algo.name"></span>
+                        </div>
+                    </template>
+                    <template x-for="algo in algorithms.locked_list?.slice(0, 2)" :key="algo.id">
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-slate-600">­ƒöÆ</span>
+                            <span class="text-slate-500" x-text="algo.name"></span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Tier -->
+        <div x-show="algorithms?.next_tier" class="bg-indigo-500/10 rounded-xl p-4 border border-indigo-500/20">
+            <div class="flex items-start gap-3">
+                <span class="text-xl">­ƒÜÇ</span>
+                <div>
+                    <div class="text-xs text-indigo-400 font-medium mb-1">
+                        Pr├│ximo Nivel: <span x-text="algorithms.next_tier?.next_tier"></span>
+                    </div>
+                    <div class="text-[11px] text-slate-400" x-show="algorithms.next_tier?.months_needed > 0">
+                        <span x-text="algorithms.next_tier?.months_needed"></span> meses m├ís para desbloquear
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div x-show="health.recommendations?.length > 0">
+            <div class="text-xs text-slate-400 mb-2">­ƒÆí Recomendaciones</div>
+            <template x-for="rec in health.recommendations?.slice(0, 2)" :key="rec">
+                <div class="text-[11px] text-slate-500 mb-1 pl-3 border-l-2 border-slate-700" x-text="rec"></div>
+            </template>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="!loading && !health?.row_count" class="text-center py-8">
+        <div class="text-4xl mb-4">­ƒô¡</div>
+        <div class="text-sm text-slate-400 mb-2">Sin datos conectados</div>
+        <a href="/app/connectors" class="text-xs text-indigo-400 hover:text-indigo-300">
+            Conectar fuente de datos ÔåÆ
+        </a>
+    </div>
+</div>

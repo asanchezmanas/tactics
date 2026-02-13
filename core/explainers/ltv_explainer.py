@@ -92,6 +92,28 @@ class LTVExplainer(ExplainerBase):
                 direction=MetricDirection.NEUTRAL,
                 typical_range=(0, 4),
                 confidence_available=False
+            ),
+            "revenue_velocity": MetricSchema(
+                id="revenue_velocity",
+                name="Velocidad de Ingresos",
+                name_en="Revenue Velocity",
+                category=self.CATEGORY,
+                unit=MetricUnit.CURRENCY,
+                direction=MetricDirection.HIGHER_BETTER,
+                typical_range=(-100, 100),
+                confidence_available=False,
+                decimal_places=2
+            ),
+            "attention_weight": MetricSchema(
+                id="attention_weight",
+                name="Peso de Atención IA",
+                name_en="AI Attention Weight",
+                category=self.CATEGORY,
+                unit=MetricUnit.PERCENTAGE,
+                direction=MetricDirection.NEUTRAL,
+                typical_range=(0, 1),
+                confidence_available=False,
+                decimal_places=2
             )
         }
     

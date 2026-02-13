@@ -58,6 +58,35 @@ Sí, aunque está optimizado para ecommerce B2C. Los conceptos de valor del clie
 
 ---
 
+## Preguntas sobre Inteligencia 2.0 🧠
+
+### ¿Cuál es la diferencia entre ROAS y POAS?
+El **ROAS** mide ingresos brutos, mientras que el **POAS** mide beneficio neto después de descontar el coste de tus productos (COGS). En Tactics priorizamos el POAS porque es el que realmente te dice cuánto dinero estás ganando.
+
+### ¿Mis datos se guardan al usar el Sandbox?
+**No.** El Sandbox es una zona de diagnóstico 100% en memoria. 
+- **Purga Inmediata**: Los datos se eliminan en cuanto cierras la pestaña.
+- **Sin Entrenamiento**: No usamos tus datos del Sandbox para mejorar modelos de otros clientes. **Tus datos son tuyos.**
+- **GDPR Ready**: Cumplimos con los estándares europeos de privacidad. No procesamos PII (emails/nombres) en este paso; solo usamos identificadores para medir frecuencia.
+
+### ¿Qué son las "Razones de Refuerzo"?
+Son notas explicativas generadas por la IA para que no tengas que adivinar por qué un número ha subido o bajado. Tactics explica su "juicio" para que tú mantengas siempre el control final.
+
+---
+
+## Solución de Problemas (CSV Sandbox) 🛠️
+
+### ¿Por qué falló mi subida de CSV?
+Si el sistema arroja un error, suele ser por uno de estos 3 motivos:
+1. **Pocas filas**: Necesitamos al menos 20 transacciones para que el análisis tenga sentido estadístico.
+2. **Formato de archivo**: Asegúrate de que los decimales usen el punto (`.`) y no la coma (`,`), y que el delimitador sea la coma o el punto y coma.
+3. **Encoding (Codificación)**: Si tu archivo tiene caracteres extraños, intenta guardarlo como **"CSV (UTF-8)"** desde Excel o Google Sheets.
+
+### "Mi archivo tiene 100 columnas, ¿tengo que limpiarlo?"
+No. Tactics ignorará todo lo que no sea necesario. Sube el archivo tal cual sale de tu CMS o ERP.
+
+---
+
 ## Sobre las predicciones de clientes (LTV/Churn)
 
 ### ¿Por qué el LTV de un cliente cambió?
@@ -118,3 +147,7 @@ Español e inglés. Estamos añadiendo más idiomas próximamente.
 ## ¿No encuentras tu pregunta?
 
 Escríbenos a **soporte@tactics.es** y te responderemos en menos de 24 horas.
+
+---
+
+*Última actualización: Febrero 2026 - Tactics Intelligence 2.0*

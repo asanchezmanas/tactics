@@ -1,0 +1,126 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Tactics - Alertas Bayesianas{% endblock %}
+
+{% block content %}
+<div x-data="{ sidebarToggle: false, darkMode: false }" :class="darkMode ? 'dark' : ''"
+    class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    {% include 'partials/sidebar_app.html' %}
+
+    <!-- Main Content Wrapper -->
+    <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <!-- Header -->
+        {% include 'partials/header_app.html' %}
+
+        <!-- Content Area -->
+        <main class="p-4 md:p-6 lg:p-8">
+            <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 class="text-sm font-bold text-gray-400 uppercase tracking-[0.2em]">
+                    Centro de Alertas Bayesianas
+                </h2>
+            </div>
+
+            <div x-data="mailApp()"
+                class="flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                <div
+                    class="flex flex-col justify-between gap-3 border-b border-gray-200 p-4 dark:border-gray-800 sm:flex-row">
+                    <div class="flex w-full items-center gap-2">
+                        <div x-data="{openDropDown: false}" class="relative w-full sm:w-auto">
+                            <button @click="openDropDown = !openDropDown"
+                                class="flex w-full items-center justify-between gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-800 sm:justify-center text-gray-500 dark:text-gray-400">
+                                <span class="text-xs font-semibold uppercase tracking-wider">Acciones</span>
+                                <span :class="openDropDown && 'rotate-180'" class="duration-300">
+                                    <svg class="stroke-current" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M3.83325 5.91699L7.99992 10.0837L12.1666 5.91699" stroke-width="1.5"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div x-show="openDropDown" @click.outside="openDropDown = false"
+                                class="absolute left-0 top-full z-40 mt-1 w-40 space-y-1 rounded-2xl border border-gray-200 bg-white p-2 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark">
+                                <button
+                                    class="flex w-full rounded-lg px-3 py-2 text-left text-xs font-medium text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5">Marcar
+                                    como le├¡do</button>
+                                <button
+                                    class="flex w-full rounded-lg px-3 py-2 text-left text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative w-full sm:max-w-xs">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                            <span class="material-symbols-outlined text-sm">search</span>
+                        </span>
+                        <input type="text" placeholder="Buscar alerta..."
+                            class="h-10 w-full rounded-lg border border-gray-200 bg-transparent pl-10 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-800">
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto">
+                    <template x-for="(item, index) in mails" :key="index">
+                        <div
+                            class="flex cursor-pointer items-center border-b border-gray-100 px-4 py-4 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-white/[0.02]">
+                            <div class="flex w-full items-center gap-4">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                                    :class="item.badge === 'Critical' ? 'bg-red-50 text-red-500 dark:bg-red-500/10' : 'bg-brand-50 text-brand-500 dark:bg-brand-500/10'">
+                                    <span class="material-symbols-outlined text-xl"
+                                        x-text="item.badge === 'Critical' ? 'warning' : 'info'"></span>
+                                </div>
+                                <div class="flex flex-1 flex-col truncate">
+                                    <div class="flex items-center justify-between">
+                                        <span class="truncate text-sm font-bold text-gray-800 dark:text-white/90"
+                                            x-text="item.subject"></span>
+                                        <span class="shrink-0 text-[10px] font-medium text-gray-400"
+                                            x-text="item.time"></span>
+                                    </div>
+                                    <p class="truncate text-xs text-gray-500 dark:text-gray-400" x-text="item.content">
+                                    </p>
+                                </div>
+                                <div class="shrink-0">
+                                    <span x-show="item.badge"
+                                        class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
+                                        :class="item.badge === 'Critical' ? 'text-red-700 bg-red-50 dark:text-red-400 dark:bg-red-500/10' : 'text-brand-700 bg-brand-50 dark:text-brand-400 dark:bg-brand-500/10'"
+                                        x-text="item.badge"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    function mailApp() {
+        return {
+            mails: [
+                {
+                    subject: "Anomal├¡a de Churn Detectada",
+                    content: "La probabilidad de fuga del segmento VIP ha superado el umbral bayesiano del 85%. Se recomienda revisi├│n inmediata.",
+                    time: "Hace 10 min",
+                    badge: "Critical",
+                },
+                {
+                    subject: "Optimizaci├│n de Presupuesto Lista",
+                    content: "El motor MMM ha generado una nueva distribuci├│n recomendada para Meta Ads con un 92% de confianza.",
+                    time: "Hace 1 hora",
+                    badge: "Info",
+                },
+                {
+                    subject: "Sincronizaci├│n de Shopify Completada",
+                    content: "Se han importado con ├®xito 1,245 nuevas transacciones y actualizado 45 perfiles de clientes.",
+                    time: "Hace 3 horas",
+                    badge: "Success",
+                },
+                {
+                    subject: "Alerta de CPA: Google Ads",
+                    content: "El CPA en la campa├▒a 'Black Friday Preview' est├í un 15% por encima de la media hist├│rica proyectada.",
+                    time: "Ayer",
+                    badge: "Warning",
+                }
+            ]
+        };
+    }
+</script>
+{% endblock %}

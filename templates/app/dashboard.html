@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>{% block title %}Tactics Dashboard{% endblock %}</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script defer src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    zIndex: {
+                        '9999': '9999',
+                        '99999': '99999',
+                        '999': '999',
+                        '99': '99',
+                    },
+                    colors: {
+                        // TailAdmin compatibility
+                        'gray-dark': '#1C2434',
+                        'gray-light': '#F8FAFC',
+                        'success-500': '#10B981',
+                        'warning-500': '#F59E0B',
+                        'error-500': '#EF4444',
+                        'brand-500': '#4F46E5',
+                        black: '#0F172A',
+                        // Light Theme (Public)
+                        background: "#FFFFFF",
+                        surface: "#F8FAFC",
+                        "surface-highlight": "#F1F5F9",
+                        primary: "#4F46E5",
+                        "primary-dark": "#3730a3",
+                        "primary-soft": "rgba(79, 70, 229, 0.1)",
+                        text: {
+                            main: "#0F172A",
+                            muted: "#475569",
+                            dim: "#94A3B8"
+                        },
+                        border: {
+                            light: "#E2E8F0",
+                            subtle: "#CBD5E1"
+                        }
+                    },
+                    fontFamily: {
+                        display: ['"Manrope"', 'sans-serif'],
+                        body: ['"Inter"', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        /* Elite Premium Aesthetic Tokens */
+        .premium-shadow {
+            box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-panel {
+            background: #FFFFFF;
+            border: 1px solid #F1F5F9;
+            /* slate-100 */
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-panel:hover {
+            border-color: #E2E8F0;
+            /* slate-200 */
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+
+        /* Premium Typography Sync */
+        h1,
+        h2,
+        h3,
+        .font-display {
+            font-family: 'Manrope', sans-serif !important;
+            letter-spacing: -0.02em;
+        }
+
+        .text-text-main {
+            color: #0F172A;
+        }
+
+        .text-text-muted {
+            color: #475569;
+        }
+
+        .bg-surface {
+            background-color: #F8FAFC;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body class="font-body antialiased bg-gray-light text-bodydark dark:bg-boxdark-2 dark:text-bodydark"
+    x-data="{ darkMode: false }"
+    x-init="darkMode = JSON.parse(localStorage.getItem('darkMode')); $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+    :class="{'dark': darkMode === true}">
+    {% block content %}{% endblock %}
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

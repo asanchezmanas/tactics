@@ -1,0 +1,102 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ 'Tactics | Strategic Intelligence for E-commerce' if locale == 'en' else 'Tactics | Inteligencia
+Estratégica para E-commerce' }}{% endblock %}
+
+{% block nav %}
+{% include 'partials/nav_public.html' %}
+{% endblock %}
+
+{% block content %}
+<main>
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6 overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
+            <h1 class="font-display text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">
+                {{ 'The Science Behind' if locale == 'en' else 'La Ciencia Detrás del' }} <br />
+                <span class="text-indigo-600">{{ 'Profitable Growth' if locale == 'en' else 'Crecimiento Rentable'
+                    }}</span>
+            </h1>
+            <p class="max-w-2xl text-xl text-slate-500 dark:text-gray-400 mb-12 leading-relaxed font-light">
+                {{ 'No more decisions based on intuition or vanity. Tactics is the intelligence engine that unifies your
+                data to reveal the true profitability of every channel, customer, and product.' if locale == 'en' else
+                'No más decisiones basadas en intuición o vanidad. Tactics es el motor de inteligencia que unifica tus
+                datos para revelar la verdadera rentabilidad de cada canal, cliente y producto.' }}
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="{{ '/en' if locale == 'en' else '' }}/demo/diagnostic"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-indigo-200 dark:shadow-none">
+                    {{ 'Free Diagnosis' if locale == 'en' else 'Diagnóstico Gratuito' }}
+                </a>
+                <a href="{{ '/en' if locale == 'en' else '' }}/login"
+                    class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all">
+                    {{ 'Watch Live Demo' if locale == 'en' else 'Ver Demo Live' }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof / Logos -->
+    <section class="py-12 border-y border-slate-100 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 flex flex-wrap justify-between items-center gap-8 opacity-40 grayscale">
+            <span class="font-display font-bold text-2xl">Elite Brands</span>
+            <span class="font-display font-bold text-2xl">Growth Labs</span>
+            <span class="font-display font-bold text-2xl">SaaS Mastery</span>
+            <span class="font-display font-bold text-2xl">Euro Retail</span>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="py-24 px-6 bg-slate-50 dark:bg-slate-900/50">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="group">
+                <div
+                    class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm mb-6 border border-slate-100 dark:border-slate-700 group-hover:border-indigo-600 transition-colors">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-display text-xl font-bold mb-4">LTV Velocity</h3>
+                <p class="text-slate-500 dark:text-gray-400 leading-relaxed text-sm">
+                    {{ 'Anticipate your customers\' future value before it happens. Tactics predicts Lifetime Value with
+                    94% accuracy.' if locale == 'en' else 'Anticípate al valor futuro de tus clientes antes de que
+                    ocurra. Tactics predice el Lifetime Value con un 94% de precisión.' }}
+                </p>
+            </div>
+            <div class="group">
+                <div
+                    class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm mb-6 border border-slate-100 dark:border-slate-700 group-hover:border-indigo-600 transition-colors">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="font-display text-xl font-bold mb-4">MMM Optimizer</h3>
+                <p class="text-slate-500 dark:text-gray-400 leading-relaxed text-sm">
+                    {{ 'The end of Last-Click. Understand the true causality of your advertising investment in a
+                    cookieless world.' if locale == 'en' else 'El fin del Last-Click. Entiende la causalidad real de tu
+                    inversión publicitaria en un mundo sin cookies.' }}
+                </p>
+            </div>
+            <div class="group">
+                <div
+                    class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm mb-6 border border-slate-100 dark:border-slate-700 group-hover:border-indigo-600 transition-colors">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="font-display text-xl font-bold mb-4">Secure Vault</h3>
+                <p class="text-slate-500 dark:text-gray-400 leading-relaxed text-sm">
+                    {{ 'Your data is yours. Zero-knowledge encrypted backups protected by Internxt\'s European
+                    standards.' if locale == 'en' else 'Tus datos son tuyos. Backup encriptado zero-knowledge protegidos
+                    por estándares europeos de Internxt.' }}
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

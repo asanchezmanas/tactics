@@ -1,0 +1,247 @@
+﻿{% extends "base.html" %}
+
+{% block title %}System Health & Resilience{% endblock %}
+
+{% block content %}
+<div x-data="systemHealth()" class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 class="text-title-md2 font-bold text-black dark:text-white">
+            System Resilience Monitor
+        </h2>
+        <div class="flex gap-3">
+            <button @click="refreshHealth()"
+                class="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                <span x-show="!loading">Refresh Status</span>
+                <span x-show="loading">Checking...</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Overall Status Banner -->
+    <div
+        class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+        <div class="flex items-center gap-4 mb-6">
+            <div :class="statusColor"
+                class="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-black dark:text-white">System Status: <span
+                        x-text="health.status"></span></h3>
+                <p class="text-sm font-medium text-bodydark2">
+                    Monitoring Database, Cache, and API Circuit Breakers.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
+
+        <!-- Database Health -->
+        <div
+            class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="text-title-md font-bold text-black dark:text-white">Database</h4>
+                    <span class="text-sm font-medium">Supabase Connection</span>
+                </div>
+                <div :class="health.database?.supabase_available ? 'bg-success text-success' : 'bg-danger text-danger'"
+                    class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-opacity-10 dark:bg-opacity-20">
+                    <i :class="health.database?.supabase_available ? 'fa-check' : 'fa-times'" class="fas"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Local Cache -->
+        <div
+            class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="text-title-md font-bold text-black dark:text-white">Local Cache</h4>
+                    <span class="text-sm font-medium">SQLite Fallback</span>
+                </div>
+                <div :class="health.database?.local_cache_available ? 'bg-success text-success' : 'bg-warning text-warning'"
+                    class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-opacity-10 dark:bg-opacity-20">
+                    <i class="fas fa-database"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Retries -->
+        <div
+            class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="text-title-md font-bold text-black dark:text-white"
+                        x-text="health.database?.pending_retries || 0">0</h4>
+                    <span class="text-sm font-medium">Pending Retries</span>
+                </div>
+                <div
+                    class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-primary bg-opacity-10 text-primary dark:bg-opacity-20">
+                    <i class="fas fa-redo"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Circuit Breakers Section -->
+    <div class="col-span-12 xl:col-span-8">
+        <div
+            class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+            <h4 class="mb-6 text-xl font-bold text-black dark:text-white">
+                API Circuit Breakers
+            </h4>
+
+            <div class="flex flex-col">
+                <div class="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
+                    <div class="p-2.5 xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">Service</h5>
+                    </div>
+                    <div class="p-2.5 text-center xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">State</h5>
+                    </div>
+                    <div class="p-2.5 text-center xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">Failures</h5>
+                    </div>
+                    <div class="hidden p-2.5 text-center sm:block xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">Last Failure</h5>
+                    </div>
+                </div>
+
+                <template x-for="breaker in health.circuit_breakers" :key="breaker.name">
+                    <div class="grid grid-cols-3 border-b border-stroke dark:border-strokedark sm:grid-cols-4">
+                        <div class="flex items-center gap-3 p-2.5 xl:p-5">
+                            <i class="fas fa-plug text-primary"></i>
+                            <p class="hidden text-black dark:text-white sm:block" x-text="breaker.name"></p>
+                        </div>
+
+                        <div class="flex items-center justify-center p-2.5 xl:p-5">
+                            <span :class="{
+                                'bg-success text-success': breaker.state === 'CLOSED',
+                                'bg-danger text-danger': breaker.state === 'OPEN',
+                                'bg-warning text-warning': breaker.state === 'HALF-OPEN'
+                            }" class="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium dark:bg-opacity-20"
+                                x-text="breaker.state">
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-center p-2.5 xl:p-5">
+                            <p class="text-black dark:text-white" x-text="breaker.failures"></p>
+                        </div>
+
+                        <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                            <p class="text-meta-5" x-text="breaker.last_failure || 'None'"></p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dead Letter Queue (Failures) -->
+    <div class="col-span-12">
+        <div
+            class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+            <div class="flex justify-between mb-6">
+                <h4 class="text-xl font-bold text-black dark:text-white">
+                    Dead Letter Queue (Permanently Failed)
+                </h4>
+                <span class="text-sm text-meta-1" x-show="health.dead_letters?.length > 0">
+                    <i class="fas fa-exclamation-triangle"></i> Action Required
+                </span>
+            </div>
+
+            <div class="flex flex-col">
+                <div class="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
+                    <div class="p-2.5 xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">Time</h5>
+                    </div>
+                    <div class="p-2.5 text-center xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">Operation</h5>
+                    </div>
+                    <div class="p-2.5 text-center xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">Table</h5>
+                    </div>
+                    <div class="hidden p-2.5 text-center sm:block xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">Error</h5>
+                    </div>
+                    <div class="hidden p-2.5 text-center sm:block xl:p-5">
+                        <h5 class="text-sm font-medium uppercase xsm:text-base">Action</h5>
+                    </div>
+                </div>
+
+                <template x-for="item in health.dead_letters" :key="item.id">
+                    <div class="grid grid-cols-3 border-b border-stroke dark:border-strokedark sm:grid-cols-5">
+                        <div class="flex items-center gap-3 p-2.5 xl:p-5">
+                            <p class="text-sm text-black dark:text-white"
+                                x-text="new Date(item.created_at).toLocaleString()"></p>
+                        </div>
+                        <div class="flex items-center justify-center p-2.5 xl:p-5">
+                            <p class="text-black dark:text-white" x-text="item.operation"></p>
+                        </div>
+                        <div class="flex items-center justify-center p-2.5 xl:p-5">
+                            <p class="text-meta-5" x-text="item.table_name"></p>
+                        </div>
+                        <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                            <p class="text-xs text-danger" x-text="item.error?.substring(0, 50) + '...'"></p>
+                        </div>
+                        <div class="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+                            <button class="hover:text-primary">
+                                <i class="fas fa-sync"></i> Retry
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <div x-show="!health.dead_letters || health.dead_letters.length === 0"
+                    class="p-5 text-center text-bodydark2">
+                    <i class="fas fa-check-circle text-success mb-2"></i>
+                    <p>No dead letters. All systems operational.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('systemHealth', () => ({
+            loading: false,
+            health: {
+                status: 'Checking...',
+                database: {},
+                circuit_breakers: [],
+                dead_letters: []
+            },
+
+            async init() {
+                await this.refreshHealth();
+            },
+
+            async refreshHealth() {
+                this.loading = true;
+                try {
+                    const response = await fetch('/api/health/system');
+                    this.health = await response.json();
+                } catch (error) {
+                    console.error('Failed to fetch health status:', error);
+                    window.dispatchEvent(new CustomEvent('toast:notify', {
+                        detail: { type: 'error', message: 'Failed to connect to Health API' }
+                    }));
+                } finally {
+                    this.loading = false;
+                }
+            },
+
+            get statusColor() {
+                if (this.health.status === 'healthy') return 'bg-success';
+                if (this.health.status === 'degraded') return 'bg-warning';
+                return 'bg-danger';
+            }
+        }));
+    });
+</script>
+{% endblock %}

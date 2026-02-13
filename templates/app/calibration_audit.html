@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calibration Audit | Tactics Intelligence 2.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .audit-grid {
+            display: grid;
+            grid-template-columns: repeat(30, 1fr);
+            gap: 4px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 2px;
+        }
+
+        .cell-healthy {
+            background: #10b981;
+        }
+
+        .cell-warning {
+            background: #f59e0b;
+        }
+
+        .cell-critical {
+            background: #ef4444;
+        }
+
+        .cell-empty {
+            background: #334155;
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .glow-red {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+        }
+    </style>
+</head>
+
+<body x-data="auditApp()">
+    <div class="min-h-screen p-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-12">
+            <div>
+                <h1
+                    class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                    Calibration Audit</h1>
+                <p class="text-slate-400 mt-1">Transparencia y Trazabilidad de Datos | Intelligence 2.0</p>
+            </div>
+            <div class="flex gap-4">
+                <button @click="reloadData()"
+                    class="px-4 py-2 glass rounded-lg hover:bg-slate-700 transition">Sincronizar Auditor├¡a</button>
+                <div class="px-4 py-2 bg-blue-600 rounded-lg font-semibold">Tiers: Elite Ready</div>
+            </div>
+        </header>
+
+        <!-- Top Metrics Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <template x-for="stat in stats">
+                <div class="glass p-6 rounded-2xl glow-blue">
+                    <p class="text-slate-400 text-sm" x-text="stat.label"></p>
+                    <h3 class="text-2xl font-bold mt-1" x-text="stat.value"></h3>
+                    <div class="mt-2 text-xs flex items-center" :class="stat.trendColor">
+                        <span x-text="stat.trend"></span>
+                        <span class="ml-1 text-slate-500" x-text="stat.desc"></span>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left: Integrity Map & Receipts -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Data Integrity Map (The Heatmap) -->
+                <div class="glass p-8 rounded-3xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Integrity Map</h2>
+                        <div class="flex gap-4 text-xs">
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 cell-healthy"></div> Saludable
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 cell-warning"></div> Anomal├¡as
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <div class="w-3 h-3 cell-critical"></div> Fallo Cr├¡tico
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="audit-grid mb-4">
+                        <template x-for="day in 90">
+                            <div class="grid-cell" :class="getDayClass(day)" @mouseenter="hoverDay = day"
+                                @mouseleave="hoverDay = null">
+                            </div>
+                        </template>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-500">
+                        <span>Hace 90 d├¡as</span>
+                        <span>Hoy</span>
+                    </div>
+
+                    <div x-show="hoverDay"
+                        class="mt-4 p-4 bg-slate-800 rounded-xl text-sm border border-slate-700 animate-slide-in">
+                        <p class="font-bold">Detalle del D├¡a <span x-text="hoverDay"></span></p>
+                        <p class="text-slate-400" x-text="getDayInfo(hoverDay)"></p>
+                    </div>
+                </div>
+
+                <!-- Audit Trail (Receipts) -->
+                <div class="glass p-8 rounded-3xl overflow-hidden">
+                    <h2 class="text-xl font-bold mb-6">Receipt of Truth: Audit Trail</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="text-slate-400 border-b border-slate-700">
+                                    <th class="pb-4">Batch ID</th>
+                                    <th class="pb-4">Timestamp</th>
+                                    <th class="pb-4">Origen</th>
+                                    <th class="pb-4">Estado</th>
+                                    <th class="pb-4 text-right">Rows</th>
+                                    <th class="pb-4 text-right">Check</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <template x-for="receipt in receipts">
+                                    <tr class="hover:bg-slate-800/50 transition">
+                                        <td class="py-4 font-mono text-blue-400" x-text="receipt.batch_id"></td>
+                                        <td class="py-4 text-slate-400" x-text="receipt.timestamp"></td>
+                                        <td class="py-4"><span class="px-2 py-1 bg-slate-700 rounded text-xs"
+                                                x-text="receipt.source"></span></td>
+                                        <td class="py-4">
+                                            <span class="flex items-center gap-2">
+                                                <div class="w-2 h-2 rounded-full"
+                                                    :class="receipt.status === 'completed' ? 'bg-emerald-500' : 'bg-amber-500'">
+                                                </div>
+                                                <span x-text="receipt.status"></span>
+                                            </span>
+                                        </td>
+                                        <td class="py-4 text-right" x-text="receipt.success_rows"></td>
+                                        <td class="py-4 text-right"><button
+                                                class="text-indigo-400 hover:underline text-xs">Verify</button></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Anomalies Explorer -->
+            <div class="space-y-8">
+                <div class="glass p-8 rounded-3xl glow-red">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-500/10 rounded-2xl">
+                            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Anomalies Explorer</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <template x-for="issue in issues">
+                            <div
+                                class="p-4 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-red-500/50 transition cursor-pointer">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-xs font-bold uppercase tracking-wider"
+                                        :class="issue.severity == 'critical' ? 'text-red-400' : 'text-amber-400'"
+                                        x-text="issue.type"></span>
+                                    <span class="text-[10px] text-slate-500"
+                                        x-text="issue.affected_rows + ' rows'"></span>
+                                </div>
+                                <p class="text-sm text-slate-300" x-text="issue.message"></p>
+                                <div class="mt-3 flex gap-2">
+                                    <button
+                                        class="text-[10px] px-2 py-1 bg-slate-700 rounded-md hover:bg-slate-600 transition">Trace
+                                        Origin</button>
+                                    <button
+                                        class="text-[10px] px-2 py-1 bg-red-900/30 text-red-300 rounded-md hover:bg-red-900/50 transition">Ignore</button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-indigo-600/10 rounded-3xl border border-indigo-500/20">
+                        <h4 class="font-bold text-indigo-300 mb-2 italic">Algorithm Awareness</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">Intelligence 2.0 es resiliente. Estos fallos
+                            han sido inyectados en la propagaci├│n de incertidumbre de tus modelos LTV/MMM.</p>
+                    </div>
+                </div>
+
+                <!-- Traceability Details -->
+                <div x-show="selectedIssue" class="glass p-8 rounded-3xl animate-slide-in">
+                    <h3 class="font-bold mb-4">Deep Traceability</h3>
+                    <!-- Trace details here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function auditApp() {
+            return {
+                stats: [
+                    { label: 'Integrity Score', value: '94.2%', trend: '+0.5%', trendColor: 'text-emerald-400', desc: 'vs last month' },
+                    { label: 'Data Gaps', value: '3', trend: '-2', trendColor: 'text-emerald-400', desc: 'resolved' },
+                    { label: 'Duplicates', value: '142', trend: 'Neutral', trendColor: 'text-slate-400', desc: 'flagged' },
+                    { label: 'Audit Trail', value: 'v1.4', trend: 'Healthy', trendColor: 'text-emerald-400', desc: 'integrity driver' }
+                ],
+                hoverDay: null,
+                selectedIssue: null,
+                receipts: [],
+                issues: [],
+
+                async init() {
+                    const company_id = "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6";
+
+                    // Fetch Receipts (Simulated)
+                    const rRes = await fetch(`/api/data/receipts/${company_id}`);
+                    const rData = await rRes.json();
+                    this.receipts = rData.receipts;
+
+                    // Fetch Issues (Simulated/Real)
+                    const iRes = await fetch(`/api/data/integrity/${company_id}?context=ventas`);
+                    const iData = await iRes.json();
+                    this.issues = iData.issues || [
+                        { type: 'GAP', severity: 'warning', message: 'Falta una semana de datos de Meta Ads (Ene 15-22)', affected_rows: 0 },
+                        { type: 'DUPLICATE', severity: 'critical', message: 'Detected logical overlaps on Order IDs', affected_rows: 42 }
+                    ];
+                },
+
+                getDayClass(day) {
+                    if (day == 85 || day == 45) return 'cell-critical';
+                    if (day > 70 && day < 75) return 'cell-warning';
+                    if (day < 20) return 'cell-empty';
+                    return 'cell-healthy';
+                },
+
+                getDayInfo(day) {
+                    if (day == 45) return "Fallo cr├¡tico de sincronizaci├│n (API Timeout). Tactics registr├│ el evento pero no recibi├│ el payload.";
+                    if (day > 70 && day < 75) return "Anomal├¡as menores detectadas: Duplicados en el archivo fuente 'manual_import_feb.csv'.";
+                    return "Todos los sistemas nominales. Integridad del 100%.";
+                },
+
+                reloadData() {
+                    this.init();
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

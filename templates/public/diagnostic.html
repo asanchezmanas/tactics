@@ -1,0 +1,150 @@
+{% extends "public/landing.html" %}
+
+{% block title %}{{ 'Tactics AI | Live Diagnosis' if locale == 'en' else 'Tactics AI | Diagnóstico en Vivo' }}{%
+endblock %}
+
+{% block content %}
+<section class="py-20 bg-surface">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-4xl md:text-5xl font-display font-extrabold text-text-main mb-6">
+            {{ 'Your Data. ' if locale == 'en' else 'Tus Datos. ' }}<span class="text-primary">{{ 'Your Future.' if
+                locale == 'en' else 'Tu Futuro.' }}</span>{{ ' Without Friction.' if locale == 'en' else ' Sin
+            Fricción.' }}
+        </h1>
+        <p class="text-xl text-text-muted mb-12 max-w-2xl mx-auto">
+            {{ 'Upload a CSV file of your sales and see exactly how Tactics Intelligence 2.0 analyzes your business. No
+            sign-ups, no waiting. Pure value.' if locale == 'en' else 'Sube un archivo CSV de tus ventas y mira
+            exactamente cómo Tactics Intelligence 2.0 analiza tu negocio. Sin registros, sin esperas. Valor puro.' }}
+        </p>
+
+        <!-- Dynamic Dropzone -->
+        <div class="max-w-xl mx-auto">
+            <div id="dropzone"
+                class="glass-panel rounded-3xl p-12 border-2 border-dashed border-border-light hover:border-primary cursor-pointer transition-all flex flex-col items-center justify-center">
+                <span class="material-symbols-outlined text-6xl text-primary mb-4">upload_file</span>
+                <p class="text-lg font-medium text-text-main">{{ 'Drag your sales.csv here' if locale == 'en' else
+                    'Arrastra tu ventas.csv aquí' }}</p>
+                <p class="text-sm text-text-dim mt-2">{{ 'Accepted formats: .csv (min. 20 rows)' if locale == 'en' else
+                    'Formatos aceptados: .csv (mín. 20 filas)' }}</p>
+                <input type="file" id="fileInput" class="hidden" accept=".csv">
+
+                <!-- Mapping Helper (Hidden initially) -->
+                <div id="mappingStatus" class="mt-6 text-sm text-primary font-medium hidden">
+                    {{ 'Processing with Intelligence 2.0...' if locale == 'en' else 'Procesando con Intelligence 2.0...'
+                    }}
+                </div>
+            </div>
+
+            <div class="mt-8 flex items-center justify-center gap-4 text-sm text-text-dim">
+                <div class="flex items-center"><span
+                        class="material-symbols-outlined text-green-500 mr-1 text-base">verified_user</span> {{ '100%
+                    Secure' if locale == 'en' else '100% Seguro' }}
+                </div>
+                <div class="flex items-center"><span
+                        class="material-symbols-outlined text-green-500 mr-1 text-base">memory</span> {{ 'Processed in
+                    Memory' if locale == 'en' else 'Procesado en Memoria' }}</div>
+                <div class="flex items-center"><span
+                        class="material-symbols-outlined text-green-500 mr-1 text-base">visibility_off</span> {{ 'No
+                    Persistence' if locale == 'en' else 'Sin Persistencia' }}</div>
+            </div>
+        </div>
+
+        <!-- Schema Helper -->
+        <div class="mt-20 max-w-4xl mx-auto text-left">
+            <h3 class="text-2xl font-display font-bold text-text-main mb-6 text-center">{{ 'How your file should look'
+                if locale == 'en' else 'Cómo debe ser tu archivo' }}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-6 rounded-2xl">
+                    <div class="bg-primary-soft w-10 h-10 rounded-lg flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary">calendar_today</span>
+                    </div>
+                    <h4 class="font-bold text-text-main">{{ 'Date' if locale == 'en' else 'Fecha' }}</h4>
+                    <p class="text-sm text-text-muted">`fecha`, `order_date` or `timestamp`. {{ 'Format' if locale ==
+                        'en' else 'Formato' }}: YYYY-MM-DD.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl">
+                    <div class="bg-primary-soft w-10 h-10 rounded-lg flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                    </div>
+                    <h4 class="font-bold text-text-main">{{ 'Customer' if locale == 'en' else 'Cliente' }}</h4>
+                    <p class="text-sm text-text-muted">`cliente_id`, `email` or `id_usuario`. {{ 'To measure
+                        recurrence.' if locale == 'en' else 'Para medir recurrencia.' }}</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl">
+                    <div class="bg-primary-soft w-10 h-10 rounded-lg flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary">payments</span>
+                    </div>
+                    <h4 class="font-bold text-text-main">{{ 'Amount' if locale == 'en' else 'Monto' }}</h4>
+                    <p class="text-sm text-text-muted">`total`, `monto` or `revenue`. {{ 'Transaction value.' if locale
+                        == 'en' else 'Valor de la transacción.' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const status = document.getElementById('mappingStatus');
+        const locale = "{{ locale }}";
+
+        dropzone.onclick = () => fileInput.click();
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('border-primary');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('border-primary');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        };
+
+        async function handleFile(file) {
+            if (!file.name.endsWith('.csv')) {
+                alert(locale === 'en' ? 'Please upload a CSV file.' : 'Por favor, sube un archivo CSV.');
+                return;
+            }
+
+            status.classList.remove('hidden');
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/demo/diagnostic', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail || (locale === 'en' ? 'Error processing file' : 'Error al procesar el archivo'));
+                }
+
+                const data = await response.json();
+                // Store results in SessionStorage for the Sandbox Dashboard
+                sessionStorage.setItem('sandbox_metrics', JSON.stringify(data.metrics));
+                // Redirect to Sandbox
+                const redirectPath = locale === 'en' ? '/en/demo/sandbox' : '/demo/sandbox';
+                window.location.href = redirectPath;
+
+            } catch (e) {
+                alert('Error: ' + e.message);
+                status.classList.add('hidden');
+            }
+        }
+    });
+</script>
+{% endblock %}

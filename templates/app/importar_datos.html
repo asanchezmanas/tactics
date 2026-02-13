@@ -1,0 +1,523 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Tactics - Importar Datos{% endblock %}
+
+{% block head %}
+<style>
+    .wizard-step {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .wizard-step.active {
+        border-color: rgba(99, 102, 241, 0.5);
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(255, 255, 255, 0));
+    }
+
+    .wizard-step.completed {
+        border-color: rgba(16, 185, 129, 0.5);
+    }
+
+    .drop-zone {
+        border: 2px dashed rgba(255, 255, 255, 0.2);
+        transition: all 0.3s;
+    }
+
+    .drop-zone.dragover {
+        border-color: rgba(99, 102, 241, 0.7);
+        background: rgba(99, 102, 241, 0.1);
+    }
+
+    .column-badge {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white{% endblock %}
+
+{% block content %}
+<div class="min-h-screen" x-data="importWizard()" x-init="init()">
+
+    <!-- Header -->
+    <header class="py-8 px-6 border-b border-white/10">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-2xl">
+                    ­ƒôÑ
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">Importar Datos</h1>
+                    <p class="text-slate-400 text-sm">3 pasos simples para conectar tus datos</p>
+                </div>
+            </div>
+            <a href="/app" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver al Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+
+        <!-- Progress Steps -->
+        <div class="flex items-center justify-between mb-12">
+            <template x-for="(stepItem, index) in steps" :key="index">
+                <div class="flex items-center" :class="index < steps.length - 1 ? 'flex-1' : ''">
+                    <div class="wizard-step rounded-xl px-6 py-4 flex items-center gap-3 transition-all" :class="{
+                             'active': step === index + 1,
+                             'completed': step > index + 1
+                         }">
+                        <div class="size-8 rounded-lg flex items-center justify-center text-sm font-bold" :class="{
+                                 'bg-indigo-500 text-white': step === index + 1,
+                                 'bg-emerald-500 text-white': step > index + 1,
+                                 'bg-slate-700 text-slate-400': step < index + 1
+                             }" x-text="step > index + 1 ? 'Ô£ô' : index + 1"></div>
+                        <div>
+                            <div class="text-sm font-medium"
+                                :class="step >= index + 1 ? 'text-white' : 'text-slate-500'" x-text="stepItem.title">
+                            </div>
+                            <div class="text-[10px] text-slate-500" x-text="stepItem.subtitle"></div>
+                        </div>
+                    </div>
+                    <div x-show="index < steps.length - 1" class="flex-1 h-px mx-4"
+                        :class="step > index + 1 ? 'bg-emerald-500/50' : 'bg-white/10'"></div>
+                </div>
+            </template>
+        </div>
+
+        <!-- STEP 1: Upload File -->
+        <div x-show="step === 1" class="space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-xl font-bold mb-2">Sube tu archivo de datos</h2>
+                <p class="text-slate-400 text-sm">Acepta CSV, Excel (.xlsx) o JSON</p>
+            </div>
+
+            <!-- Drop Zone -->
+            <div class="drop-zone rounded-2xl p-12 text-center transition-all cursor-pointer"
+                @click="$refs.fileInput.click()" @dragover.prevent="isDragging = true" @dragleave="isDragging = false"
+                @drop.prevent="handleDrop($event)" :class="{'dragover': isDragging}">
+                <input type="file" x-ref="fileInput" @change="handleFileSelect($event)" accept=".csv,.xlsx,.xls,.json"
+                    class="hidden">
+
+                <div x-show="!file" class="space-y-4">
+                    <div class="text-5xl">­ƒôä</div>
+                    <div class="text-lg font-medium text-slate-300">Arrastra tu archivo aqu├¡</div>
+                    <div class="text-sm text-slate-500">o haz click para seleccionar</div>
+                    <div class="text-[10px] text-slate-600 mt-4">
+                        Formatos soportados: CSV, Excel, JSON ÔÇó M├íximo 50MB
+                    </div>
+                </div>
+
+                <div x-show="file" class="space-y-4">
+                    <div class="text-5xl">Ô£à</div>
+                    <div class="text-lg font-medium text-emerald-400" x-text="file?.name"></div>
+                    <div class="text-sm text-slate-500">
+                        <span x-text="formatFileSize(file?.size)"></span> ÔÇó
+                        <button @click.stop="file = null; preview = null"
+                            class="text-rose-400 hover:text-rose-300">Cambiar archivo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div x-show="preview && preview.length" class="wizard-step rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="text-sm font-medium text-white">Vista previa (primeras 5 filas)</div>
+                    <div class="text-[10px] text-slate-500" x-text="preview.length + ' columnas detectadas'"></div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead>
+                            <tr class="border-b border-white/10">
+                                <template x-for="col in preview" :key="col.name">
+                                    <th class="px-3 py-2 text-left text-slate-400" x-text="col.name"></th>
+                                </template>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="(row, rowIdx) in previewRows.slice(0, 5)" :key="rowIdx">
+                                <tr class="border-b border-white/5">
+                                    <template x-for="col in preview" :key="col.name">
+                                        <td class="px-3 py-2 text-slate-300" x-text="row[col.name] || '-'"></td>
+                                    </template>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button @click="goToStep(2)" :disabled="!file || !preview"
+                    class="px-8 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-medium transition">
+                    Continuar ÔåÆ
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2: Column Mapping -->
+        <div x-show="step === 2" class="space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-xl font-bold mb-2">Confirma el mapeo de columnas</h2>
+                <p class="text-slate-400 text-sm">Hemos detectado autom├íticamente tus columnas. Verifica que sean
+                    correctas.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Date Column -->
+                <div class="wizard-step rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="size-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">­ƒôà
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-white">Columna de Fecha</div>
+                            <div class="text-[10px] text-slate-500">Campo con fecha de transacci├│n</div>
+                        </div>
+                    </div>
+                    <select x-model="mapping.date"
+                        class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm">
+                        <option value="">-- Seleccionar --</option>
+                        <template x-for="col in preview" :key="col.name">
+                            <option :value="col.name" x-text="col.name" :selected="col.detected === 'date'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Customer ID Column -->
+                <div class="wizard-step rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="size-10 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                            ­ƒæñ</div>
+                        <div>
+                            <div class="text-sm font-medium text-white">Columna de Cliente</div>
+                            <div class="text-[10px] text-slate-500">ID o identificador del cliente</div>
+                        </div>
+                    </div>
+                    <select x-model="mapping.customer_id"
+                        class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm">
+                        <option value="">-- Seleccionar --</option>
+                        <template x-for="col in preview" :key="col.name">
+                            <option :value="col.name" x-text="col.name" :selected="col.detected === 'id'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Value Column -->
+                <div class="wizard-step rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="size-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                            ­ƒÆ░</div>
+                        <div>
+                            <div class="text-sm font-medium text-white">Columna de Valor</div>
+                            <div class="text-[10px] text-slate-500">Importe, precio o revenue</div>
+                        </div>
+                    </div>
+                    <select x-model="mapping.value"
+                        class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm">
+                        <option value="">-- Seleccionar --</option>
+                        <template x-for="col in preview" :key="col.name">
+                            <option :value="col.name" x-text="col.name" :selected="col.detected === 'value'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Channel Column (Optional) -->
+                <div class="wizard-step rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="size-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400">
+                            ­ƒôó</div>
+                        <div>
+                            <div class="text-sm font-medium text-white">Canal (Opcional)</div>
+                            <div class="text-[10px] text-slate-500">Fuente o canal de marketing</div>
+                        </div>
+                    </div>
+                    <select x-model="mapping.channel"
+                        class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-3 text-white text-sm">
+                        <option value="">-- No aplica --</option>
+                        <template x-for="col in preview" :key="col.name">
+                            <option :value="col.name" x-text="col.name"></option>
+                        </template>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Validation Messages -->
+            <div x-show="mappingErrors.length" class="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4">
+                <div class="text-rose-400 text-sm font-medium mb-2">ÔÜá´©Å Corrige estos campos:</div>
+                <template x-for="err in mappingErrors" :key="err">
+                    <div class="text-rose-300 text-xs" x-text="ÔÇó " + err"></div>
+                </template>
+            </div>
+
+            <div class="flex justify-between">
+                <button @click="goToStep(1)"
+                    class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium transition">
+                    ÔåÉ Volver
+                </button>
+                <button @click="analyzeAndProceed()" :disabled="!mapping.date || !mapping.value"
+                    class="px-8 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-medium transition">
+                    <span x-show="!analyzing">Analizar Datos ÔåÆ</span>
+                    <span x-show="analyzing" class="flex items-center gap-2">
+                        <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+                                fill="none" />
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Analizando...
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 3: Results & Algorithms -->
+        <div x-show="step === 3" class="space-y-8">
+            <div class="text-center mb-8">
+                <div class="text-5xl mb-4"
+                    x-text="report?.overall?.score >= 70 ? '­ƒÄë' : (report?.overall?.score >= 40 ? '­ƒæì' : 'ÔÜá´©Å')"></div>
+                <h2 class="text-xl font-bold mb-2">An├ílisis Completado</h2>
+                <p class="text-slate-400 text-sm">Aqu├¡ est├í el resumen de tus datos y algoritmos disponibles</p>
+            </div>
+
+            <!-- Health Score -->
+            <div class="wizard-step rounded-2xl p-8 text-center">
+                <div class="text-6xl font-black mb-4" :class="{
+                         'text-rose-400': report?.overall?.score < 30,
+                         'text-amber-400': report?.overall?.score >= 30 && report?.overall?.score < 50,
+                         'text-blue-400': report?.overall?.score >= 50 && report?.overall?.score < 70,
+                         'text-emerald-400': report?.overall?.score >= 70
+                     }" x-text="report?.overall?.score || 0"></div>
+                <div class="text-sm text-slate-400 uppercase tracking-widest"
+                    x-text="'Calidad: ' + (report?.overall?.level || 'desconocido')"></div>
+
+                <div class="grid grid-cols-3 gap-8 mt-8 pt-8 border-t border-white/10">
+                    <div>
+                        <div class="text-2xl font-bold text-white" x-text="report?.row_count?.toLocaleString() || 0">
+                        </div>
+                        <div class="text-xs text-slate-500">Registros</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-white" x-text="report?.date_range?.span_months || 0"></div>
+                        <div class="text-xs text-slate-500">Meses de Historial</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-white"
+                            x-text="Math.round(report?.completeness?.score || 0) + '%'"></div>
+                        <div class="text-xs text-slate-500">Completitud</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Algorithms Unlocked -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Unlocked -->
+                <div class="wizard-step completed rounded-xl p-6">
+                    <div class="text-sm font-medium text-emerald-400 mb-4 flex items-center gap-2">
+                        <span>Ô£ô</span> Algoritmos Desbloqueados (<span
+                            x-text="report?.algorithms?.unlocked || 0"></span>)
+                    </div>
+                    <div class="space-y-2">
+                        <template x-for="algo in algorithms?.unlocked_list?.slice(0, 6)" :key="algo.id">
+                            <div class="flex items-center gap-3 text-sm">
+                                <span x-text="algo.icon"></span>
+                                <span class="text-white" x-text="algo.name"></span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Locked -->
+                <div class="wizard-step rounded-xl p-6">
+                    <div class="text-sm font-medium text-slate-500 mb-4 flex items-center gap-2">
+                        <span>­ƒöÆ</span> Pr├│ximamente (<span x-text="report?.algorithms?.locked || 0"></span>)
+                    </div>
+                    <div class="space-y-2">
+                        <template x-for="algo in algorithms?.locked_list?.slice(0, 4)" :key="algo.id">
+                            <div class="flex items-center justify-between text-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="opacity-50" x-text="algo.icon"></span>
+                                    <span class="text-slate-500" x-text="algo.name"></span>
+                                </div>
+                                <span class="text-[10px] text-slate-600"
+                                    x-text="algo.status?.months_needed ? '+' + algo.status.months_needed + ' meses' : ''"></span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div x-show="report?.recommendations?.length" class="wizard-step rounded-xl p-6">
+                <div class="text-sm font-medium text-white mb-4 flex items-center gap-2">
+                    <span>­ƒÆí</span> Recomendaciones para Mejorar
+                </div>
+                <div class="space-y-3">
+                    <template x-for="rec in report?.recommendations" :key="rec">
+                        <div class="text-sm text-slate-400 pl-4 border-l-2 border-indigo-500/30" x-text="rec"></div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-between pt-6">
+                <button @click="goToStep(1); reset()"
+                    class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium transition">
+                    Importar Otro Archivo
+                </button>
+                <a href="/app"
+                    class="px-8 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition inline-flex items-center gap-2">
+                    Ir al Dashboard ÔåÆ
+                </a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    function importWizard() {
+        return {
+            step: 1,
+            steps: [
+                { title: 'Subir Archivo', subtitle: 'CSV, Excel o JSON' },
+                { title: 'Mapear Columnas', subtitle: 'Confirma la estructura' },
+                { title: 'Resultados', subtitle: 'Algoritmos disponibles' }
+            ],
+
+            // Step 1
+            file: null,
+            isDragging: false,
+            preview: null,
+            previewRows: [],
+
+            // Step 2
+            mapping: {
+                date: '',
+                customer_id: '',
+                value: '',
+                channel: ''
+            },
+            mappingErrors: [],
+            analyzing: false,
+
+            // Step 3
+            report: null,
+            algorithms: null,
+
+            init() {
+                // Initialize any defaults
+            },
+
+            goToStep(s) {
+                this.step = s;
+            },
+
+            handleDrop(e) {
+                this.isDragging = false;
+                const files = e.dataTransfer.files;
+                if (files.length) this.processFile(files[0]);
+            },
+
+            handleFileSelect(e) {
+                const files = e.target.files;
+                if (files.length) this.processFile(files[0]);
+            },
+
+            async processFile(f) {
+                this.file = f;
+                // Parse preview (simplified - real implementation would use Papa Parse)
+                const text = await f.text();
+                const lines = text.split('\n').filter(l => l.trim());
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+
+                this.preview = headers.map(h => ({
+                    name: h,
+                    detected: this.detectColumnType(h)
+                }));
+
+                this.previewRows = lines.slice(1, 6).map(line => {
+                    const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+                    const row = {};
+                    headers.forEach((h, i) => row[h] = values[i] || '');
+                    return row;
+                });
+
+                // Auto-fill mapping from detected columns
+                this.preview.forEach(col => {
+                    if (col.detected === 'date' && !this.mapping.date) this.mapping.date = col.name;
+                    if (col.detected === 'id' && !this.mapping.customer_id) this.mapping.customer_id = col.name;
+                    if (col.detected === 'value' && !this.mapping.value) this.mapping.value = col.name;
+                });
+            },
+
+            detectColumnType(name) {
+                const lower = name.toLowerCase();
+                if (/date|fecha|time|created|updated/.test(lower)) return 'date';
+                if (/customer|user|client|id|uid/.test(lower)) return 'id';
+                if (/amount|value|total|price|revenue|sales|importe|valor/.test(lower)) return 'value';
+                return null;
+            },
+
+            formatFileSize(bytes) {
+                if (!bytes) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            },
+
+            async analyzeAndProceed() {
+                this.mappingErrors = [];
+                if (!this.mapping.date) this.mappingErrors.push('Selecciona una columna de fecha');
+                if (!this.mapping.value) this.mappingErrors.push('Selecciona una columna de valor');
+
+                if (this.mappingErrors.length) return;
+
+                this.analyzing = true;
+
+                try {
+                    // Upload file for analysis
+                    const formData = new FormData();
+                    formData.append('file', this.file);
+
+                    const res = await fetch('/api/data/analyze', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await res.json();
+                    this.report = data.report;
+
+                    // Get algorithm status
+                    const algoRes = await fetch('/api/algorithms/status?months=' + (this.report?.date_range?.span_months || 0) + '&records=' + (this.report?.row_count || 0));
+                    this.algorithms = await algoRes.json();
+
+                    this.goToStep(3);
+
+                } catch (e) {
+                    console.error('Analysis failed:', e);
+                    this.mappingErrors.push('Error al analizar el archivo. Verifica el formato.');
+                }
+
+                this.analyzing = false;
+            },
+
+            reset() {
+                this.file = null;
+                this.preview = null;
+                this.previewRows = [];
+                this.mapping = { date: '', customer_id: '', value: '', channel: '' };
+                this.report = null;
+                this.algorithms = null;
+            }
+        }
+    }
+</script>
+{% endblock %}

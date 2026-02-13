@@ -47,6 +47,8 @@ class EnterpriseMMOptimizer:
         self.fitted_params = {}
         self.trace = None
         self.random_seed = random_seed
+        self.exogenous_data = None # For Elite 2.0
+        self.synergy_config_2_0 = {} # Elite 2.0
         np.random.seed(random_seed)
     
     # ============================================================
@@ -133,29 +135,55 @@ class EnterpriseMMOptimizer:
     # CHANNEL SYNERGY MATRIX
     # ============================================================
     
-    def set_channel_synergy(self, channels: List[str], 
-                            synergy_values: Dict[Tuple[str, str], float]):
+    def set_channel_synergy_elite(self, channels: List[str], 
+                                  synergy_config: Dict[str, Dict]):
         """
-        Defines the channel interaction matrix.
-        Example: synergy_values = {('Meta', 'Google'): 1.15, ('TikTok', 'Meta'): 1.08}
+        Elite Synergy 2.0: Supports lagged interactions and asymmetric boosts.
+        config format: {'SourceChannel': {'TargetChannel': {'lag': int, 'boost': float}}}
         """
-        n = len(channels)
-        self.synergy_matrix = np.eye(n)  # Identity = no synergy
         self.channel_index = {ch: i for i, ch in enumerate(channels)}
+        self.synergy_config_2_0 = synergy_config
+        return True
+
+    def apply_synergy_elite(self, transformed_spend: List[np.ndarray]) -> List[np.ndarray]:
+        """
+        Applies Synergy 2.0 with lagged effects.
+        """
+        if not self.synergy_config_2_0:
+            return transformed_spend
+            
+        n_channels = len(transformed_spend)
+        n_periods = len(transformed_spend[0])
+        boosted_spend = [s.copy() for s in transformed_spend]
         
-        for (ch1, ch2), value in synergy_values.items():
-            if ch1 in self.channel_index and ch2 in self.channel_index:
-                i, j = self.channel_index[ch1], self.channel_index[ch2]
-                self.synergy_matrix[i, j] = value
-                self.synergy_matrix[j, i] = value  # Symmetric
-        
-        return self.synergy_matrix
-    
+        for source, targets in self.synergy_config_2_0.items():
+            if source in self.channel_index:
+                s_idx = self.channel_index[source]
+                source_effect = transformed_spend[s_idx]
+                
+                for target, params in targets.items():
+                    if target in self.channel_index:
+                        t_idx = self.channel_index[target]
+                        lag = params.get('lag', 0)
+                        boost = params.get('boost', 1.0)
+                        
+                        # Apply lagged boost
+                        # target_effect[t] += source_effect[t-lag] * boost
+                        if lag > 0:
+                            shifted_source = np.zeros_like(source_effect)
+                            shifted_source[lag:] = source_effect[:-lag]
+                            boosted_spend[t_idx] += shifted_source * (boost - 1.0)
+                        else:
+                            boosted_spend[t_idx] += source_effect * (boost - 1.0)
+                            
+        return boosted_spend
+
+    def set_exogenous_data(self, data: np.ndarray):
+        """Elite 2.0: Add external factors like Market Index, Seasonality."""
+        self.exogenous_data = data # Shape (n_periods, n_exog)
+
     def apply_synergy(self, channel_effects: np.ndarray) -> np.ndarray:
-        """
-        Applies synergy coefficients to individual channel effects.
-        Total effect = base_effects @ synergy_matrix
-        """
+        """Deprecated/Standard synergy matrix application."""
         if self.synergy_matrix is None:
             return channel_effects
         return channel_effects @ self.synergy_matrix
@@ -168,25 +196,39 @@ class EnterpriseMMOptimizer:
                            revenue_data: np.ndarray,
                            channel_names: List[str],
                            n_samples: int = 2000,
-                           n_chains: int = 2) -> Dict:
+                           n_chains: int = 2,
+                           integrity_factor: float = 1.0,
+                           mer_prior: float = None) -> Dict:
         """
         Full Bayesian inference using PyMC.
-        Returns posterior distributions for channel coefficients.
-        
-        Args:
-            spend_data: Shape (n_periods, n_channels)
-            revenue_data: Shape (n_periods,)
-            channel_names: List of channel names
-            n_samples: MCMC samples per chain
-            n_chains: Number of parallel chains
-        
-        Returns:
-            Dictionary with posteriors and diagnostics
+        mer_prior: Optional global efficiency signal to anchor channel coefficients.
         """
+        # Robustness: Pre-flight data cleaning
+        spend_data, revenue_data = self._validate_data(spend_data, revenue_data)
+        
         if not PYMC_AVAILABLE:
-            return self._fallback_inference(spend_data, revenue_data, channel_names)
+            return self._fallback_inference(spend_data, revenue_data, channel_names, mer_prior=mer_prior)
         
         n_periods, n_channels = spend_data.shape
+        
+        # BI Reinforcement: Inform Beta priors with historical MER
+        reinforcement_reason = None
+        beta_sigma = 0.5
+        intercept_mu = revenue_data.mean()
+        
+        if mer_prior is not None:
+            # Adjust expected coefficient scale based on MER
+            beta_sigma = 0.3 + (0.1 * mer_prior)
+            impact = "alta" if mer_prior > 3 else "conservadora"
+            reinforcement_reason = (
+                f"Anclaje Bayesiano activado: Se ha usado un MER histórico de {mer_prior:.2f} "
+                f"para definir una expectativa {impact} de impacto publicitario en los coeficientes (beta)."
+            )
+            
+            # If efficiency is very high (MER >> 5), we reduce intercept
+            if mer_prior > 5:
+                intercept_mu = revenue_data.mean() * 0.7
+                reinforcement_reason += " Además, se ha reducido el intercepto base para atribuir más peso al marketing incremental."
         
         with pm.Model() as mmm_model:
             # Priors for adstock parameters (per channel)
@@ -197,10 +239,10 @@ class EnterpriseMMOptimizer:
             gamma = pm.HalfNormal("gamma", sigma=1, shape=n_channels)
             
             # Channel coefficients (positive effect)
-            beta = pm.HalfNormal("beta", sigma=0.5, shape=n_channels)
+            beta = pm.HalfNormal("beta", sigma=beta_sigma, shape=n_channels)
             
             # Intercept (baseline sales)
-            intercept = pm.Normal("intercept", mu=revenue_data.mean(), sigma=revenue_data.std())
+            intercept = pm.Normal("intercept", mu=intercept_mu, sigma=revenue_data.std() * integrity_factor)
             
             # Transform spend data
             transformed_spend = []
@@ -218,7 +260,15 @@ class EnterpriseMMOptimizer:
             mu = intercept + pm.math.dot(X_transformed, beta)
             
             # Likelihood
+            # Likelihood
             sigma = pm.HalfNormal("sigma", sigma=revenue_data.std() / 2)
+            
+            # Elite 2.0: Exogenous integration
+            if self.exogenous_data is not None:
+                n_exog = self.exogenous_data.shape[1]
+                beta_exog = pm.Normal("beta_exog", mu=0, sigma=1, shape=n_exog)
+                mu += pm.math.dot(self.exogenous_data, beta_exog)
+                
             y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma, observed=revenue_data)
             
             # Sample
@@ -249,7 +299,8 @@ class EnterpriseMMOptimizer:
     
     def _fallback_inference(self, spend_data: np.ndarray, 
                             revenue_data: np.ndarray,
-                            channel_names: List[str]) -> Dict:
+                            channel_names: List[str],
+                            mer_prior: float = None) -> Dict:
         """
         Fallback inference using bootstrapped OLS when PyMC is unavailable.
         """
@@ -272,6 +323,15 @@ class EnterpriseMMOptimizer:
         
         betas = np.array(betas)
         
+        # Apply simple MER reinforcement to fallback
+        reinforcement_reason = None
+        if mer_prior is not None:
+            # Shift coefficients slightly (+/- 10%) based on MER as a heuristic
+            adjustment = 0.9 + (0.2 * (mer_prior / 5.0)) # Normalizing around MER=2.5
+            betas = betas * np.clip(adjustment, 0.8, 1.2)
+            direction = "alza" if adjustment > 1 else "baja"
+            reinforcement_reason = f"Refuerzo heurístico ({direction}) basado en MER histórico de {mer_prior:.2f} (Simulación Fallback)."
+
         return {
             "posterior_means": betas.mean(axis=0).tolist(),
             "posterior_stds": betas.std(axis=0).tolist(),
@@ -280,9 +340,11 @@ class EnterpriseMMOptimizer:
                 for ch in range(n_channels)
             ],
             "channel_names": channel_names,
-            "r_hat": [1.0] * n_channels,  # No convergence diagnostic for OLS
+            "r_hat": [1.0] * n_channels,
             "n_samples": n_bootstrap,
-            "model_type": "bootstrap_ridge_fallback"
+            "model_type": "bootstrap_ridge_fallback",
+            "reinforcement_applied": mer_prior is not None,
+            "reinforcement_reason": reinforcement_reason
         }
     
     # ============================================================
@@ -485,10 +547,22 @@ class EnterpriseMMOptimizer:
         
         beta = np.array(channel_coefficients)
         
-        def objective(allocation):
-            """Maximize expected revenue (minimize negative)."""
+        def objective(allocation, mode='revenue', lmbda=0.5):
+            """
+            Elite 2.0: Multi-Objective Optimization.
+            mode 'revenue': Maximize pure revenue.
+            mode 'balanced': Maximize Revenue while maintaining Efficiency (ROI).
+            lmbda: weighting between scale (0) and efficiency (1).
+            """
             saturated = self.hill_saturation(allocation, hill_alpha, hill_gamma)
             revenue = np.sum(beta * saturated)
+            
+            if mode == 'balanced':
+                # Efficiency component: ROAS (Revenue / Cost)
+                roas = revenue / (np.sum(allocation) + 1e-10)
+                # Weighted objective (Negative for minimization)
+                return -((1 - lmbda) * revenue + lmbda * roas * 1000) # Scaling ROAS for balance
+                
             return -revenue
         
         # Constraints
@@ -505,11 +579,14 @@ class EnterpriseMMOptimizer:
         # Initial guess: proportional to coefficients
         initial = total_budget * beta / beta.sum()
         
+        # Mode can be passed via self if needed, defaulting to standard for now
+        # TODO: Accept mode/lmbda as arguments in optimize_budget
         result = minimize(
             objective, initial, 
             method='SLSQP',
             bounds=bounds,
-            constraints=constraints
+            constraints=constraints,
+            args=('balanced', 0.3) # Defaulting to slight focus on scale
         )
         
         optimal_allocation = result.x
@@ -546,6 +623,18 @@ class EnterpriseMMOptimizer:
         
         return marginal_roas
     
+    def _validate_data(self, spend: np.ndarray, revenue: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """Ensures data is numeric and handles NaNs with zero-fill + warning."""
+        if np.isnan(spend).any():
+            warnings.warn("MMM: NaNs detected in spend data. Filling with zeros. Predictions in these periods will have higher uncertainty.")
+            spend = np.nan_to_num(spend, nan=0.0)
+            
+        if np.isnan(revenue).any():
+            warnings.warn("MMM: NaNs detected in revenue data. Filling with mean. This may degrade precision.")
+            revenue = np.nan_to_num(revenue, nan=np.nanmean(revenue))
+            
+        return spend, revenue
+
     # ============================================================
     # FULL ENTERPRISE PIPELINE
     # ============================================================

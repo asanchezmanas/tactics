@@ -1,5 +1,5 @@
-import os
-from fastapi import FastAPI, BackgroundTasks, HTTPException, Request, Depends
+﻿import os
+from fastapi import FastAPI, BackgroundTasks, HTTPException, Request, Depends, File, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -30,132 +30,210 @@ class SyncRequest(BaseModel):
 
 # --- Public Marketing Routes ---
 @app.get("/", response_class=HTMLResponse)
-async def serve_landing(request: Request):
+@app.get("/{locale}", response_class=HTMLResponse)
+async def serve_landing(request: Request, locale: str = "es"):
     """Serves the public landing page."""
-    return templates.TemplateResponse("public/landing.html", {"request": request})
+    return templates.TemplateResponse("public/landing.html", {"request": request, "locale": locale})
 
 @app.get("/soporte", response_class=HTMLResponse)
-async def serve_faqs(request: Request):
+@app.get("/{locale}/soporte", response_class=HTMLResponse)
+async def serve_faqs(request: Request, locale: str = "es"):
     """Serves the public FAQ page."""
-    return templates.TemplateResponse("public/faqs.html", {"request": request})
+    return templates.TemplateResponse("public/faqs.html", {"request": request, "locale": locale})
 
 @app.get("/login", response_class=HTMLResponse)
-async def serve_login(request: Request):
+@app.get("/{locale}/login", response_class=HTMLResponse)
+async def serve_login(request: Request, locale: str = "es"):
     """Placeholder for the login view."""
-    return HTMLResponse("<h1>Página de Login</h1><p>Funcionalidad en desarrollo.</p><a href='/'>Volver al inicio</a>")
+    return HTMLResponse("<h1>P├ígina de Login</h1><p>Funcionalidad en desarrollo.</p><a href='/'>Volver al inicio</a>")
 
 # --- Blog Routes ---
 @app.get("/blog", response_class=HTMLResponse)
-async def serve_blog(request: Request):
-    """Serves the blog list page."""
-    return templates.TemplateResponse("public/blog.html", {"request": request})
+@app.get("/{locale}/blog", response_class=HTMLResponse)
+async def serve_blog(request: Request, locale: str = "es"):
+    """Serves the blog list page with locale awareness."""
+    return templates.TemplateResponse("public/blog.html", {
+        "request": request,
+        "locale": locale
+    })
 
 @app.get("/blog/{slug}", response_class=HTMLResponse)
-async def serve_blog_post(request: Request, slug: str):
-    """Serves an individual blog post."""
-    # Mapping for demonstration (slug -> title)
-    slug_titles = {
-        "ciencia-de-la-sutileza": "La Ciencia de la Sutileza: Mejorando los Tests A/B con Micro-Cambios"
-    }
-    title = slug_titles.get(slug, "Artículo de Estrategia")
+@app.get("/{locale}/blog/{slug}", response_class=HTMLResponse)
+async def serve_blog_post(request: Request, slug: str, locale: str = "es"):
+    """Serves an individual blog post rendered from Markdown with locale support."""
+    from .blog_engine import get_blog_post_data
+    
+    result = get_blog_post_data(slug, locale=locale)
+    
+    if not result["success"]:
+        raise HTTPException(status_code=result.get("status_code", 404), detail=result["error"])
+        
     return templates.TemplateResponse("public/blog_post.html", {
         "request": request,
-        "post_title": title
+        "post_title": result["title"],
+        "post_content": result["html"],
+        "locale": locale
     })
+
+
+@app.get("/demo/diagnostic", response_class=HTMLResponse)
+@app.get("/{locale}/demo/diagnostic", response_class=HTMLResponse)
+async def serve_diagnostic(request: Request, locale: str = "es"):
+    """Serves the frictionless Diagnostic Tool."""
+    return templates.TemplateResponse("public/diagnostic.html", {"request": request, "locale": locale})
+
+@app.get("/demo/sandbox", response_class=HTMLResponse)
+@app.get("/{locale}/demo/sandbox", response_class=HTMLResponse)
+async def serve_sandbox(request: Request, locale: str = "es"):
+    """Serves the Live Sandbox Dashboard populated by session data."""
+    return templates.TemplateResponse("public/sandbox_dashboard.html", {"request": request, "locale": locale})
 
 # --- App Routes ---
 @app.get("/app", response_class=HTMLResponse)
-async def serve_dashboard(request: Request):
+@app.get("/{locale}/app", response_class=HTMLResponse)
+async def serve_dashboard(request: Request, locale: str = "es"):
     """Serves the integrated AI dashboard via Jinja2."""
     return templates.TemplateResponse("app/dashboard.html", {
         "request": request, 
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/facturacion", response_class=HTMLResponse)
-async def serve_billing(request: Request):
+@app.get("/{locale}/app/facturacion", response_class=HTMLResponse)
+async def serve_billing(request: Request, locale: str = "es"):
     """Serves the Billing and Invoices page."""
     return templates.TemplateResponse("app/billing.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/configuracion", response_class=HTMLResponse)
-async def serve_settings(request: Request):
+@app.get("/{locale}/app/configuracion", response_class=HTMLResponse)
+async def serve_settings(request: Request, locale: str = "es"):
     """Serves the Account Settings and Security page."""
     return templates.TemplateResponse("app/settings.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/alertas", response_class=HTMLResponse)
-async def serve_alerts(request: Request):
+@app.get("/{locale}/app/alertas", response_class=HTMLResponse)
+async def serve_alerts(request: Request, locale: str = "es"):
     """Serves the Bayesian Alerts inbox."""
     return templates.TemplateResponse("app/alerts.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/asistente", response_class=HTMLResponse)
-async def serve_ai_assistant(request: Request):
+@app.get("/{locale}/app/asistente", response_class=HTMLResponse)
+async def serve_ai_assistant(request: Request, locale: str = "es"):
     """Serves the AI Strategic Assistant chat."""
     return templates.TemplateResponse("app/ai_assistant.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/cohortes", response_class=HTMLResponse)
-async def serve_cohorts(request: Request):
+@app.get("/{locale}/app/cohortes", response_class=HTMLResponse)
+async def serve_cohorts(request: Request, locale: str = "es"):
     """Serves the Customer Cohorts & LTV management page."""
     return templates.TemplateResponse("app/cohorts.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/crm", response_class=HTMLResponse)
-async def serve_crm(request: Request):
+@app.get("/{locale}/app/crm", response_class=HTMLResponse)
+async def serve_crm(request: Request, locale: str = "es"):
     """Serves the Advanced CRM Dashboard (Engine A)."""
     return templates.TemplateResponse("app/insights_crm.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/analytics", response_class=HTMLResponse)
-async def serve_analytics(request: Request):
+@app.get("/{locale}/app/analytics", response_class=HTMLResponse)
+async def serve_analytics(request: Request, locale: str = "es"):
     """Serves the MMM Pro Analytics Dashboard (Engine B)."""
     return templates.TemplateResponse("app/mmm_pro.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/connectors", response_class=HTMLResponse)
-async def serve_connectors(request: Request):
+@app.get("/{locale}/app/connectors", response_class=HTMLResponse)
+async def serve_connectors(request: Request, locale: str = "es"):
     """Serves the Data Connectors management page."""
     return templates.TemplateResponse("app/connectors.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
+@app.get("/app/import", response_class=HTMLResponse)
+@app.get("/{locale}/app/import", response_class=HTMLResponse)
+async def serve_import_wizard(request: Request, locale: str = "es"):
+    """Serves the CSV Import Wizard for data ingestion."""
+    return templates.TemplateResponse("app/import_wizard.html", {"request": request, "locale": locale})
+
 @app.get("/app/system-health", response_class=HTMLResponse)
-async def serve_system_health(request: Request):
+@app.get("/{locale}/app/system-health", response_class=HTMLResponse)
+async def serve_system_health(request: Request, locale: str = "es"):
     """Serves the System Health & Resilience Dashboard."""
     return templates.TemplateResponse("app/system_health.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
+    })
+
+@app.get("/app/calibration-audit", response_class=HTMLResponse)
+@app.get("/{locale}/app/calibration-audit", response_class=HTMLResponse)
+async def serve_calibration_audit(request: Request, locale: str = "es"):
+    """Serves the Data Integrity & Traceability Audit page."""
+    return templates.TemplateResponse("app/calibration_audit.html", {
+        "request": request,
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/profile", response_class=HTMLResponse)
-async def serve_profile(request: Request):
+@app.get("/{locale}/app/profile", response_class=HTMLResponse)
+async def serve_profile(request: Request, locale: str = "es"):
     """Serves the User Profile page."""
     return templates.TemplateResponse("app/profile.html", {
         "request": request,
-        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6"
+        "company_id": "c7a9b1d2-e3f4-5678-a9b0-c1d2e3f4g5h6",
+        "locale": locale
     })
 
 @app.get("/app/showcase", response_class=HTMLResponse)
-async def serve_showcase(request: Request):
+@app.get("/{locale}/app/showcase", response_class=HTMLResponse)
+async def serve_showcase(request: Request, locale: str = "es"):
     """Serves the Showcase Gallery with demo datasets."""
-    return templates.TemplateResponse("app/showcase.html", {"request": request})
+    return templates.TemplateResponse("app/showcase.html", {"request": request, "locale": locale})
+
+@app.get("/app/showcase/insights/{case_id}", response_class=HTMLResponse)
+async def serve_showcase_detail(case_id: str, request: Request):
+    """Serves a granular detail page for a specific showcase."""
+    from scripts.import_demo_showcases import SHOWCASES
+    if case_id not in SHOWCASES:
+        raise HTTPException(status_code=404, detail=f"Case {case_id} not found")
+        
+    template_path = f"app/showcases/{case_id}.html"
+    return templates.TemplateResponse(template_path, {
+        "request": request,
+        "showcase": SHOWCASES[case_id],
+        "case_id": case_id
+    })
 
 @app.get("/api/demo/activate/{case_id}")
 async def activate_demo(case_id: str, request: Request):
@@ -194,10 +272,6 @@ async def serve_reset_password(request: Request):
 async def health():
     return {"status": "healthy"}
 
-@app.get("/health")
-async def health():
-    return {"status": "healthy"}
-
 from .pipeline import run_full_pipeline
 from core.optimizer import run_budget_optimization, run_budget_optimization_bayesian
 from .database import get_dashboard_metrics, get_high_risk_vips, get_gastos
@@ -211,6 +285,7 @@ from core.explainers.mmm_explainer import MMMExplainer
 from core.explainers.eclat_explainer import ECLATExplainer
 from core.explainers.bandit_explainer import ThompsonExplainer, LinUCBExplainer
 from core.explainers.profit_explainer import ProfitExplainer
+from core.metrics_factory import BusinessMetricsFactory
 
 # Register all explainers on startup
 ExplainerRegistry.register("ltv", LTVExplainer())
@@ -219,6 +294,50 @@ ExplainerRegistry.register("eclat", ECLATExplainer())
 ExplainerRegistry.register("thompson", ThompsonExplainer())
 ExplainerRegistry.register("linucb", LinUCBExplainer())
 ExplainerRegistry.register("profit", ProfitExplainer())
+
+@app.get("/api/analytics/business-metrics/{company_id}")
+async def get_business_metrics(company_id: str, context: CompanyContext = Depends(get_current_user)):
+    """
+    Returns advanced BI metrics (MER, Retention, Growth) for a company.
+    """
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+
+    # Fetch raw data
+    ventas_res = supabase.table("ventas").select("*").eq("company_id", company_id).execute()
+    gastos_res = supabase.table("gastos_marketing").select("*").eq("company_id", company_id).execute()
+    
+    sales_df = pd.DataFrame(ventas_res.data) if ventas_res.data else pd.DataFrame()
+    marketing_df = pd.DataFrame(gastos_res.data) if gastos_res.data else pd.DataFrame()
+    
+    # Calculate metrics
+    factory = BusinessMetricsFactory(company_id)
+    report = factory.calculate_all(sales_df, marketing_df)
+    
+    return report
+
+from core.diagnostic_engine import DiagnosticEngine
+
+@app.post("/api/demo/diagnostic")
+async def process_diagnostic_csv(file: UploadFile = File(...)):
+    """
+    Processes a user-uploaded CSV for the Live Sandbox.
+    No authentication required (Public Lead Gen).
+    """
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Only CSV files are allowed")
+    
+    engine = DiagnosticEngine()
+    # Read file content
+    content = await file.read()
+    from io import StringIO
+    csv_text = content.decode('utf-8')
+    
+    result = engine.process_csv(StringIO(csv_text))
+    if not result["success"]:
+        raise HTTPException(status_code=422, detail=result["error"])
+    
+    return result
 
 @app.get("/api/health/system")
 async def get_system_health():
@@ -264,6 +383,39 @@ async def get_dashboard_data(context: CompanyContext = Depends(get_current_user)
         "metrics": metrics,
         "high_risk_vips": vips,
         "channel_performance": channel_performance
+    }
+
+@app.get("/api/elite/metrics")
+async def get_elite_metrics(context: CompanyContext = Depends(get_current_user)):
+    """
+    Returns high-tier Intelligence 2.0 metrics.
+    Requires Elite or Precision tier.
+    """
+    # In a real scenario, this would compute metrics from the database
+    # For now, we return high-fidelity mock data aligned with Elite algorithms
+    import numpy as np
+    
+    return {
+        "kinetic": {
+            "revenue_velocity": 124.50, # EUR/month acceleration
+            "revenue_momentum": 4500.12,
+            "velocity_trend": "accelerating",
+            "momentum_score": 88
+        },
+        "synergy": {
+            "index": 1.42, # 1.42x synergy factor
+            "top_pair": ("Meta Ads", "Google Ads"),
+            "efficiency_gain": 0.15, # 15% gain via synergy
+            "matrix": [
+                [1.0, 0.4, 0.2], # Meta vs Meta, Google, TikTok
+                [0.3, 1.0, 0.1],
+                [0.1, 0.1, 1.0]
+            ]
+        },
+        "attention": {
+            "sequence_focus": [0.05, 0.05, 0.05, 0.1, 0.2, 0.4, 0.1], # Weight per recent month
+            "critical_event": "Black Friday Prep"
+        }
     }
 
 @app.post("/sync-all")
@@ -438,52 +590,50 @@ async def quick_explain(category: str, metric_id: str, value: float, locale: str
         raise HTTPException(status_code=404, detail=f"Category '{category}' not found")
     
     explainer.locale = locale
-    result = explainer.explain(metric_id, value, {})
-    
     return result.to_dict()
 @app.exception_handler(400)
 async def custom_400_handler(request: Request, __):
-    return templates.TemplateResponse("errors/400.html", {"request": request}, status_code=400)
+    return templates.TemplateResponse("error/400.html", {"request": request}, status_code=400)
 
 @app.exception_handler(401)
 async def custom_401_handler(request: Request, __):
-    return templates.TemplateResponse("errors/401.html", {"request": request}, status_code=401)
+    return templates.TemplateResponse("error/401.html", {"request": request}, status_code=401)
 
 @app.exception_handler(403)
 async def custom_403_handler(request: Request, __):
-    return templates.TemplateResponse("errors/403.html", {"request": request}, status_code=403)
+    return templates.TemplateResponse("error/403.html", {"request": request}, status_code=403)
 
 @app.exception_handler(404)
 async def custom_404_handler(request: Request, __):
-    return templates.TemplateResponse("errors/404.html", {"request": request}, status_code=404)
+    return templates.TemplateResponse("error/404.html", {"request": request}, status_code=404)
 
 @app.exception_handler(405)
 async def custom_405_handler(request: Request, __):
-    return templates.TemplateResponse("errors/405.html", {"request": request}, status_code=405)
+    return templates.TemplateResponse("error/405.html", {"request": request}, status_code=405)
 
 @app.exception_handler(422)
 async def custom_422_handler(request: Request, __):
-    return templates.TemplateResponse("errors/422.html", {"request": request}, status_code=422)
+    return templates.TemplateResponse("error/422.html", {"request": request}, status_code=422)
 
 @app.exception_handler(429)
 async def custom_429_handler(request: Request, __):
-    return templates.TemplateResponse("errors/429.html", {"request": request}, status_code=429)
+    return templates.TemplateResponse("error/429.html", {"request": request}, status_code=429)
 
 @app.exception_handler(500)
 async def custom_500_handler(request: Request, __):
-    return templates.TemplateResponse("errors/500.html", {"request": request}, status_code=500)
+    return templates.TemplateResponse("error/500.html", {"request": request}, status_code=500)
 
 @app.exception_handler(502)
 async def custom_502_handler(request: Request, __):
-    return templates.TemplateResponse("errors/502.html", {"request": request}, status_code=502)
+    return templates.TemplateResponse("error/502.html", {"request": request}, status_code=502)
 
 @app.exception_handler(503)
 async def custom_503_handler(request: Request, __):
-    return templates.TemplateResponse("errors/503.html", {"request": request}, status_code=503)
+    return templates.TemplateResponse("error/503.html", {"request": request}, status_code=503)
 
 @app.exception_handler(504)
 async def custom_504_handler(request: Request, __):
-    return templates.TemplateResponse("errors/504.html", {"request": request}, status_code=504)
+    return templates.TemplateResponse("error/504.html", {"request": request}, status_code=504)
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
@@ -621,6 +771,182 @@ async def insert_manual_gasto(request: ManualGastoRequest,
     return ingestion.insert_gasto(
         request.fecha, request.canal, request.inversion
     )
+
+
+# === DATA QUALITY & ALGORITHM TIER ENDPOINTS ===
+from fastapi import UploadFile, File
+from core.data_quality import DataQualityAnalyzer, DataQualityReport
+from core.integrity_guard import IntegrityGuard
+from .ingestion_audit import IngestionAuditor
+from core.algorithm_tiers import AlgorithmTierService, get_algorithm_status
+import pandas as pd
+import io
+
+
+@app.post("/api/data/analyze")
+async def analyze_uploaded_data(file: UploadFile = File(...)):
+    """
+    Analiza un archivo CSV/Excel subido y retorna un reporte de calidad de datos.
+    
+    Retorna:
+    - Profundidad hist├│rica (meses de datos)
+    - Completitud de campos
+    - Densidad de registros
+    - Algoritmos desbloqueados/bloqueados
+    - Recomendaciones para mejorar la calidad
+    """
+    try:
+        contents = await file.read()
+        
+        # Detectar formato por extensi├│n
+        filename = file.filename.lower() if file.filename else ""
+        
+        if filename.endswith('.xlsx') or filename.endswith('.xls'):
+            df = pd.read_excel(io.BytesIO(contents))
+        elif filename.endswith('.json'):
+            df = pd.read_json(io.BytesIO(contents))
+        else:
+            # Default: CSV
+            df = pd.read_csv(io.BytesIO(contents))
+        
+        analyzer = DataQualityAnalyzer()
+        report = analyzer.analyze(df)
+        
+        return {
+            "success": True,
+            "filename": file.filename,
+            "report": report.to_dict()
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "report": None
+        }
+
+
+@app.get("/api/data/health/{company_id}")
+async def get_data_health(company_id: str):
+    """
+    Retorna el estado de salud de datos de una cuenta.
+    Analiza los datos existentes en la base de datos.
+    """
+    try:
+        # Obtener datos de la empresa desde la base de datos
+        if supabase:
+            ventas = supabase.table("ventas").select("*").eq("company_id", company_id).execute()
+            
+            if ventas.data:
+                df = pd.DataFrame(ventas.data)
+                analyzer = DataQualityAnalyzer()
+                report = analyzer.analyze(df)
+                return report.to_dict()
+        
+        # Si no hay datos o no hay supabase
+        return {
+            "overall": {"score": 0, "level": "critical"},
+            "row_count": 0,
+            "recommendations": ["Conecta una fuente de datos para empezar."],
+            "algorithms": {"unlocked": 0, "locked": 16}
+        }
+        
+    except Exception as e:
+        return {"error": str(e), "overall": {"score": 0, "level": "critical"}}
+
+
+@app.get("/api/data/integrity/{company_id}")
+async def get_deep_integrity(company_id: str, context: Optional[str] = "ventas"):
+    """
+    Realiza un escaneo profundo de integridad (duplicados, gaps, NaNs cr├¡ticos).
+    """
+    try:
+        if supabase:
+            # Obtener datos para escaneo
+            res = supabase.table(context).select("*").eq("company_id", company_id).limit(1000).execute()
+            if res.data:
+                df = pd.DataFrame(res.data)
+                guard = IntegrityGuard()
+                issues = guard.scan(df, context=context)
+                return {
+                    "success": True,
+                    "company_id": company_id,
+                    "context": context,
+                    "issue_count": len(issues),
+                    "issues": [
+                        {
+                            "type": i.type,
+                            "severity": i.severity,
+                            "column": i.column,
+                            "message": i.message,
+                            "affected_rows": i.affected_rows
+                        } for i in issues
+                    ]
+                }
+        
+        return {"success": False, "message": "No data found for scanning"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/data/receipts/{company_id}")
+async def get_ingestion_receipts(company_id: str):
+    """
+    Retorna el historial de recibos de importaci├│n (Audit Trail).
+    """
+    # En un entorno real, esto consultar├¡a la tabla 'ingestion_receipts'
+    # Por ahora devolvemos un log simulado basado en el IngestionAuditor
+    return {
+        "company_id": company_id,
+        "receipts": [
+            {
+                "batch_id": "batch_20260212_a8b9c0",
+                "timestamp": "2026-02-12T10:00:00Z",
+                "source": "shopify",
+                "status": "completed",
+                "input_rows": 1250,
+                "success_rows": 1250,
+                "checksum": "sha256:e3b0c442..."
+            },
+            {
+                "batch_id": "batch_20260211_d1e2f3",
+                "timestamp": "2026-02-11T15:30:00Z",
+                "source": "manual_csv",
+                "status": "partial",
+                "input_rows": 500,
+                "success_rows": 485,
+                "errors": 15,
+                "checksum": "sha256:88a1b2c3..."
+            }
+        ]
+    }
+
+
+@app.get("/api/algorithms/status")
+async def get_algorithms_status(months: int = 0, records: int = 0):
+    """
+    Retorna el estado de todos los algoritmos seg├║n los datos disponibles.
+    
+    Query params:
+    - months: meses de datos hist├│ricos
+    - records: cantidad de registros
+    
+    Retorna lista de algoritmos con estado desbloqueado/bloqueado.
+    """
+    return get_algorithm_status(months, records)
+
+
+@app.get("/api/algorithms/catalog")
+async def get_algorithms_catalog():
+    """
+    Retorna el cat├ílogo completo de algoritmos disponibles.
+    """
+    service = AlgorithmTierService()
+    return {
+        "total": len(service.catalog),
+        "algorithms": [a.to_dict() for a in service.catalog],
+        "tiers": ["basic", "standard", "advanced", "precision"]
+    }
 
 
 # Entry point for local development

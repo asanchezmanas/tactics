@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>503 - Mantenimiento | Tactics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#EEF2FF',
+                            100: '#E0E7FF',
+                            500: '#4F46E5',
+                            600: '#4338CA',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-slate-50 dark:bg-[#0F172A] font-sans antialiased overflow-hidden">
+    <div class="relative flex min-h-screen w-full flex-col items-center justify-center">
+
+        <div class="relative z-10 flex flex-col items-center text-center px-6">
+            <div class="mb-8 flex items-center gap-2 text-indigo-400">
+                <span class="material-symbols-outlined text-4xl animate-spin">settings</span>
+                <span class="text-2xl font-bold tracking-tight dark:text-white text-slate-900">Tactics<span
+                        class="text-brand-500">.ai</span></span>
+            </div>
+
+            <h1 class="text-[120px] md:text-[180px] font-black leading-none text-indigo-500 opacity-10 mb-4">503</h1>
+
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full">
+                <h2 class="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Recalibrando Motores</h2>
+                <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-10 text-lg">
+                    Estamos realizando mantenimientos preventivos en la infraestructura de IA para asegurar una
+                    precisi├│n SOTA. Volveremos en unos momentos.
+                </p>
+
+                <div class="flex flex-col gap-4 items-center">
+                    <div class="w-full max-w-xs h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div class="h-full bg-brand-500 w-[65%] animate-pulse"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Progreso del
+                        mantenimiento: 65%</span>
+
+                    <a href="/soporte"
+                        class="mt-6 px-8 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-500/25">
+                        Ver estado del sistema
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-0 w-full text-center px-6">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">┬® 2026 Tactics.ai ÔÇó Mantenimiento
+                Programado</p>
+        </div>
+    </div>
+</body>
+
+</html>

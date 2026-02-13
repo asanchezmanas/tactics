@@ -4,6 +4,8 @@ Bienvenido a **Tactics**, el "Cerebro de Marketing" diseñado para agencias y e-
 
 ## 📌 Categorías de Documentación
 
+- **[Glosario de Términos (Intelligence 2.0)](file:///c:/Users/Artur/tactics/docs/GLOSSARY.md)**: Diccionario integral de terminología técnica y de negocio.
+
 ### 🧠 Estrategia y Marca (`/docs/strategy`)
 - **[Filosofía Tactics](file:///c:/Users/Artur/tactics/docs/strategy/PHILOSOPHY.md)**: El "Porqué". Sobriedad, precisión y la misión LTV-ROAS.
 - **[Copy de Marca](file:///c:/Users/Artur/tactics/docs/strategy/copy.md)**: Guía de mensajes, hero copy y terminología oficial.
@@ -16,6 +18,7 @@ Bienvenido a **Tactics**, el "Cerebro de Marketing" diseñado para agencias y e-
 - **[Frontend Architecture](file:///c:/Users/Artur/tactics/docs/technical/FRONTEND_ARCHITECTURE.md)**: Stack "No-build" (Alpine.js + Tailwind).
 - **[Ingestión de Datos](file:///c:/Users/Artur/tactics/docs/technical/INGESTION.md)**: Conectores y normalización de datos.
 - **[Sistema de Blog](file:///c:/Users/Artur/tactics/docs/technical/BLOG_SYSTEM.md)**: Arquitectura del blog dinámico con Jinja2.
+- **[Blog: Diagnóstico Fricción Cero](file:///c:/Users/Artur/tactics/docs/blog/diagnostico_friccion_cero.md)**: Por qué el Sandbox es el futuro de la captación.
 - **[Showcase & Demos](file:///c:/Users/Artur/tactics/docs/technical/SHOWCASE_DEMOS.md)**: Datasets de demostración para explorar los motores.
 - **[Esquema de Base de Datos](file:///c:/Users/Artur/tactics/docs/technical/db_schema.sql)**: Estructura de Supabase/PostgreSQL.
 
@@ -23,6 +26,8 @@ Bienvenido a **Tactics**, el "Cerebro de Marketing" diseñado para agencias y e-
 - **[Seguridad Internxt](file:///c:/Users/Artur/tactics/docs/help/internxt_security.md)**: Explicación para clientes sobre la protección de sus datos.
 - **[Guía de Inicio](file:///c:/Users/Artur/tactics/docs/help/01_configuracion_inicial.md)**: Primeros pasos para configurar Tactics.
 - **[Metodología LTV](file:///c:/Users/Artur/tactics/docs/help/customer_value.md)**: Cómo entender el Valor de Vida del Cliente.
+- **[Cómo ver lo que otros ignoran: El Radar de Rentabilidad](file:///c:/Users/Artur/tactics/docs/blog/radar_rentabilidad_instantaneo.md)**
+- **[¿Por qué mi IA dice eso? Entendiendo las Razones de Refuerzo](file:///c:/Users/Artur/tactics/docs/blog/ia_transparente.md)**
 - **[Radar de Fuga](file:///c:/Users/Artur/tactics/docs/help/churn_radar.md)**: Cómo salvar a tus clientes VIP.
 
 ### 📂 Archivo e Histórico (`/docs/archive`)

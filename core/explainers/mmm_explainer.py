@@ -82,6 +82,28 @@ class MMMExplainer(ExplainerBase):
                 typical_range=(1, 30),
                 confidence_available=False,
                 decimal_places=0
+            ),
+            "synergy_index": MetricSchema(
+                id="synergy_index",
+                name="Índice de Sinergia",
+                name_en="Synergy Index",
+                category=self.CATEGORY,
+                unit=MetricUnit.RATIO,
+                direction=MetricDirection.HIGHER_BETTER,
+                typical_range=(1, 5),
+                confidence_available=False,
+                decimal_places=2
+            ),
+            "multi_objective_balance": MetricSchema(
+                id="multi_objective_balance",
+                name="Equilibrio de Objetivos",
+                name_en="Multi-Objective balance",
+                category=self.CATEGORY,
+                unit=MetricUnit.PERCENTAGE,
+                direction=MetricDirection.NEUTRAL,
+                typical_range=(0, 1),
+                confidence_available=False,
+                decimal_places=0
             )
         }
     

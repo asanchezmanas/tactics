@@ -15,6 +15,7 @@
    - LinUCB (Contextual Bandit)
 5. [Engine Enterprise (LSTM + PyMC)](#engine-enterprise)
 6. [Capa de Interpretabilidad (Explainer Engine)](#explainer-engine)
+7. [Elite Algorithm Elevation (Intelligence 2.0)](#intelligence-20)
 
 ---
 
@@ -415,6 +416,32 @@ result = explainer.explain("clv_12m", value=450.0)
 print(result.what_it_means)
 # "Este cliente es un activo de alto impacto. Basado en su recencia..."
 ```
+
+---
+
+## Intelligence 2.0 (Elite Algorithms)
+
+**Archivo principal:** `core/features.py` (Ingeniería de Variables)
+
+### 7.1 Ingeniería de Variables Avanzada
+Más allá de RFM, la capa Elite introduce métricas cinemáticas del comportamiento de compra:
+
+| Métrica | Definición | Utilidad |
+|---------|------------|----------|
+| **Velocity (v)** | ΔRevenue / ΔTime | Detecta aceleración de valor del cliente |
+| **Momentum** | v × frequency | Identifica clientes en "racha" de compra |
+| **Deceleration** | -a (cambio negativo en v) | Alerta temprana de churn antes de que ocurra |
+
+### 7.2 Robust Scaling & Outlier Guard
+Implementación de escalado basado en Cuartiles (IQR) para proteger los modelos contra "compras ballena" o picos estacionales extremos que distorsionan el LTV.
+
+### 7.3 Attention Mechanism (Engine A Elite)
+Evolución de LSTM a **Transformer-lite**. Utiliza cabezales de atención para dar más peso a eventos críticos (ej. picos de rebajas) en lugar de dar igual peso a todos los meses de la secuencia.
+
+### 7.4 Synergy Matrix 2.0
+En MMM, los canales no solo saturan, sino que colaboran:
+- **Efecto Brand-Awareness**: TV -> Google Search (Lagged correlation)
+- **Efecto Retargeting**: Meta -> TikTok (Synergetic lift)
 
 ---
 

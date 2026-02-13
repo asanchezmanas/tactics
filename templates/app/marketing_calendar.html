@@ -1,0 +1,47 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Marketing Calendar | Tactics{% endblock %}
+
+{% block content %}
+<div x-data="{ sidebarToggle: false, darkMode: false, page: 'calendar' }" :class="darkMode ? 'dark' : ''"
+    class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    {% include 'partials/sidebar_app.html' %}
+
+    <!-- Main Content Wrapper -->
+    <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <!-- Header -->
+        {% include 'partials/header_app.html' %}
+
+        <!-- Content Area -->
+        <main class="p-4 md:p-6 2xl:p-10">
+            <div class="relative flex flex-1 flex-col">
+                <!-- Breadcrumb Start -->
+                <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <h2 class="text-title-md2 font-bold text-black dark:text-white">
+                        Marketing Calendar
+                    </h2>
+                    <nav>
+                        <ol class="flex items-center gap-2">
+                            <li>
+                                <a class="font-medium text-primary hover:text-black/50 dark:hover:text-white/50"
+                                    href="/dashboard">Dashboard /</a>
+                            </li>
+                            <li class="font-medium text-primary">Calendar</li>
+                        </ol>
+                    </nav>
+                </div>
+                <!-- Breadcrumb End -->
+
+                <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div id="calendar" class="min-h-screen"></div>
+                </div>
+
+                <!-- BEGIN MODAL -->
+                {% include "partials/calendar_event_modal.html" %}
+                <!-- END MODAL -->
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
