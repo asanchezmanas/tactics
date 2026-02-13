@@ -23,30 +23,35 @@
 {% block body_class %}bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white{% endblock %}
 
 {% block content %}
-<div class="min-h-screen" x-data="{ 
+<div class="min-h-screen"
+    x-data="{ 
         elite: { kinetic: {}, synergy: { matrix: [] }, attention: {} },
-        explainerModal: { open: false, title: '', content: null, loading: false, async explain(cat, id, val) { this.loading = true; this.open = true; try { const r = await fetch('/api/explain/' + cat + '/' + id + '/quick?value=' + val + '&locale=es'); this.content = await r.json(); this.title = this.content.metric_name; } catch(e) { this.content = { what_it_means: 'Error al cargar', how_calculated: '', caveats: [] }; } this.loading = false; } },
-        async initElite() { try { const r = await fetch('/api/elite/metrics'); this.elite = await r.json(); } catch(e) { console.error('Elite data fail', e); } }
-    }" x-init="initElite()">
+        explainerModal: { open: false, title: '', content: null, loading: false, async explain(cat, id, val) { this.loading = true; this.open = true; try { const r = await fetch('/api/explain/' + cat + '/' + id + '/quick?value=' + val + '&locale={{ locale }}'); this.content = await r.json(); this.title = this.content.metric_name; } catch(e) { this.content = { what_it_means: '{{ "
+    Error loading" if locale=="en" else "Error al cargar" }}', how_calculated: '' , caveats: [] }; } this.loading=false;
+    } }, async initElite() { try { const r=await fetch('/api/elite/metrics'); this.elite=await r.json(); } catch(e) {
+    console.error('Elite data fail', e); } } }" x-init="initElite()">
     <!-- Header -->
     <header class="py-8 px-6 border-b border-white/10">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div
                     class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-2xl">
-                    ­ƒôè
+                    📊
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tight">Omnichannel MMM: Optimizaci├│n</h1>
-                    <p class="text-slate-400 text-sm">High-Fidelity Advertising Mix ÔÇó 104 Weeks (2 Years)</p>
+                    <h1 class="text-2xl font-bold tracking-tight">{{ 'Omnichannel MMM: Optimization' if locale == 'en'
+                        else 'Omnichannel MMM: Optimización' }}</h1>
+                    <p class="text-slate-400 text-sm">{{ 'High-Fidelity Advertising Mix • 104 Weeks (2 Years)' if locale
+                        == 'en' else 'High-Fidelity Advertising Mix • 104 Weeks (2 Years)' }}</p>
                 </div>
             </div>
-            <a href="/app/showcase" class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+            <a href="{{ '/en' if locale == 'en' else '' }}/app/showcase"
+                class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Volver a Galer├¡a
+                {{ 'Back to Gallery' if locale == 'en' else 'Volver a Galería' }}
             </a>
         </div>
     </header>
@@ -62,51 +67,60 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                         </svg>
-                        Prueba de Veracidad (Ground Truth)
+                        {{ 'Proof of Accuracy (Ground Truth)' if locale == 'en' else 'Prueba de Veracidad (Ground
+                        Truth)' }}
                     </h2>
                     <p class="text-slate-300 text-sm leading-relaxed">
-                        Validamos nuestras curvas de saturaci├│n Hill contra los retornos marginales reales del dataset.
-                        El modelo detecta con precisi├│n el "punto muerto" de la TV, evitando el desperdicio
-                        publicitario.
+                        {{ 'We validate our Hill saturation curves against the actual marginal returns of the dataset.
+                        The model accurately detects the "dead point" of TV, avoiding advertising waste.' if locale ==
+                        'en' else 'Validamos nuestras curvas de saturación Hill contra los retornos marginales reales
+                        del dataset. El modelo detecta con precisión el "punto muerto" de la TV, evitando el desperdicio
+                        publicitario.' }}
                     </p>
                 </div>
                 <div class="bg-slate-900/50 rounded-xl p-4 border border-white/5 text-center min-w-[200px]">
-                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Confianza del Modelo</div>
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">{{ 'Model Confidence' if
+                        locale == 'en' else 'Confianza del Modelo' }}</div>
                     <div class="text-3xl font-black text-blue-400 stat-glow">89.7%</div>
                 </div>
             </div>
         </section>
 
-        <!-- ­ƒÆ░ BUSINESS IMPACT: Lo que esto significa para TU negocio -->
+        <!-- 💰 BUSINESS IMPACT: Lo que esto significa para TU negocio -->
         <section
             class="insight-card rounded-2xl p-8 border-2 border-blue-500/40 bg-gradient-to-r from-blue-500/10 to-indigo-500/5">
             <h2 class="text-lg font-bold mb-6 flex items-center gap-3">
-                <span class="text-2xl">­ƒÆ░</span>
-                Lo que Esto Significa para Tu Negocio
+                <span class="text-2xl">💰</span>
+                {{ 'What This Means for Your Business' if locale == 'en' else 'Lo que Esto Significa para Tu Negocio' }}
             </h2>
             <div class="grid md:grid-cols-2 gap-8">
                 <div>
                     <div class="text-5xl font-black text-emerald-400 stat-glow mb-2">+21%</div>
                     <div class="text-sm text-slate-300 leading-relaxed">
-                        <strong>Eficiencia recuperable:</strong> Tu ROAS actual es 2.8x, pero podr├¡as llegar a 3.4x
-                        rebalanceando.
-                        <em>Con Ôé¼100K/mes de inversi├│n, son Ôé¼21K mensuales que ahora mismo est├ís tirando.</em>
+                        <strong>{{ 'Recoverable Efficiency' if locale == 'en' else 'Eficiencia recuperable' }}:</strong>
+                        {{ 'Your current ROAS is 2.8x, but you could reach 3.4x by rebalancing. With €100K/month
+                        investment, that\'s €21K monthly you are currently wasting.' if locale == 'en' else 'Tu ROAS
+                        actual es 2.8x, pero podrías llegar a 3.4x rebalanceando. Con €100K/mes de inversión, son €21K
+                        mensuales que ahora mismo estás tirando.' }}
                     </div>
                 </div>
                 <div>
-                    <div class="text-5xl font-black text-amber-400 stat-glow mb-2">TV ÔåÆ 72%</div>
+                    <div class="text-5xl font-black text-amber-400 stat-glow mb-2">TV ➔ 72%</div>
                     <div class="text-sm text-slate-300 leading-relaxed">
-                        <strong>Saturaci├│n detectada:</strong> Tu canal de TV est├í saturado. Cada Ôé¼1 adicional ah├¡
-                        genera rendimientos decrecientes.
-                        <em>Redirigir a Radio (4.1x mROAS) multiplica tu impacto.</em>
+                        <strong>{{ 'Saturation Detected' if locale == 'en' else 'Saturación detectada' }}:</strong> {{
+                        'Your TV channel is saturated. Every additional €1 there generates diminishing returns.
+                        Redirecting to Radio (4.1x mROAS) multiplies your impact.' if locale == 'en' else 'Tu canal de
+                        TV está saturado. Cada €1 adicional ahí genera rendimientos decrecientes. Redirigir a Radio
+                        (4.1x mROAS) multiplica tu impacto.' }}
                     </div>
                 </div>
             </div>
             <div class="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
                 <p class="text-[11px] text-slate-500 italic">
-                    ┬┐C├│mo calculamos la saturaci├│n? <button
-                        @click="explainerModal.explain('mmm', 'saturation', 0.72)"
-                        class="text-indigo-400 underline hover:text-indigo-300">Ver metodolog├¡a ÔåÆ</button>
+                    {{ 'How do we calculate saturation?' if locale == 'en' else '¿Cómo calculamos la saturación?' }}
+                    <button @click="explainerModal.explain('mmm', 'saturation', 0.72)"
+                        class="text-indigo-400 underline hover:text-indigo-300">{{ 'See methodology →' if locale == 'en'
+                        else 'Ver metodología →' }}</button>
                 </p>
             </div>
         </section>
@@ -114,19 +128,23 @@
         <!-- Metrics Grid -->
         <div class="grid md:grid-cols-3 gap-6">
             <div class="insight-card rounded-2xl p-6">
-                <div class="text-sm text-slate-400 mb-2">ROAS Actual</div>
+                <div class="text-sm text-slate-400 mb-2">{{ 'Current ROAS' if locale == 'en' else 'ROAS Actual' }}</div>
                 <div class="text-4xl font-bold text-blue-400 stat-glow">2.8x</div>
-                <p class="text-[10px] text-slate-500 mt-2">Retorno promedio sobre el gasto total</p>
+                <p class="text-[10px] text-slate-500 mt-2">{{ 'Average return on total spend' if locale == 'en' else
+                    'Retorno promedio sobre el gasto total' }}</p>
             </div>
             <div class="insight-card rounded-2xl p-6">
-                <div class="text-sm text-slate-400 mb-2">ROAS Optimizado</div>
+                <div class="text-sm text-slate-400 mb-2">{{ 'Optimized ROAS' if locale == 'en' else 'ROAS Optimizado' }}
+                </div>
                 <div class="text-4xl font-bold text-emerald-400 stat-glow">3.4x</div>
-                <p class="text-[10px] text-emerald-400 mt-2">+21% mejora potencial detectada</p>
+                <p class="text-[10px] text-emerald-400 mt-2">{{ '+21% potential improvement detected' if locale == 'en'
+                    else '+21% mejora potencial detectada' }}</p>
             </div>
             <div class="insight-card rounded-2xl p-6">
                 <div class="text-sm text-slate-400 mb-2">Marginal ROAS (Radio)</div>
                 <div class="text-4xl font-bold text-amber-400 stat-glow">4.1x</div>
-                <p class="text-[10px] text-slate-500 mt-2">Pr├│ximo euro invertido rinde m├ís aqu├¡</p>
+                <p class="text-[10px] text-slate-500 mt-2">{{ 'Next euro spent yields most here' if locale == 'en' else
+                    'Próximo euro invertido rinde más aquí' }}</p>
             </div>
         </div>
 
@@ -140,11 +158,11 @@
     <div class="insight-card rounded-2xl p-8 border border-violet-500/20 bg-violet-500/5">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold flex items-center gap-3">
-                <span class="text-violet-400">­ƒöÇ</span>
-                Matriz de Sinergia Causal 2.0
+                <span class="text-violet-400">⚡</span>
+                {{ 'Causal Synergy Matrix 2.0' if locale == 'en' else 'Matriz de Sinergia Causal 2.0' }}
             </h3>
             <div class="text-[10px] bg-violet-500/20 text-violet-400 px-2 py-1 rounded-full uppercase tracking-tighter">
-                Elite Feature</div>
+                {{ 'Elite Feature' if locale == 'en' else 'Elite Feature' }}</div>
         </div>
         <div class="space-y-4">
             <div class="grid grid-cols-4 gap-2 text-[10px] text-slate-500 uppercase text-center">
@@ -166,13 +184,16 @@
             </template>
         </div>
         <p class="text-[11px] text-slate-400 mt-6 leading-relaxed">
-            Esta matriz detecta el <strong>impacto cruzado</strong> con desfase temporal. Un valor de 0.4 entre Meta y
-            Google indica que el 40% del valor de Google est├í siendo 'alimentado' por el alcance previo en Meta.
+            {{ 'This matrix detects cross-impact with time lag. A value of 0.4 between Meta and Google indicates that
+            40% of Googles value is being "fed" by prior reach on Meta.' if locale == 'en' else 'Esta matriz detecta el
+            impacto cruzado con desfase temporal. Un valor de 0.4 entre Meta y Google indica que el 40% del valor de
+            Google está siendo \'alimentado\' por el alcance previo en Meta.' }}
         </p>
         <div class="mt-4 pt-4 border-t border-white/5">
             <button @click="explainerModal.explain('mmm', 'synergy_index', elite.synergy.index)"
                 class="text-[11px] text-violet-400 hover:text-violet-300 underline underline-offset-4">
-                ┬┐C├│mo influye esto en mi presupuesto? ÔåÆ
+                {{ 'How does this influence my budget? →' if locale == 'en' else '¿Cómo influye esto en mi presupuesto?
+                →' }}
             </button>
         </div>
     </div>
@@ -181,8 +202,8 @@
     <div class="insight-card rounded-2xl p-8 border border-emerald-500/20 bg-emerald-500/5">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold flex items-center gap-3">
-                <span class="text-emerald-400">­ƒÄ»</span>
-                Equilibrio de Objetivos Elite
+                <span class="text-emerald-400">⚖️</span>
+                {{ 'Elite Objective Balance' if locale == 'en' else 'Equilibrio de Objetivos Elite' }}
             </h3>
         </div>
         <div class="flex flex-col items-center justify-center h-full pb-8">
@@ -195,13 +216,15 @@
                 </div>
             </div>
             <div class="flex justify-between w-full mt-4 text-[10px] uppercase font-bold tracking-widest">
-                <div class="text-blue-400">Volumen (Scale)</div>
-                <div class="text-emerald-400">Eficiencia (ROAS)</div>
+                <div class="text-blue-400">{{ 'Volume (Scale)' if locale == 'en' else 'Volumen (Scale)' }}</div>
+                <div class="text-emerald-400">{{ 'Efficiency (ROAS)' if locale == 'en' else 'Eficiencia (ROAS)' }}</div>
             </div>
             <div class="mt-8 text-center p-4 bg-white/5 rounded-xl border border-white/5 w-full">
-                <div class="text-2xl font-black text-white mb-1">Optimizado para 70/30</div>
-                <p class="text-xs text-slate-400">Priorizando crecimiento de ingresos sin sacrificar el ROAS estructural
-                    del 3.4x.</p>
+                <div class="text-2xl font-black text-white mb-1">{{ 'Optimized for 70/30' if locale == 'en' else
+                    'Optimizado para 70/30' }}</div>
+                <p class="text-xs text-slate-400">{{ 'Prioritizing revenue growth without sacrificing the structural
+                    ROAS of 3.4x.' if locale == 'en' else 'Priorizando crecimiento de ingresos sin sacrificar el ROAS
+                    estructural del 3.4x.' }}</p>
             </div>
         </div>
     </div>
@@ -209,11 +232,12 @@
 
 <!-- CTA Launch -->
 <div class="text-center pt-8">
-    <a href="/api/demo/activate/mmm"
+    <a href="{{ '/en' if locale == 'en' else '' }}/api/demo/activate/mmm"
         class="inline-block px-10 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold hover:opacity-90 transition shadow-lg shadow-blue-500/20">
-        Lanzar Optimizador ÔåÆ
+        {{ 'Launch Optimizer →' if locale == 'en' else 'Lanzar Optimizador →' }}
     </a>
-    <p class="text-[10px] text-slate-500 mt-3 italic">Simula escenarios con estos datos</p>
+    <p class="text-[10px] text-slate-500 mt-3 italic">{{ 'Simulate scenarios with this data' if locale == 'en' else
+        'Simula escenarios con estos datos' }}</p>
 </div>
 
 </main>
@@ -228,36 +252,42 @@
         </div>
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
-                <div class="size-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400">­ƒºá
+                <div class="size-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400">🧠
                 </div>
                 <div>
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Interpretaci├│n IA</h3>
-                    <p class="text-lg font-extrabold text-white" x-text="explainerModal.title || 'Analizando...'">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">{{ 'AI Interpretation' if
+                        locale == 'en' else 'Interpretación IA' }}</h3>
+                    <p class="text-lg font-extrabold text-white"
+                        x-text="explainerModal.title || (locale === 'en' ? 'Analyzing...' : 'Analizando...')">
                     </p>
                 </div>
             </div>
-            <button @click="explainerModal.open = false" class="text-slate-500 hover:text-white">Ô£ò</button>
+            <button @click="explainerModal.open = false" class="text-slate-500 hover:text-white">✕</button>
         </div>
-        <div x-show="explainerModal.loading" class="py-8 text-center text-slate-500 animate-pulse">Consultando motor
-            de IA...</div>
+        <div x-show="explainerModal.loading" class="py-8 text-center text-slate-500 animate-pulse">{{ 'Consulting AI
+            engine...' if locale == 'en' else 'Consultando motor de IA...' }}</div>
         <div x-show="!explainerModal.loading && explainerModal.content" class="space-y-4">
             <div>
-                <h4 class="text-[10px] text-blue-400 uppercase tracking-widest mb-1">Significado Real</h4>
+                <h4 class="text-[10px] text-blue-400 uppercase tracking-widest mb-1">{{ 'Real Meaning' if locale == 'en'
+                    else 'Significado Real' }}</h4>
                 <p class="text-slate-300 text-sm" x-text="explainerModal.content?.what_it_means"></p>
             </div>
             <div>
-                <h4 class="text-[10px] text-blue-400 uppercase tracking-widest mb-1">C├│mo se Calcula</h4>
+                <h4 class="text-[10px] text-blue-400 uppercase tracking-widest mb-1">{{ 'How it is Calculated' if locale
+                    == 'en' else 'Cómo se Calcula' }}</h4>
                 <p class="text-slate-400 text-sm italic" x-text="explainerModal.content?.how_calculated"></p>
             </div>
             <div x-show="explainerModal.content?.business_impact"
                 class="bg-blue-500/10 p-4 rounded-xl border border-blue-500/20">
-                <h4 class="text-[10px] text-blue-400 uppercase tracking-widest mb-1">­ƒÆ░ Impacto en Tu Negocio</h4>
+                <h4 class="text-[10px] text-blue-400 uppercase tracking-widest mb-1">💰 {{ 'Business Impact' if locale
+                    == 'en' else 'Impacto en Tu Negocio' }}</h4>
                 <p class="text-white text-sm font-medium" x-text="explainerModal.content?.business_impact"></p>
             </div>
         </div>
         <div class="mt-6 pt-4 border-t border-white/10 text-right">
             <button @click="explainerModal.open = false"
-                class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold py-2 px-6 rounded-lg">Entendido</button>
+                class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold py-2 px-6 rounded-lg">{{ 'Understood'
+                if locale == 'en' else 'Entendido' }}</button>
         </div>
     </div>
 </div>

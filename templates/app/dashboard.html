@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
+<html lang="{{ locale if locale else 'es' }}">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>{% block title %}Tactics Dashboard{% endblock %}</title>
+    <title>{% block title %}{{ 'Tactics Dashboard' if locale == 'en' else 'Tactics Dashboard' }}{% endblock %}</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link
