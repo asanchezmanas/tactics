@@ -1,13 +1,39 @@
-﻿/**
- * Main Application Entry Point
+/**
+ * Tactics Unified Frontend Hub (V2)
+ * Corrected Entry Point: Imports unified API and initializes Stores.
  */
-import { initStores } from './core/store.js';
-import { api } from './core/api.js';
 
-// Initialize Alpine Stores
-initStores();
+import { api } from './core/api_v2.js';
 
-// Expose API globally for inline scripts (optional, for transition period)
+// Global API Exposure for Legacy/Inline compatibility
 window.tacticsApi = api;
 
-console.log('[Tactics] Frontend App Initialized');
+// Alpine Store Initialization (Unified)
+document.addEventListener('alpine:init', () => {
+    // Analytics Store
+    Alpine.store('analytics', {
+        loading: false,
+        metrics: {},
+        async refresh() {
+            this.loading = true;
+            try {
+                this.metrics = await api.get('/api/elite/metrics');
+            } catch (e) {
+                console.error('Analytics Refresh Error:', e);
+            }
+            this.loading = false;
+        }
+    });
+
+    // Theme Store
+    Alpine.store('theme', {
+        darkMode: Alpine.$persist(true).as('darkMode'),
+        toggle() {
+            this.darkMode = !this.darkMode;
+        }
+    });
+
+    console.log('[Tactics V2] Alpine Stores Ready');
+});
+
+console.log('[Tactics V2] Frontend Entry Point Initialized');

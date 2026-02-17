@@ -1,38 +1,26 @@
-# Tactics: Project Overview & Index
+# Tactics Documentation Index
 
-Bienvenido a **Tactics**, el "Cerebro de Marketing" diseñado para agencias y e-commerce de alto impacto. Este proyecto utiliza ciencia Bayesiana avanzada para optimizar la retención de clientes y la asignación de presupuestos publicitarios.
-
-## 📌 Categorías de Documentación
-
-- **[Glosario de Términos (Intelligence 2.0)](file:///c:/Users/Artur/tactics/docs/GLOSSARY.md)**: Diccionario integral de terminología técnica y de negocio.
-
-### 🧠 Estrategia y Marca (`/docs/strategy`)
-- **[Filosofía Tactics](file:///c:/Users/Artur/tactics/docs/strategy/PHILOSOPHY.md)**: El "Porqué". Sobriedad, precisión y la misión LTV-ROAS.
-- **[Copy de Marca](file:///c:/Users/Artur/tactics/docs/strategy/copy.md)**: Guía de mensajes, hero copy y terminología oficial.
-- **[Roadmap Growth 1M](file:///c:/Users/Artur/tactics/docs/strategy/GROWTH_ROADMAP_1M.md)**: Plan de escalado a 1 millón de euros.
-- **[UI/UX Blueprint](file:///c:/Users/Artur/tactics/docs/strategy/UI_UX_BLUEPRINT.md)**: Filosofía de diseño y desglose de vistas estratégicas.
-
-### ⚙️ Infraestructura Técnica (`/docs/technical`)
-- **[Catálogo de Algoritmos](file:///c:/Users/Artur/tactics/docs/technical/ALGORITHMS.md)**: Detalle matemático de LTV, MMM, Eclat y Bandits.
-- **[Explainer API](file:///c:/Users/Artur/tactics/docs/technical/EXPLAINER_API.md)**: Capa de interpretación en lenguaje natural.
-- **[Frontend Architecture](file:///c:/Users/Artur/tactics/docs/technical/FRONTEND_ARCHITECTURE.md)**: Stack "No-build" (Alpine.js + Tailwind).
-- **[Ingestión de Datos](file:///c:/Users/Artur/tactics/docs/technical/INGESTION.md)**: Conectores y normalización de datos.
-- **[Sistema de Blog](file:///c:/Users/Artur/tactics/docs/technical/BLOG_SYSTEM.md)**: Arquitectura del blog dinámico con Jinja2.
-- **[Blog: Diagnóstico Fricción Cero](file:///c:/Users/Artur/tactics/docs/blog/diagnostico_friccion_cero.md)**: Por qué el Sandbox es el futuro de la captación.
-- **[Showcase & Demos](file:///c:/Users/Artur/tactics/docs/technical/SHOWCASE_DEMOS.md)**: Datasets de demostración para explorar los motores.
-- **[Esquema de Base de Datos](file:///c:/Users/Artur/tactics/docs/technical/db_schema.sql)**: Estructura de Supabase/PostgreSQL.
-
-### 👤 Centro de Ayuda al Cliente (`/docs/help`)
-- **[Seguridad Internxt](file:///c:/Users/Artur/tactics/docs/help/internxt_security.md)**: Explicación para clientes sobre la protección de sus datos.
-- **[Guía de Inicio](file:///c:/Users/Artur/tactics/docs/help/01_configuracion_inicial.md)**: Primeros pasos para configurar Tactics.
-- **[Metodología LTV](file:///c:/Users/Artur/tactics/docs/help/customer_value.md)**: Cómo entender el Valor de Vida del Cliente.
-- **[Cómo ver lo que otros ignoran: El Radar de Rentabilidad](file:///c:/Users/Artur/tactics/docs/blog/radar_rentabilidad_instantaneo.md)**
-- **[¿Por qué mi IA dice eso? Entendiendo las Razones de Refuerzo](file:///c:/Users/Artur/tactics/docs/blog/ia_transparente.md)**
-- **[Radar de Fuga](file:///c:/Users/Artur/tactics/docs/help/churn_radar.md)**: Cómo salvar a tus clientes VIP.
-
-### 📂 Archivo e Histórico (`/docs/archive`)
-- **[Requisitos Originales](file:///c:/Users/Artur/tactics/docs/archive/requirements_original.md)**: El brief inicial del proyecto.
-- **[Planes de Implementación](file:///c:/Users/Artur/tactics/docs/archive/implementation_plan.md)**: Hitos técnicos superados.
+Welcome to the consolidated documentation for **Tactics**.
 
 ---
-*Tactics se enfoca en métricas orientadas a la decisión: LTV-ROAS, Capital en Riesgo y Asignación Bayesiana Óptima.*
+
+## 🛠️ Technical Documentation
+
+- **[Architecture Overview](file:///c:/Users/Artur/tactics/docs/technical/ARCHITECTURE.md)**: High-level map of the unified system components.
+- **[Unified Engine Specs](file:///c:/Users/Artur/tactics/docs/technical/ENGINE_SPECS.md)**: Details on Intelligence (LTV/Churn) and MMM Optimizer.
+- **[Data Pipeline](file:///c:/Users/Artur/tactics/docs/technical/DATA_PIPELINE.md)**: Flow from ingestion and sync hub to storage.
+- **[Algorithm Maintenance](file:///c:/Users/Artur/tactics/docs/technical/ALGORITHM_MAINTENANCE.md)**: (Updated) Guidelines for the new architecture.
+
+## 📈 Strategy & Growth
+
+- **[Unified Strategic Plan](file:///c:/Users/Artur/tactics/docs/strategy/STRATEGIC_PLAN.md)**: Vision, Financial Scaling, and Treasury Management.
+- **[Philosophy](file:///c:/Users/Artur/tactics/docs/strategy/PHILOSOPHY.md)**: The core principles driving Tactics development.
+
+## 📚 General References
+
+- **[Glossary](file:///c:/Users/Artur/tactics/docs/GLOSSARY.md)**: Definition of terms used across the platform.
+- **[Archive](file:///c:/Users/Artur/tactics/docs/archive/index.md)**: Access to legacy (V1) documentation.
+
+---
+
+> **Note**: This index represents the new maintainable structure.

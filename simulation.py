@@ -7,11 +7,11 @@ Supports profiles: 'tactics' (SaaS) and 'vimus' (E-commerce).
 import pandas as pd
 import numpy as np
 import argparse
-from core.engine_v2 import TacticalEngineV2
+from core.engine import TacticalEngine
 
 def run_simulation(profile: str):
     print(f"--- 🚀 UNIFIED SIMULATION: {profile.upper()} ---")
-    engine = TacticalEngineV2(tier='CORE')
+    engine = TacticalEngine(tier='CORE')
     
     if profile == 'tactics':
         products = pd.DataFrame([
@@ -25,7 +25,7 @@ def run_simulation(profile: str):
         ])
 
     # Core Logic...
-    print(f"Simulation for {profile} completed using engine_v2.")
+    print(f"Simulation for {profile} completed using engine.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run business simulations.")

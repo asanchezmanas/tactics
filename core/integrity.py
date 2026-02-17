@@ -18,7 +18,7 @@ class IntegrityIssue:
     affected_rows: int = 0
     sample_ids: List[Any] = field(default_factory=list)
 
-class UnifiedIntegrityGuardV2:
+class UnifiedIntegrityGuard:
     """
     Consolidated guardian for all data flows.
     """

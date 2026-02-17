@@ -1,9 +1,9 @@
 import unittest
 import pandas as pd
 import numpy as np
-from core.engine_v2 import TacticalEngineV2, EngineFactory
-from core.optimizer_v2 import MarketingOptimizerV2
-from core.integrity_v2 import UnifiedIntegrityGuardV2
+from core.engine import TacticalEngine, EngineFactory
+from core.optimizer import MarketingOptimizer
+from core.integrity import UnifiedIntegrityGuard
 
 class TestTacticsV2(unittest.TestCase):
     def setUp(self):
@@ -36,23 +36,23 @@ class TestTacticsV2(unittest.TestCase):
             self.assertTrue(True)
 
     def test_optimizer_fit(self):
-        """Verify MarketingOptimizerV2 can fit response curves."""
-        optimizer = MarketingOptimizerV2(tier='CORE')
+        """Verify MarketingOptimizer can fit response curves."""
+        optimizer = MarketingOptimizer(tier='CORE')
         spend = pd.DataFrame({'FB': [100, 200, 300], 'Google': [150, 250, 350]})
         revenue = pd.Series([1000, 2000, 3000])
         optimizer.fit_response_curves(spend, revenue)
         self.assertIsNotNone(optimizer.channel_models)
 
-    def test_integrity_guard_v2(self):
+    def test_integrity_guard(self):
         """Verify the consolidated integrity guard catches empty data."""
-        guard = UnifiedIntegrityGuardV2()
+        guard = UnifiedIntegrityGuard()
         issues = guard.validate_ingestion(pd.DataFrame(), source_type='shopify')
         self.assertTrue(any(issue.severity == 'critical' for issue in issues))
 
     def test_simulation_integration(self):
         """Sanity check for the unified simulation entry point."""
         # This just verifies imports and class instantiation in a 'sim-like' flow
-        engine = TacticalEngineV2(tier='CORE')
+        engine = TacticalEngine(tier='CORE')
         self.assertTrue(hasattr(engine, 'strategy'))
 
 if __name__ == '__main__':
