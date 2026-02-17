@@ -273,7 +273,7 @@ class DataGuard:
         errors = []
         if df.empty: return [] # Marketing data is optional
         
-        required = ['fecha', 'canal', 'inversion']
+        required = ['date', 'channel', 'spend']
         for col in required:
             if col not in df.columns:
                 errors.append(f"Missing required column: {col}")

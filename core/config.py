@@ -36,28 +36,36 @@ ALGORITHM_CONFIG = {
         "linucb_alpha": 1.0
     },
     "tiers": {
-        "core": {
+        "INTELLIGENCE": {
             "engines": ["engine_a_core", "engine_b_core", "engine_c_core"],
-            "max_customers": 50000,
-            "plans": ["starter", "growth", "agency"]
+            "max_customers": 25000,
+            "plans": ["intelligence_monthly", "intelligence_annual"]
         },
-        "enterprise": {
+        "OPTIMISATION": {
+            "engines": ["engine_a_core", "engine_b_core", "engine_c_core"],
+            "max_customers": 100000,
+            "plans": ["optimisation_monthly", "optimisation_annual"],
+            "features": ["mmm_slsqp", "poas", "basket_eclat"]
+        },
+        "PRECISION": {
             "engines": ["engine_a_enterprise", "engine_b_enterprise", "engine_c_enterprise"],
             "max_customers": None,  # Unlimited
-            "plans": ["pro_ai", "strategic", "enterprise"],
-            "features": ["lstm", "pymc", "channel_synergy", "cohort_drift", "linucb"]
+            "plans": ["precision_monthly", "precision_annual"],
+            "features": ["lstm_neural", "pymc_bayesian", "channel_synergy", "ltv_weighted_roas"]
         }
     },
-    "enterprise_ltv": {
+    "precision_ltv": {
         "model_type": "LSTM",
         "sequence_length": 12,
         "drift_threshold": 0.15
     },
-    "enterprise_mmm": {
+    "precision_mmm": {
         "inference_type": "pymc",
         "n_samples": 2000,
         "nevergrad_budget": 100
     },
+    "default_tier": "INTELLIGENCE",
+    "tier_hierarchy": ["INTELLIGENCE", "OPTIMISATION", "PRECISION"],
     "supabase": {
         "url": "https://your-project-id.supabase.co",
         "key": "your-anon-key",
@@ -66,7 +74,8 @@ ALGORITHM_CONFIG = {
             "customers": "customers",
             "transactions": "transactions",
             "marketing_spend": "marketing_spend",
-            "sentiment_signals": "sentiment_signals"
+            "sentiment_signals": "sentiment_signals",
+            "ingestion_receipts": "ingestion_receipts"
         }
     }
 }

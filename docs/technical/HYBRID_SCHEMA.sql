@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     customer_id TEXT NOT NULL,
     order_date TIMESTAMP WITH TIME ZONE NOT NULL,
     revenue DECIMAL(12,2) DEFAULT 0.0,
-    source TEXT NOT NULL, -- pos, online, stripe
+    canal_origen TEXT, -- pos, online, shopify, meta
     metadata JSONB -- Extra transaction info
 );
 

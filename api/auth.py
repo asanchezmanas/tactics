@@ -16,25 +16,32 @@ class CompanyContext(BaseModel):
     tier: str = "core"
 
 async def get_current_user(request: Request) -> CompanyContext:
-    """FastAPI dependency to extract company context from the request."""
-    # Simulation: In production this would use JWT/Supabase auth
-    # HARDENING: Only allow X-Company-ID header, no query params or fallback
+    """FastAPI dependency to extract company context from Supabase."""
     company_id = request.headers.get("X-Company-ID")
     if not company_id:
         raise HTTPException(status_code=401, detail="X-Company-ID header required")
     
-    # In a real app, we'd fetch the tier from the DB here
-    # For now, we mock a tier based on the ID for demonstration purposes
-    tier = "enterprise" if "ent" in company_id.lower() else "core"
-    return CompanyContext(company_id=company_id, tier=tier)
+    from api.database import db_bridge
+    if not db_bridge.client:
+        # Fallback for development if Supabase not configured
+        tier = "PRECISION" if "ent" in company_id.lower() else "INTELLIGENCE"
+        return CompanyContext(company_id=company_id, tier=tier)
+
+    try:
+        res = db_bridge.client.table("companies").select("tier").eq("id", company_id).single().execute()
+        if not res.data:
+            raise HTTPException(status_code=403, detail="Company not found in registry")
+        return CompanyContext(company_id=company_id, tier=res.data["tier"].upper())
+    except Exception as e:
+        # Graceful fallback or rejection based on configuration
+        raise HTTPException(status_code=401, detail=f"Auth failure: {str(e)}")
 
 def require_tier(tier: str):
     """Dependency factory to gate routes by company tier."""
     def dependency(context: CompanyContext = Depends(get_current_user)):
-        # HARDENING: Actually check the tier
-        tier_levels = {"core": 0, "standard": 1, "enterprise": 2, "precision": 3}
+        tier_levels = {"INTELLIGENCE": 0, "OPTIMISATION": 1, "PRECISION": 2}
         current_level = tier_levels.get(context.tier, 0)
-        required_level = tier_levels.get(tier, 0)
+        required_level = tier_levels.get(tier.upper(), 0)
         
         if current_level < required_level:
             raise HTTPException(

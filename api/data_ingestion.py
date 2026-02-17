@@ -81,12 +81,12 @@ SCHEMA_PRODUCTOS = {
 }
 
 SCHEMA_GASTOS = {
-    "required": ["fecha", "canal", "inversion"],
-    "optional": ["impresiones", "clics", "conversiones", "campaign_name"],
+    "required": ["date", "channel", "spend"],
+    "optional": ["impressions", "clicks", "conversions", "campaign_name"],
     "types": {
-        "fecha": "date",
-        "canal": str,
-        "inversion": float
+        "date": "date",
+        "channel": str,
+        "spend": float
     }
 }
 
@@ -191,38 +191,38 @@ SOURCE_TEMPLATES = {
     # MARKETING
     "meta_ads": {
         "gastos": {
-            "Date": "fecha",
+            "Date": "date",
             "Campaign name": "campaign_name",
-            "Amount spent": "inversion",
-            "Impressions": "impresiones",
-            "Link clicks": "clics",
-            "Results": "conversiones"
+            "Amount spent": "spend",
+            "Impressions": "impressions",
+            "Link clicks": "clicks",
+            "Results": "conversions"
         },
-        "default_canal": "facebook",
+        "default_channel": "facebook",
         "date_format": "%Y-%m-%d"
     },
     "google_ads": {
         "gastos": {
-            "Day": "fecha",
+            "Day": "date",
             "Campaign": "campaign_name",
-            "Cost": "inversion",
-            "Impressions": "impresiones",
-            "Clicks": "clics",
-            "Conversions": "conversiones"
+            "Cost": "spend",
+            "Impressions": "impressions",
+            "Clicks": "clicks",
+            "Conversions": "conversions"
         },
-        "default_canal": "google",
+        "default_channel": "google",
         "date_format": "%Y-%m-%d"
     },
     "tiktok_ads": {
         "gastos": {
-            "Date": "fecha",
+            "Date": "date",
             "Campaign name": "campaign_name",
-            "Cost": "inversion",
-            "Impression": "impresiones",
-            "Click": "clics",
-            "Conversion": "conversiones"
+            "Cost": "spend",
+            "Impression": "impressions",
+            "Click": "clicks",
+            "Conversion": "conversions"
         },
-        "default_canal": "tiktok",
+        "default_channel": "tiktok",
         "date_format": "%Y-%m-%d"
     },
     

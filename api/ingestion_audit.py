@@ -90,9 +90,8 @@ class IngestionAuditor:
             return
 
         try:
-            # En un entorno real, existir├¡a la tabla 'ingestion_receipts'
-            # supabase.table("ingestion_receipts").insert(asdict(receipt)).execute()
-            pass
+            # SOTA: Persistencia real para auditoría enterprise
+            supabase.table("ingestion_receipts").insert(asdict(receipt)).execute()
         except Exception as e:
             print(f"[AUDIT ERROR] Could not persist receipt: {e}")
 

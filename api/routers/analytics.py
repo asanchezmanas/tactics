@@ -7,12 +7,12 @@ from core.explainers import ExplainerRegistry
 router = APIRouter(prefix="/api/v1")
 
 @router.get("/metrics")
-async def api_get_metrics(context: CompanyContext = Depends(require_tier("core"))):
+async def api_get_metrics(context: CompanyContext = Depends(require_tier("INTELLIGENCE"))):
     """API endpoint for dashboard metrics."""
     return get_dashboard_metrics(context.company_id)
 
 @router.get("/vips")
-async def api_get_vips(context: CompanyContext = Depends(require_tier("standard"))):
+async def api_get_vips(context: CompanyContext = Depends(require_tier("OPTIMISATION"))):
     """API endpoint for high-risk VIPs."""
     return get_high_risk_vips(context.company_id)
 

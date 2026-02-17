@@ -9,12 +9,10 @@ from typing import List, Dict, Any, Tuple, Optional
 
 
 class AlgorithmTier(Enum):
-    """Niveles de algoritmos seg├║n requisitos de datos"""
-    BASIC = "basic"           # Datos m├¡nimos (<3 meses)
-    STANDARD = "standard"     # Datos est├índar (3-12 meses)
-    ADVANCED = "advanced"     # Datos avanzados (12-24 meses)
-    PRECISION = "precision"   # Datos de precisi├│n (>24 meses)
-    ELITE = "elite"           # Inteligencia 2.0 (Alta densidad tecnol├│gica)
+    """Niveles de algoritmos seg├║n requisitos de datos y suscripci├│n"""
+    INTELLIGENCE = "intelligence"   # LTV, Segmentaci├│n básica
+    OPTIMISATION = "optimisation"   # MMM SLSQP, Canales, Basket
+    PRECISION = "precision"      # Bayesian MMM, LSTM, LTV-Weighted ROAS
 
 
 @dataclass
@@ -65,12 +63,12 @@ class AlgorithmSpec:
 
 # Cat├ílogo de todos los algoritmos disponibles
 ALGORITHM_CATALOG: List[AlgorithmSpec] = [
-    # === TIER BASIC ===
+    # === TIER INTELLIGENCE ===
     AlgorithmSpec(
         id="rfm_basic",
         name="Segmentaci├│n RFM",
         description="Clasifica clientes por Recencia, Frecuencia y Valor Monetario",
-        tier=AlgorithmTier.BASIC,
+        tier=AlgorithmTier.INTELLIGENCE,
         min_months=1,
         min_records=50,
         category="segmentation",
@@ -80,7 +78,7 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         id="cohort_basic",
         name="Cohortes B├ísicas",
         description="Agrupa clientes por fecha de primera compra",
-        tier=AlgorithmTier.BASIC,
+        tier=AlgorithmTier.INTELLIGENCE,
         min_months=2,
         min_records=100,
         category="segmentation",
@@ -90,19 +88,19 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         id="revenue_summary",
         name="Resumen de Ingresos",
         description="M├®tricas agregadas de facturaci├│n y tendencia",
-        tier=AlgorithmTier.BASIC,
+        tier=AlgorithmTier.INTELLIGENCE,
         min_months=1,
         min_records=30,
         category="ltv",
         icon="­ƒÆÁ"
     ),
     
-    # === TIER STANDARD ===
+    # === TIER OPTIMISATION ===
     AlgorithmSpec(
         id="ltv_bgnbd",
         name="LTV Probabil├¡stico (BG/NBD)",
         description="Proyecci├│n de valor de vida del cliente con modelo Buy-Till-You-Die",
-        tier=AlgorithmTier.STANDARD,
+        tier=AlgorithmTier.OPTIMISATION,
         min_months=3,
         min_records=100,
         category="ltv",
@@ -112,7 +110,7 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         id="churn_probability",
         name="Probabilidad de Churn",
         description="Detecta clientes en riesgo de abandono",
-        tier=AlgorithmTier.STANDARD,
+        tier=AlgorithmTier.OPTIMISATION,
         min_months=6,
         min_records=200,
         category="churn",
@@ -122,7 +120,7 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         id="clv_simple",
         name="CLV Hist├│rico",
         description="Valor de cliente basado en historial real",
-        tier=AlgorithmTier.STANDARD,
+        tier=AlgorithmTier.OPTIMISATION,
         min_months=3,
         min_records=100,
         category="ltv",
@@ -132,19 +130,19 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         id="retention_curve",
         name="Curva de Retenci├│n",
         description="An├ílisis de supervivencia de clientes por cohorte",
-        tier=AlgorithmTier.STANDARD,
+        tier=AlgorithmTier.OPTIMISATION,
         min_months=6,
         min_records=200,
         category="churn",
         icon="­ƒôë"
     ),
     
-    # === TIER ADVANCED ===
+    # === TIER OPTIMISATION (Continued) ===
     AlgorithmSpec(
         id="mmm_hill",
         name="MMM con Curvas Hill",
         description="Modelado de Mix de Medios con saturaci├│n y adstock",
-        tier=AlgorithmTier.ADVANCED,
+        tier=AlgorithmTier.OPTIMISATION,
         min_months=12,
         min_records=52,  # semanal
         category="mmm",
@@ -154,7 +152,7 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         id="seasonality",
         name="An├ílisis de Estacionalidad",
         description="Detecta patrones estacionales en ventas y marketing",
-        tier=AlgorithmTier.ADVANCED,
+        tier=AlgorithmTier.OPTIMISATION,
         min_months=12,
         min_records=365,
         category="forecast",
@@ -164,7 +162,7 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         id="channel_attribution",
         name="Atribuci├│n Multi-Canal",
         description="Asigna cr├®dito a canales con modelo probabil├¡stico",
-        tier=AlgorithmTier.ADVANCED,
+        tier=AlgorithmTier.OPTIMISATION,
         min_months=6,
         min_records=500,
         category="mmm",
@@ -174,7 +172,7 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         id="budget_optimizer",
         name="Optimizador de Presupuesto",
         description="Rebalanceo ├│ptimo de inversi├│n entre canales",
-        tier=AlgorithmTier.ADVANCED,
+        tier=AlgorithmTier.OPTIMISATION,
         min_months=12,
         min_records=52,
         category="mmm",
@@ -223,37 +221,38 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         icon="­ƒÄ»"
     ),
     
-    # === TIER ELITE (INTELLIGENCE 2.0) ===
+    # === TIER PRECISION (Continued) ===
     AlgorithmSpec(
-        id="ltv_elite",
-        name="LTV Elite (Kinetic)",
-        description="Cin├®tica de ingresos con Atenci├│n Temporal y XAI",
-        tier=AlgorithmTier.ELITE,
-        min_months=36,
-        min_records=2000,
+        id="ltv_precision",
+        name="LTV Precision (Kinetic)",
+        description="Cinética de ingresos con Atención Temporal y XAI",
+        tier=AlgorithmTier.PRECISION,
+        min_months=24,
+        min_records=1000,
         category="ltv",
-        icon="­ƒº¬"
+        icon="🧠"
     ),
     AlgorithmSpec(
-        id="mmm_elite",
-        name="MMM Elite (Synergy 2.0)",
-        description="Optimizaci├│n Multi-Objetivo con Matriz de Sinergia Causal",
-        tier=AlgorithmTier.ELITE,
-        min_months=36,
-        min_records=156, # 3 a├▒os semanales
+        id="mmm_precision",
+        name="MMM Precision (Synergy 2.0)",
+        description="Optimización Multi-Objetivo con Matriz de Sinergia Causal",
+        tier=AlgorithmTier.PRECISION,
+        min_months=24,
+        min_records=104, # 2 años semanales
         category="mmm",
-        icon="­ƒöÁ"
+        icon="🎯"
     ),
     AlgorithmSpec(
         id="calibration_audit",
-        name="Auditor├¡a de Calibraci├│n",
-        description="Verificaci├│n de integridad algor├¡tmica y desviaci├│n de datos",
-        tier=AlgorithmTier.ELITE,
-        min_months=24,
+        name="Auditoría de Calibración",
+        description="Verificación de integridad algorítmica y desviación de datos",
+        tier=AlgorithmTier.PRECISION,
+        min_months=12,
         min_records=500,
         category="ltv",
-        icon="­ƒîí"
+        icon="⚖️"
     ),
+]
 ]
 
 
@@ -298,27 +297,21 @@ class AlgorithmTierService:
     
     def get_current_tier(self, months: int, records: int) -> AlgorithmTier:
         """Determina el tier actual seg├║n datos"""
-        if months >= 36 and records >= 1000:
-            return AlgorithmTier.ELITE
-        elif months >= 24 and records >= 500:
+        if months >= 24 and records >= 500:
             return AlgorithmTier.PRECISION
         elif months >= 12 and records >= 100:
-            return AlgorithmTier.ADVANCED
-        elif months >= 3 and records >= 50:
-            return AlgorithmTier.STANDARD
+            return AlgorithmTier.OPTIMISATION
         else:
-            return AlgorithmTier.BASIC
+            return AlgorithmTier.INTELLIGENCE
     
     def get_next_tier_requirements(self, months: int, records: int) -> Optional[Dict[str, Any]]:
         """Retorna requisitos para el siguiente tier"""
         current = self.get_current_tier(months, records)
         
         tier_requirements = {
-            AlgorithmTier.BASIC: {"tier": "STANDARD", "min_months": 3, "min_records": 50},
-            AlgorithmTier.STANDARD: {"tier": "ADVANCED", "min_months": 12, "min_records": 100},
-            AlgorithmTier.ADVANCED: {"tier": "PRECISION", "min_months": 24, "min_records": 500},
-            AlgorithmTier.PRECISION: {"tier": "ELITE", "min_months": 36, "min_records": 1000},
-            AlgorithmTier.ELITE: None,
+            AlgorithmTier.INTELLIGENCE: {"tier": "OPTIMISATION", "min_months": 3, "min_records": 100},
+            AlgorithmTier.OPTIMISATION: {"tier": "PRECISION", "min_months": 12, "min_records": 500},
+            AlgorithmTier.PRECISION: None
         }
         
         next_req = tier_requirements[current]
@@ -373,34 +366,22 @@ def get_algorithm_status(months: int, records: int) -> Dict[str, Any]:
 
 # Tier labels para UI
 TIER_LABELS = {
-    AlgorithmTier.BASIC: {
-        "name": "B├ísico",
-        "description": "Insights fundamentales para empezar",
-        "color": "slate",
-        "icon": "­ƒî▒",
-    },
-    AlgorithmTier.STANDARD: {
-        "name": "Est├índar",
-        "description": "An├ílisis predictivo confiable",
+    AlgorithmTier.INTELLIGENCE: {
+        "name": "Intelligence",
+        "description": "LTV y segmentaci├│n predictiva esencial",
         "color": "blue",
         "icon": "­ƒôè",
     },
-    AlgorithmTier.ADVANCED: {
-        "name": "Avanzado",
-        "description": "Optimizaci├│n de marketing estrat├®gico",
+    AlgorithmTier.OPTIMISATION: {
+        "name": "Optimisation",
+        "description": "Optimizaci├│n de presupuesto y atribuci├│n avanzada",
         "color": "indigo",
         "icon": "ÔÜí",
     },
     AlgorithmTier.PRECISION: {
-        "name": "Precisi├│n",
-        "description": "IA de ├║ltima generaci├│n para m├íxima exactitud",
+        "name": "Precision",
+        "description": "IA Deep Learning para m├íxima exactitud",
         "color": "emerald",
         "icon": "­ƒºá",
-    },
-    AlgorithmTier.ELITE: {
-        "name": "Elite",
-        "description": "Inteligencia 2.0: Cin├®tica, Sinergia y Transparencia Total",
-        "color": "violet",
-        "icon": "­ƒöÁ",
     },
 }

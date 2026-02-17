@@ -12,8 +12,8 @@ import warnings
 # Add project root to path
 sys.path.append(os.getcwd())
 
-from core.engine_enterprise import EnterpriseDataScienceCore
-from core.optimizer_enterprise import EnterpriseMMOptimizer
+from core.engine import TacticalEngine as EnterpriseDataScienceCore
+from core.optimizer import BudgetOptimizer as EnterpriseMMOptimizer
 
 # Suppress warnings
 warnings.filterwarnings('ignore')

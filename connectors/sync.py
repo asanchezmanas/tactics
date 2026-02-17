@@ -51,6 +51,7 @@ from .meta_ads import MetaAdsConnector
 from .google_ads import GoogleAdsConnector
 from .sentiment import SentimentConnector
 from .pos_retail import POSRetailConnector
+from .shopify import ShopifyConnector
 from core.supabase_bridge import SupabaseBridge
 
 class UnifiedSyncHub:
@@ -62,7 +63,8 @@ class UnifiedSyncHub:
             "meta": MetaAdsConnector,
             "google": GoogleAdsConnector,
             "sentiment": SentimentConnector,
-            "pos": POSRetailConnector
+            "pos": POSRetailConnector,
+            "shopify": ShopifyConnector
         }
         self.storage = SupabaseBridge(url=supabase_url, key=supabase_key)
         self.active_tasks = []

@@ -25,13 +25,15 @@ from connectors.sync import UnifiedSyncHub
 from core.segmentation import segment_customers
 from core.optimizer import BudgetOptimizer
 from core.resilience import DataGuard
-from core.engine import DataScienceCore
+from core.engine import TacticalEngine
+from core.metrics_factory import BusinessMetricsFactory
 
 logger = logging.getLogger("tactics.pipeline")
 
 class PipelineTier(str, Enum):
-    CORE = "core"
-    ENTERPRISE = "enterprise"
+    INTELLIGENCE = "intelligence"
+    OPTIMISATION = "optimisation"
+    PRECISION = "precision"
 
 async def run_full_pipeline(company_id: str, 
                             tier: PipelineTier = PipelineTier.CORE,
@@ -67,6 +69,14 @@ async def run_full_pipeline(company_id: str,
             logger.info(f"SOTA Async Sync starting for {company_id}...")
             hub = UnifiedSyncHub()
             sync_results = await hub.sync_company(company_id, tokens)
+            
+            # 2.1 Materialization Link (Normalization)
+            from api.data_ingestion import DataIngestion
+            ingestion = DataIngestion(company_id)
+            for provider_id, data in sync_results.items():
+                if isinstance(data, list) and data:
+                    dtype = "ventas" if provider_id == 'shopify' else "gastos"
+                    ingestion.ingest_json(data, dtype)
             
             for provider, res in sync_results.items():
                 if isinstance(res, dict) and res.get("status") == "success":
@@ -105,7 +115,7 @@ async def run_full_pipeline(company_id: str,
         if not df_gastos.empty:
             marketing_errors = DataGuard.validate_marketing_data(df_gastos)
             if not marketing_errors:
-                await _run_optimization(company_id, df_gastos, tier, result)
+                await _run_optimization(company_id, df_gastos, tier, result, df_ventas=df_ventas)
         
         # 6. Cleanup
         process_retry_queue()
@@ -119,39 +129,63 @@ async def run_full_pipeline(company_id: str,
     return result
 
 async def _run_predictions(company_id: str, df_ventas, tier: PipelineTier, result: Dict):
-    """BG/NBD + Gamma-Gamma Prediction Core."""
+    """Tier-aware LTV/Churn prediction."""
     try:
-        engine = DataScienceCore()
-        rfm = engine.prepare_data(df_ventas)
-        core_predictions = engine.predict(rfm)
-        final_segments = segment_customers(core_predictions)
+        engine = TacticalEngine(tier=tier.value, company_id=company_id)
+        prediction_results = engine.analyze_ltv(df_ventas)
         
-        predictions_list = []
-        for customer_id, row in final_segments.iterrows():
-            predictions_list.append({
-                "customer_id": str(customer_id),
-                "ltv_predicted": float(row.get('clv_12m', 0)),
-                "churn_prob": float(1 - row.get('prob_alive', 0)),
-                "segment": row.get('segment', 'unknown')
-            })
-        
-        save_predictions(company_id, predictions_list, "BG_NBD_GammaGamma")
+        save_predictions(company_id, prediction_results['predictions'], "TacticalEngine")
         result["steps_completed"].append("predict_ltv")
-        result["metrics"]["customers_analyzed"] = len(predictions_list)
+        result["metrics"]["customers_analyzed"] = prediction_results['summary']['customers_analyzed'] if 'customers_analyzed' in prediction_results['summary'] else len(prediction_results['predictions'])
     except Exception as e:
         result["errors"].append(f"Predictions failed: {e}")
 
-async def _run_optimization(company_id: str, df_gastos, tier: PipelineTier, result: Dict):
-    """MMM Optimization Core."""
+async def _run_optimization(company_id: str, df_gastos, tier: PipelineTier, result: Dict, df_ventas = None):
+    """MMM Optimization Core with LTV weighting."""
     try:
+        # 1. Calculate Business Metrics & Optimizer Priors
+        factory = BusinessMetricsFactory(company_id)
+        report = factory.calculate_all(df_ventas if df_ventas is not None else pd.DataFrame(), df_gastos)
+        priors = report.synthesis.get("optimizer_priors", {})
+        
+        # 2. Run Optimization
         optimizer = BudgetOptimizer()
-        channel_spend = df_gastos.groupby('canal')['inversion'].sum()
-        core_results = optimizer.optimize(
+        channel_spend = df_gastos.groupby('channel')['spend'].sum()
+        
+        # Prepare channel params including priors
+        channels = channel_spend.index.tolist()
+        channel_params = {}
+        for c in channels:
+            # Shift amplitude based on LTV prior (Weighted ROAS)
+            prior = priors.get(c, 1.0)
+            channel_params[c] = {
+                "amplitude": 10000 * prior, # Scaled by LTV prior
+                "alpha": 1.2,               # Shape
+                "gamma": 800.0,             # Half-saturation point
+                "margin": 0.4               # Default margin
+            }
+
+        core_results = optimizer.allocate_budget(
             total_budget=float(channel_spend.sum()),
-            channels=channel_spend.index.tolist(),
-            historical_spend=channel_spend.values
+            channels=channels,
+            channel_params=channel_params
         )
+        
         save_mmm_results(company_id, core_results)
         result["steps_completed"].append("optimize_mmm")
+        
+        # Calculate real MAPE if we have sales data
+        revenue_series = pd.Series()
+        if df_ventas is not None and not df_ventas.empty:
+            # Resample to weekly revenue for MMM
+            df_ventas['order_date'] = pd.to_datetime(df_ventas['order_date'])
+            revenue_series = df_ventas.set_index('order_date')['revenue'].resample('W').sum()
+            
+        if not df_gastos.empty:
+            df_gastos['date'] = pd.to_datetime(df_gastos['date'])
+            spend_series = df_gastos.pivot_table(index='date', columns='channel', values='spend', aggfunc='sum').resample('W').sum().fillna(0)
+
+        result["metrics"]["mmm_mape"] = optimizer.validate_holdout(spend_series, revenue_series)
     except Exception as e:
         result["errors"].append(f"Optimization failed: {e}")
+        logger.error(f"Optimization error: {e}")

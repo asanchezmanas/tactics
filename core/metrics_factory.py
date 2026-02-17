@@ -34,7 +34,7 @@ class BusinessMetricsFactory:
         if not sales_df.empty:
             sales_df['order_date'] = pd.to_datetime(sales_df['order_date'])
         if not marketing_df.empty:
-            marketing_df['fecha'] = pd.to_datetime(marketing_df['fecha'])
+            marketing_df['date'] = pd.to_datetime(marketing_df['date'])
             
         growth = self._calculate_growth(sales_df)
         unit_economics = self._calculate_unit_economics(sales_df, marketing_df)
@@ -117,7 +117,7 @@ class BusinessMetricsFactory:
         # 2. POAS (Profitability Over Ad Spend)
         # Assumes a default COGS of 40% if not provided in products.
         if not marketing_df.empty:
-            total_spend = marketing_df['inversion'].sum()
+            total_spend = marketing_df['spend'].sum()
             total_revenue = sales_df['revenue'].sum()
             estimated_cogs = total_revenue * 0.4
             gross_profit = total_revenue - estimated_cogs
@@ -129,9 +129,9 @@ class BusinessMetricsFactory:
         # 3. iROAS (Diminishing Returns Heuristic)
         # We estimate the efficiency of the most recent 20% of spend vs total.
         if not marketing_df.empty and len(marketing_df) > 5:
-            marketing_df = marketing_df.sort_values('fecha')
+            marketing_df = marketing_df.sort_values('date')
             split_idx = int(len(marketing_df) * 0.8)
-            recent_spend = marketing_df.iloc[split_idx:]['inversion'].sum()
+            recent_spend = marketing_df.iloc[split_idx:]['spend'].sum()
             
             # Correlate with recent sales
             sales_df = sales_df.sort_values('order_date')
@@ -236,20 +236,27 @@ class BusinessMetricsFactory:
         except Exception:
             results['gateway_products_error'] = "Insufficient data for gateway analysis"
 
-        # 2. Channel-LTV Alignment
-        # Logic: Average LTV (total revenue per customer) grouped by the acquisition channel.
-        if 'canal' in sales_df.columns:
+        # 2. Channel-LTV Alignment (LTV-Weighted ROAS base)
+        # Logic: Average LTV grouped by acquisition source (canal_origen).
+        source_col = 'canal_origen' if 'canal_origen' in sales_df.columns else 'channel'
+        if source_col in sales_df.columns:
+            # We use total revenue per customer as LTV proxy for alignment
             customer_ltv = sales_df.groupby('customer_id').agg({
                 'revenue': 'sum',
-                'canal': 'first' # Acquisition channel
+                source_col: 'first' 
             })
-            channel_ltv = customer_ltv.groupby('canal')['revenue'].mean().sort_values(ascending=False)
+            channel_ltv = customer_ltv.groupby(source_col)['revenue'].mean().sort_values(ascending=False)
             results['channel_ltv_alignment'] = channel_ltv.round(2).to_dict()
+            
+            # Efficiency Prior for Optimizer: Normalize weights around 1.0
+            avg_ltv = channel_ltv.mean()
+            if avg_ltv > 0:
+                results['optimizer_priors'] = (channel_ltv / avg_ltv).round(2).to_dict()
 
         # 3. Attribution Efficiency (Marketing Spend vs Sales Revenue)
-        if not marketing_df.empty and 'canal' in sales_df.columns:
-            channel_spend = marketing_df.groupby('canal')['inversion'].sum()
-            channel_rev = sales_df.groupby('canal')['revenue'].sum()
+        if not marketing_df.empty and source_col in sales_df.columns:
+            channel_spend = marketing_df.groupby('channel')['spend'].sum()
+            channel_rev = sales_df.groupby(source_col)['revenue'].sum()
             
             # Calculate ROAS per channel where possible
             blended_roas = (channel_rev / channel_spend).dropna()
@@ -286,7 +293,7 @@ class BusinessMetricsFactory:
         aov = sales_df['revenue'].mean()
         
         # Simple CAC calculation
-        total_spend = marketing_df['inversion'].sum() if not marketing_df.empty else 0
+        total_spend = marketing_df['spend'].sum() if not marketing_df.empty else 0
         new_customers = sales_df['customer_id'].nunique()
         cac = total_spend / new_customers if new_customers > 0 else 0
         
@@ -340,14 +347,16 @@ class BusinessMetricsFactory:
     def _calculate_efficiency(self, sales_df: pd.DataFrame, marketing_df: pd.DataFrame) -> Dict[str, Any]:
         """Calculates MER (Marketing Efficiency Ratio)."""
         total_revenue = sales_df['revenue'].sum() if not sales_df.empty else 0
-        total_spend = marketing_df['inversion'].sum() if not marketing_df.empty else 0
+        # Fix: use 'spend' instead of 'inversion'
+        total_spend = marketing_df['spend'].sum() if not marketing_df.empty else 0
         
         mer = total_revenue / total_spend if total_spend > 0 else 0
         
         # Incremental MER (Latest 30 days)
         cutoff = datetime.now() - timedelta(days=30)
         recent_revenue = sales_df[sales_df['order_date'] >= cutoff]['revenue'].sum() if not sales_df.empty else 0
-        recent_spend = marketing_df[marketing_df['fecha'] >= cutoff]['inversion'].sum() if not marketing_df.empty else 0
+        # Fix: use 'date' and 'spend'
+        recent_spend = marketing_df[marketing_df['date'] >= cutoff]['spend'].sum() if not marketing_df.empty else 0
         
         recent_mer = recent_revenue / recent_spend if recent_spend > 0 else 0
         
