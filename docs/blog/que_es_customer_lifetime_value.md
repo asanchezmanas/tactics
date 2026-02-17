@@ -80,15 +80,20 @@ Paradójicamente, esta limitación ha impulsado metodologías más robustas: en 
 
 ---
 
-## LTV 2.0: El Salto a la Inteligencia Profunda
+## Cómo Calcula Tactics el LTV
 
-En Tactics, hemos llevado el cálculo del LTV más allá de los modelos estadísticos tradicionales (como Pareto/NBD). Con la llegada de **Intelligence 2.0**, introducimos dos tecnologías disruptivas:
+Tactics utiliza los modelos **BG/NBD** (Beta-Geométrico / Binomial Negativo) y **Gamma-Gamma**, desarrollados en Wharton por Peter Fader y Bruce Hardie. Son los mismos modelos probabilísticos empleados por empresas como Amazon y Spotify para estimar valor de cliente a escala.
 
-### 1. El Olvido Inteligente (LSTM)
-A diferencia de las fórmulas que dan el mismo peso a todas las compras, nuestra IA utiliza redes **LSTM (Long Short-Term Memory)**. Estas redes son capaces de entender que una compra realizada hace un año puede ser menos relevante que un cambio repentino en el comportamiento del mes pasado.
+Lo que los diferencia de una simple fórmula de Excel:
 
-### 2. Capas de Atención (Attention Layers)
-Nuestra IA no mira tus datos como una masa uniforme. Utiliza "Capas de Atención" para iluminar eventos críticos: esa campaña de Black Friday que atrajo a clientes de alta calidad o aquel periodo de hibernación de un cliente VIP. La IA "presta atención" a lo que realmente importa para predecir el futuro con una precisión del 92%.
+### 1. Probabilidad de estar activo
+En lugar de asumir que un cliente "vive o muere" de forma abrupta, el modelo calcula continuamente la probabilidad de que ese cliente siga siendo activo. Un cliente que no compra hace 3 meses no está "perdido": tiene una probabilidad de recompra que el modelo cuantifica con precisión.
+
+### 2. Intervalos de confianza
+Cada predicción de LTV viene acompañada de un rango (ej: "280€ – 360€"). No damos un número falso como si fuera certeza; reflejamos la incertidumbre real del modelo. Eso se llama honestidad estadística.
+
+### 3. Validación real
+Los modelos se validan con datos de holdout: se entrena el modelo con el historial pasado y se compara contra el comportamiento futuro real. Si el modelo no predice bien, lo sabemos antes de que tú lo pagues.
 
 ---
 

@@ -10,6 +10,7 @@ import asyncio
 from datetime import datetime, timedelta
 from typing import Optional, Dict, List
 from enum import Enum
+import pandas as pd
 
 # Standardized database layer
 from .database import (

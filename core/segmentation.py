@@ -23,7 +23,7 @@ def segment_customers(rfm_pred, config=None):
             
         # 3. Loyal and active customers
         ly = config["loyal_customer"]
-        if prob > ly["prob_alive_threshold"] and row['expected_purchases_90d'] > ly["expected_purchases_threshold"]:
+        if prob > ly["prob_alive_threshold"] and row['predicted_purchases'] > ly["expected_purchases_threshold"]:
             return ly["label"]
             
         # 4. Potencial Ballena

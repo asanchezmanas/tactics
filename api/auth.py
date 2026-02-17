@@ -54,5 +54,3 @@ def require_tier(tier: str):
 from api.database import encrypt_token as _encrypt_token, decrypt_token as _decrypt_token, get_local_cache
 from api.pipeline import run_full_pipeline, PipelineTier
 from core.secure_vault import SecureVault
-if __name__ == "__main__":
-    asyncio.run(main())

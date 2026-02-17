@@ -252,6 +252,16 @@ class BusinessMetricsFactory:
             avg_ltv = channel_ltv.mean()
             if avg_ltv > 0:
                 results['optimizer_priors'] = (channel_ltv / avg_ltv).round(2).to_dict()
+            
+            # LTV-Weighted ROAS (The Core Differentiator)
+            # ltv_roas = avg_ltv_per_channel / cac_per_channel
+            if not marketing_df.empty:
+                channel_spend = marketing_df.groupby('channel')['spend'].sum()
+                new_cust_per_channel = sales_df.groupby(source_col)['customer_id'].nunique()
+                channel_cac = (channel_spend / new_cust_per_channel).dropna()
+                
+                ltv_roas = (channel_ltv / channel_cac).dropna()
+                results['ltv_weighted_roas'] = ltv_roas.round(2).to_dict()
 
         # 3. Attribution Efficiency (Marketing Spend vs Sales Revenue)
         if not marketing_df.empty and source_col in sales_df.columns:
@@ -302,9 +312,15 @@ class BusinessMetricsFactory:
         aov_over_time = sales_df.set_index('order_date').resample('ME')['revenue'].mean()
         stability = 1.0 - (aov_over_time.std() / aov_over_time.mean()) if len(aov_over_time) > 1 else 1.0
         
+        # CAC Payback Period (Killer Metric)
+        # CAC Payback = CAC / (AOV * Margen Bruto)
+        gross_margin = 0.4 # Default assumption
+        cac_payback = cac / (aov * gross_margin) if (aov * gross_margin) > 0 else 0
+        
         return {
             "aov": round(float(aov), 2),
             "cac": round(float(cac), 2),
+            "cac_payback_months": round(float(cac_payback), 2),
             "aov_stability": round(float(np.clip(stability, 0, 1)), 2)
         }
 

@@ -25,6 +25,7 @@ Artículos que establecen los conceptos base de la analítica de marketing moder
 | Artículo | Tema |
 |----------|------|
 | [¿Qué es el Customer Lifetime Value?](./que_es_customer_lifetime_value.md) | Definición, cálculo e importancia del LTV |
+| [CAC Payback Period: El Pulso de la Caja](./blog_cac_payback_period.md) | Midieindo cuánto tardas en recuperar la inversión |
 | [El Coste Real de Perder un Cliente](./coste_real_perder_cliente.md) | Economía del churn y estrategias de retención |
 | [Marketing Mix Modeling: Historia y Evolución](./marketing_mix_modeling_historia.md) | De la regresión lineal a los modelos modernos |
 | [Por Qué el Last-Click Attribution Está Obsoleto](./last_click_obsoleto.md) | Limitaciones y alternativas de atribución |

@@ -1,26 +1,35 @@
 # Tactics Documentation Index
 
-Welcome to the consolidated documentation for **Tactics**.
+Bienvenido a la documentación consolidada de **Tactics**.
 
 ---
 
-## 🛠️ Technical Documentation
+## 🛠️ Documentación Técnica
 
-- **[Architecture Overview](file:///c:/Users/Artur/tactics/docs/technical/ARCHITECTURE.md)**: High-level map of the unified system components.
-- **[Unified Engine Specs](file:///c:/Users/Artur/tactics/docs/technical/ENGINE_SPECS.md)**: Details on Intelligence (LTV/Churn) and MMM Optimizer.
-- **[Data Pipeline](file:///c:/Users/Artur/tactics/docs/technical/DATA_PIPELINE.md)**: Flow from ingestion and sync hub to storage.
-- **[Algorithm Maintenance](file:///c:/Users/Artur/tactics/docs/technical/ALGORITHM_MAINTENANCE.md)**: (Updated) Guidelines for the new architecture.
+- **[Architecture Overview](./technical/ARCHITECTURE.md)**: Mapa de alto nivel de los componentes del sistema.
+- **[Unified Engine Specs](./technical/ENGINE_SPECS.md)**: Detalles sobre el motor de Inteligencia (LTV/Churn) y el Optimizador MMM.
+- **[Data Pipeline](./technical/DATA_PIPELINE.md)**: Flujo desde la ingesta y el sync hub hasta el almacenamiento.
+- **[Algorithm Maintenance](./technical/ALGORITHM_MAINTENANCE.md)**: Guías para el mantenimiento y actualización de modelos.
 
-## 📈 Strategy & Growth
+- **[Unified Strategic Plan](./strategy/STRATEGIC_PLAN.md)**: Visión, escalado financiero y gestión de tesorería.
+- **[Philosophy](./strategy/PHILOSOPHY.md)**: Los principios que guían el desarrollo de Tactics.
+- **[Growth Roadmap](./strategy/GROWTH_ROADMAP_1M.md)**: El camino hacia el War Chest de €1M.
+- **[Branding Algorithms](./strategy/BRANDING_ALGORITHMS.md)**: Cómo decodificamos el comportamiento humano.
+- **[Pricing Model](./strategy/PRICING.md)**: Tiers basados en madurez de datos.
 
-- **[Unified Strategic Plan](file:///c:/Users/Artur/tactics/docs/strategy/STRATEGIC_PLAN.md)**: Vision, Financial Scaling, and Treasury Management.
-- **[Philosophy](file:///c:/Users/Artur/tactics/docs/strategy/PHILOSOPHY.md)**: The core principles driving Tactics development.
+## 📚 Referencias Generales
 
-## 📚 General References
+- **[Glosario](./GLOSSARY.md)**: Definición de términos usados en toda la plataforma.
+- **[Archivo](./archive/index.md)**: Acceso a documentación legacy (V1).
 
-- **[Glossary](file:///c:/Users/Artur/tactics/docs/GLOSSARY.md)**: Definition of terms used across the platform.
-- **[Archive](file:///c:/Users/Artur/tactics/docs/archive/index.md)**: Access to legacy (V1) documentation.
+## 📝 Blog
+
+- **[Índice del Blog](./blog/INDEX.md)**: Todos los artículos publicados y en preparación.
+
+## ❓ Centro de Ayuda
+
+- **[Índice de Ayuda](./help/INDEX.md)**: Guías de uso para clientes.
 
 ---
 
-> **Note**: This index represents the new maintainable structure.
+> **Nota**: Este índice refleja la estructura de documentación V2. Para documentación anterior, consulta el archivo.

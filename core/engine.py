@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 
 # Standard Statistical Backend
 from lifetimes import BetaGeoFitter, GammaGammaFitter, ParetoNBDFitter
-from lifetimes.utils import summary_data_from_transaction_data
+from lifetimes.utils import summary_data_from_transaction_data, calibration_and_holdout_data
 
 # Enterprise Neural Backend (Graceful fallbacks)
 try:
@@ -159,7 +159,7 @@ class NeuralStrategy(IntelligenceStrategy):
     def predict(self, data: Any, confidence_iterations: int = 500) -> pd.DataFrame:
         """Prediction logic with MC Dropout for uncertainty."""
         if data is None:
-            raise ValueError("NeuralStrategy.predict received None — prepare_data not implemented")
+            return pd.DataFrame(columns=['clv_12m', 'clv_lower', 'clv_upper', 'prob_alive', 'predicted_purchases'])
         # Ensure we return a DF with the required columns to prevent pipeline crashes
         # but with conservative/identity values since this is a stub.
         if isinstance(data, pd.DataFrame):
@@ -201,18 +201,34 @@ class TacticalEngine:
         self.strategy.fit(processed)
         results = self.strategy.predict(processed)
         
-        # 3. Validation
-        mape = 0
-        if not holdout_data.empty:
-            # Simple MAPE calculation for the holdout period
-            actuals = holdout_data.groupby('customer_id')['revenue'].sum()
-            # Join with predictions
-            results_with_actuals = results.set_index('customer_id').join(actuals.rename('actual_holdout'))
-            valid = results_with_actuals.dropna(subset=['actual_holdout'])
-            if not valid.empty:
-                # Compare clv_12m (adjusted for 30 days) vs actual
-                # Note: this is a simplified heuristic
-                mape = np.mean(np.abs((valid['actual_holdout'] - valid['clv_12m']/12) / valid['actual_holdout']))
+        # 3. SOTA Validation with Calibration & Holdout
+        # This is more robust than the simple heuristic
+        summary_ch = calibration_and_holdout_data(
+            transactions, 'customer_id', 'order_date',
+            calibration_period_end=cutoff,
+            observation_period_end=transactions['order_date'].max(),
+            monetary_value_col='revenue'
+        )
+        
+        # Fit to calibration part of summary_ch
+        self.strategy.bgf.fit(summary_ch['frequency_cal'], summary_ch['recency_cal'], summary_ch['T_cal'])
+        
+        returning_cal = summary_ch[summary_ch['frequency_cal'] > 0]
+        if not returning_cal.empty:
+            self.strategy.ggf.fit(returning_cal['frequency_cal'], returning_cal['monetary_value_cal'])
+        
+        # Predict on holdout period
+        predicted_purchases = self.strategy.bgf.predict(
+            holdout_days, summary_ch['frequency_cal'], summary_ch['recency_cal'], summary_ch['T_cal']
+        )
+        
+        # Calculate MAPE on purchases
+        actual_purchases = summary_ch['frequency_holdout']
+        valid_mask = actual_purchases > 0
+        if valid_mask.any():
+            mape = np.mean(np.abs((actual_purchases[valid_mask] - predicted_purchases[valid_mask]) / actual_purchases[valid_mask]))
+        else:
+            mape = 0
         
         return {
             "tier": self.tier,
