@@ -57,5 +57,16 @@ ALGORITHM_CONFIG = {
         "inference_type": "pymc",
         "n_samples": 2000,
         "nevergrad_budget": 100
+    },
+    "supabase": {
+        "url": "https://your-project-id.supabase.co",
+        "key": "your-anon-key",
+        "tables": {
+            "ingestion_raw": "raw_payloads",
+            "customers": "customers",
+            "transactions": "transactions",
+            "marketing_spend": "marketing_spend",
+            "sentiment_signals": "sentiment_signals"
+        }
     }
 }
