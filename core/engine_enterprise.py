@@ -93,9 +93,9 @@ class EnterpriseDataScienceCore:
         
         # Define cutoff: features from first N months, target from last 12 months
         total_months = len(all_months)
-        if total_months <= self.sequence_length:
+        if total_months < self.sequence_length + 12:
             # Not enough data for proper train/target split
-            raise ValueError(f"Need at least {self.sequence_length + 12} months of data for proper LTV training")
+            raise ValueError(f"Need at least {self.sequence_length + 12} months of data for proper LTV training (current: {total_months})")
         
         # Feature period: use sequence_length months ending 12 months ago
         # Target period: last 12 months

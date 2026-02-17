@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pandas as pd
 import numpy as np
-from api.database_resilient import get_local_cache
+from api.database import get_local_cache
 
 cache = get_local_cache()
 

@@ -194,7 +194,7 @@ class DataQualityAnalyzer:
         quality_level = self._score_to_level(overall_score)
         
         # Auditor├¡a de Integridad Profunda
-        integrity_issues = self.guard.scan(df, context=context)
+        integrity_issues = self.guard.scan(df, context="general")
         
         # Recomendaciones
         recommendations = self._generate_recommendations(

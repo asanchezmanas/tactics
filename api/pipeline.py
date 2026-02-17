@@ -14,14 +14,18 @@ from typing import Optional, Dict, Literal
 from enum import Enum
 
 # Resilient database layer (preferred)
-from .database_resilient import (
+from .database import (
     get_ventas, get_gastos, get_company_tokens,
     save_insights_jsonb, save_predictions, save_mmm_results,
     check_database_health, process_retry_queue, get_local_cache
 )
 
 # Connectors
-from .connectors import sync_shopify, sync_meta_ads
+from connectors.sync import (
+    sync_shopify, sync_meta_ads, sync_google_ads, sync_klaviyo,
+    sync_stripe, sync_ga4, sync_gsc, sync_mindbody, sync_glofox,
+    sync_google_calendar_fitness, sync_stripe_fitness
+)
 
 # Core algorithms
 from core.segmentation import segment_customers

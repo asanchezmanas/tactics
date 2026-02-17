@@ -23,7 +23,7 @@ def temp_cache_path(tmp_path):
 @pytest.fixture
 def local_cache(temp_cache_path):
     """Create a LocalCache instance with temp database."""
-    from api.database_resilient import LocalCache
+    from api.database import LocalCache
     return LocalCache(db_path=temp_cache_path)
 
 
@@ -171,7 +171,7 @@ class TestDecorators:
     
     def test_with_fallback_uses_cache_on_error(self, local_cache, sample_ventas_data):
         """Test that fallback decorator uses cache when Supabase fails."""
-        from api.database_resilient import with_fallback, get_local_cache
+        from api.database import with_fallback, get_local_cache
         
         # Pre-populate cache
         cache = get_local_cache()
@@ -188,7 +188,7 @@ class TestDecorators:
     
     def test_with_retry_queue_queues_failed_write(self, local_cache):
         """Test that retry decorator queues failed writes."""
-        from api.database_resilient import with_retry_queue, get_local_cache
+        from api.database import with_retry_queue, get_local_cache
         
         @with_retry_queue(table_name="test_table")
         def mock_save(company_id: str, data: dict):
@@ -221,9 +221,9 @@ class TestHealthCheck:
     
     def test_health_check_no_supabase(self):
         """Test health check when Supabase is unavailable."""
-        from api.database_resilient import check_database_health
+        from api.database import check_database_health
         
-        with patch('api.database_resilient.get_supabase', return_value=None):
+        with patch('api.database.supabase', None):
             result = check_database_health()
         
         assert result["supabase_available"] == False
@@ -232,7 +232,7 @@ class TestHealthCheck:
     
     def test_health_check_returns_pending_retries(self, local_cache):
         """Test that health check reports pending retries."""
-        from api.database_resilient import check_database_health, get_local_cache
+        from api.database import check_database_health, get_local_cache
         
         # Add a pending retry
         cache = get_local_cache()
@@ -245,7 +245,7 @@ class TestHealthCheck:
             conn.execute("UPDATE retry_queue SET next_retry_at = ?", 
                          (datetime.now().isoformat(),))
         
-        with patch('api.database_resilient.get_supabase', return_value=None):
+        with patch('api.database.supabase', None):
             result = check_database_health()
         
         assert result["pending_retries"] >= 1
@@ -260,7 +260,7 @@ class TestResilientIntegration:
     
     def test_full_offline_workflow(self, local_cache, sample_ventas_data, sample_predictions):
         """Test complete offline workflow with cache."""
-        from api.database_resilient import get_local_cache
+        from api.database import get_local_cache
         
         cache = get_local_cache()
         
@@ -285,10 +285,10 @@ class TestResilientIntegration:
     
     def test_graceful_degradation_flow(self):
         """Test that the system degrades gracefully."""
-        from api.database_resilient import check_database_health
+        from api.database import check_database_health
         
         # Without Supabase configured
-        with patch('api.database_resilient.get_supabase', return_value=None):
+        with patch('api.database.supabase', None):
             health = check_database_health()
         
         # Should still have local cache

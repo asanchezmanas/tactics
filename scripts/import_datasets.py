@@ -24,7 +24,7 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from api.database_resilient import get_local_cache
+from api.database import get_local_cache
 
 # ============================================================
 # DEMO DATASET DEFINITIONS
