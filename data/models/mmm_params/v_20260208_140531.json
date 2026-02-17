@@ -1,0 +1,30 @@
+{
+  "version": "v_20260208_140531",
+  "timestamp": "2026-02-08T14:05:31.516684",
+  "reason": "initial_setup",
+  "metrics": {
+    "initialized": true,
+    "calibration_age_days": 0
+  },
+  "state": {
+    "channels": [
+      {
+        "name": "Meta Ads",
+        "alpha": 1000,
+        "gamma": 0.8
+      },
+      {
+        "name": "Google Ads",
+        "alpha": 2000,
+        "gamma": 0.5
+      },
+      {
+        "name": "TikTok",
+        "alpha": 500,
+        "gamma": 0.3
+      }
+    ],
+    "saturation_type": "hill",
+    "adstock_type": "weibull"
+  }
+}
