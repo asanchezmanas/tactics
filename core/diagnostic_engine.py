@@ -15,7 +15,7 @@ class DiagnosticEngine:
         'customer_id': ['cliente_id', 'id_cliente', 'usuario_id', 'customer', 'customer_id', 'email', 'uid'],
         'order_date': ['fecha', 'date', 'order_date', 'fecha_venta', 'timestamp', 'created_at'],
         'revenue': ['monto', 'valor', 'revenue', 'total', 'precio', 'price', 'amount', 'sales'],
-        'canal': ['canal', 'channel', 'source', 'medio', 'origin', 'acquisition_channel'],
+        'channel': ['canal', 'channel', 'source', 'medio', 'origin', 'acquisition_channel'],
         'product_id': ['producto_id', 'product_id', 'sku', 'item_id', 'ref']
     }
 
@@ -55,22 +55,27 @@ class DiagnosticEngine:
             mapped_df = self._map_columns(df)
             
             # Validation
-            required = ['customer_id', 'order_date', 'revenue']
+            # Match SQL schema and DataIngetion requirements
+            required = ['id', 'customer_id', 'order_date', 'revenue']
             missing = [r for r in required if r not in mapped_df.columns]
+            if not 'id' in mapped_df.columns and 'order_id' in df.columns: # legacy handling
+                 mapped_df['id'] = df['order_id']
+                 missing = [r for r in required if r not in mapped_df.columns]
+            
             if missing:
                 return {"success": False, "error": f"Missing required columns (fuzzy match failed): {missing}"}
 
             # 2. Data Cleaning
             mapped_df['order_date'] = pd.to_datetime(mapped_df['order_date'], errors='coerce')
             mapped_df['revenue'] = pd.to_numeric(mapped_df['revenue'], errors='coerce')
-            mapped_df = mapped_df.dropna(subset=['customer_id', 'order_date', 'revenue'])
+            mapped_df = mapped_df.dropna(subset=['id', 'customer_id', 'order_date', 'revenue'])
 
             if len(mapped_df) < 20:
                 return {"success": False, "error": "Insufficient data for quality analysis (min 20 valid rows)"}
 
             # 3. Calculate Intelligence 2.0 Metrics
             # For the demo, we mock empty marketing data if not provided to avoid audit errors
-            mock_mkt = pd.DataFrame(columns=['fecha', 'canal', 'inversion'])
+            mock_mkt = pd.DataFrame(columns=['date', 'channel', 'spend'])
             
             report = self.factory.calculate_all(mapped_df, mock_mkt)
             

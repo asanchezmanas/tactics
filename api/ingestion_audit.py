@@ -96,9 +96,12 @@ class IngestionAuditor:
             print(f"[AUDIT ERROR] Could not persist receipt: {e}")
 
     def get_batch_audit(self, batch_id: str) -> Optional[Dict]:
-        """Recupera la auditor├¡a de un lote espec├¡fico"""
+        """Recupera la auditoría de un lote específico"""
         if not supabase: return None
-        # return supabase.table("ingestion_receipts").select("*").eq("batch_id", batch_id).single().execute().data
-        return None
+        try:
+            res = supabase.table("ingestion_receipts").select("*").eq("batch_id", batch_id).single().execute()
+            return res.data
+        except Exception:
+            return None
 
 

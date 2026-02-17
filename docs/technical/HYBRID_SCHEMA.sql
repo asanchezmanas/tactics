@@ -49,3 +49,22 @@ CREATE TABLE IF NOT EXISTS sentiment_signals (
     -- embedding vector(1536) -- Placeholder for OpenAI/Llama embeddings
     metadata JSONB
 );
+
+-- 5. Audit & Traceability
+CREATE TABLE IF NOT EXISTS ingestion_receipts (
+    batch_id TEXT PRIMARY KEY,
+    company_id TEXT NOT NULL,
+    data_type TEXT NOT NULL,
+    source TEXT NOT NULL,
+    filename TEXT,
+    input_row_count INTEGER,
+    success_count INTEGER,
+    error_count INTEGER,
+    checksum TEXT,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    status TEXT,
+    errors JSONB
+);
+
+CREATE INDEX idx_receipt_company ON ingestion_receipts(company_id);
+CREATE INDEX idx_receipt_batch ON ingestion_receipts(batch_id);

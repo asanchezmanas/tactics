@@ -75,7 +75,7 @@ class Member:
         return {
             "customer_id": self.id,
             "email": self.email,
-            "nombre": self.full_name,
+            "name": self.full_name,
             "first_purchase_date": self.signup_date.isoformat() if self.signup_date else None,
             "segment": self.membership_type or "standard",
         }
@@ -114,11 +114,11 @@ class Attendance:
     def to_tactics_row(self) -> Dict[str, Any]:
         """Convierte a formato venta para LTV/Churn analysis"""
         return {
-            "order_id": self.id,
+            "id": self.id,
             "customer_id": self.member_id,
             "order_date": self.date.isoformat(),
             "revenue": 0,  # Las asistencias no tienen revenue directo
-            "canal": self.class_type or "gym",
+            "channel": self.class_type or "gym",
         }
 
 
@@ -171,11 +171,11 @@ class Membership:
     def to_tactics_row(self) -> Dict[str, Any]:
         """Convierte a formato venta para LTV analysis"""
         return {
-            "order_id": f"membership_{self.id}",
+            "id": f"membership_{self.id}",
             "customer_id": self.member_id,
             "order_date": self.start_date.isoformat() if self.start_date else None,
             "revenue": self.price,
-            "canal": "membership",
+            "channel": "membership",
         }
 
 

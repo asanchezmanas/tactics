@@ -59,10 +59,10 @@ SCHEMA_CLIENTES = {
 }
 
 SCHEMA_VENTAS = {
-    "required": ["order_id", "customer_id", "order_date", "revenue"],
-    "optional": ["canal_origen", "productos", "descuento", "moneda"],
+    "required": ["id", "customer_id", "order_date", "revenue"],
+    "optional": ["canal_origen", "metadata", "productos", "descuento", "moneda"],
     "types": {
-        "order_id": str,
+        "id": str,
         "customer_id": str,
         "order_date": "datetime",
         "revenue": float
@@ -99,8 +99,8 @@ SOURCE_TEMPLATES = {
     # ECOMMERCE
     "shopify": {
         "ventas": {
-            "Name": "order_id",
-            "Pedido": "order_id",
+            "Name": "id",
+            "Pedido": "id",
             "Email": "customer_id",
             "Correo": "customer_id",
             "Created at": "order_date",
@@ -114,8 +114,8 @@ SOURCE_TEMPLATES = {
     },
     "woocommerce": {
         "ventas": {
-            "Order ID": "order_id",
-            "ID de pedido": "order_id",
+            "Order ID": "id",
+            "ID de pedido": "id",
             "Customer Email": "customer_id",
             "Email del cliente": "customer_id",
             "Order Date": "order_date",
@@ -129,7 +129,7 @@ SOURCE_TEMPLATES = {
     # TPVs
     "square": {
         "ventas": {
-            "Transaction ID": "order_id",
+            "Transaction ID": "id",
             "Customer ID": "customer_id",
             "Date": "order_date",
             "Total Collected": "revenue",
@@ -139,7 +139,7 @@ SOURCE_TEMPLATES = {
     },
     "sumup": {
         "ventas": {
-            "Transaction code": "order_id",
+            "Transaction code": "id",
             "Card holder name": "customer_id",
             "Date": "order_date",
             "Amount": "revenue"
@@ -148,7 +148,7 @@ SOURCE_TEMPLATES = {
     },
     "clover": {
         "ventas": {
-            "Order ID": "order_id",
+            "Order ID": "id",
             "Customer": "customer_id",
             "Created Time": "order_date",
             "Total": "revenue"
@@ -157,7 +157,7 @@ SOURCE_TEMPLATES = {
     },
     "izettle": {
         "ventas": {
-            "Receipt number": "order_id",
+            "Receipt number": "id",
             "Seller": "customer_id",
             "Date": "order_date",
             "Total": "revenue"
@@ -168,7 +168,7 @@ SOURCE_TEMPLATES = {
     # ERPs
     "holded": {
         "ventas": {
-            "Número": "order_id",
+            "Número": "id",
             "Contacto": "customer_id",
             "Fecha": "order_date",
             "Total": "revenue"
@@ -483,13 +483,13 @@ class DataIngestion:
     # SINGLE ROW INSERTION (for manual entry)
     # ─────────────────────────────────────────────────────────
     
-    def insert_venta(self, order_id: str, customer_id: str, 
+    def insert_venta(self, id: str, customer_id: str, 
                      order_date: str, revenue: float,
                      canal: str = "manual", **kwargs) -> Dict:
         """Insert a single sale manually."""
         row = {
             "company_id": self.company_id,
-            "order_id": order_id,
+            "id": id,
             "customer_id": customer_id,
             "order_date": order_date,
             "revenue": revenue,
@@ -642,21 +642,25 @@ class DataIngestion:
             return
         
         table_map = {
-            "ventas": "ventas",
-            "clientes": "clientes",
+            "ventas": "transactions",
+            "clientes": "customers",
             "productos": "products",
-            "gastos": "gastos_marketing"
+            "gastos": "marketing_spend"
         }
         
         table = table_map.get(data_type)
         if not table:
             return
         
+        # Inject company_id
+        for row in rows:
+            row["company_id"] = self.company_id
+        
         try:
             result = supabase.table(table).upsert(rows).execute()
             self.stats["inserted"] = len(rows)
         except Exception as e:
-            self.errors.append(f"Database error: {e}")
+            self.errors.append(f"Database error on {table}: {e}")
             self.stats["errors"] += len(rows)
     
     def _insert_single(self, table: str, row: Dict) -> Dict:

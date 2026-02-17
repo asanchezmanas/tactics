@@ -253,7 +253,6 @@ ALGORITHM_CATALOG: List[AlgorithmSpec] = [
         icon="⚖️"
     ),
 ]
-]
 
 
 class AlgorithmTierService:

@@ -36,7 +36,7 @@ class PipelineTier(str, Enum):
     PRECISION = "precision"
 
 async def run_full_pipeline(company_id: str, 
-                            tier: PipelineTier = PipelineTier.CORE,
+                            tier: PipelineTier = PipelineTier.INTELLIGENCE,
                             force_refresh: bool = False) -> Dict:
     """
     Orchestrates the entire data processing flow using SOTA Async Hub.
@@ -70,13 +70,14 @@ async def run_full_pipeline(company_id: str,
             hub = UnifiedSyncHub()
             sync_results = await hub.sync_company(company_id, tokens)
             
-            # 2.1 Materialization Link (Normalization)
             from api.data_ingestion import DataIngestion
             ingestion = DataIngestion(company_id)
-            for provider_id, data in sync_results.items():
-                if isinstance(data, list) and data:
-                    dtype = "ventas" if provider_id == 'shopify' else "gastos"
-                    ingestion.ingest_json(data, dtype)
+            for provider_id, sync_res in sync_results.items():
+                if isinstance(sync_res, dict) and sync_res.get("status") == "success":
+                    data = sync_res.get("data", [])
+                    if data:
+                        dtype = "ventas" if provider_id == 'shopify' else "gastos"
+                        ingestion.ingest_json(data, dtype)
             
             for provider, res in sync_results.items():
                 if isinstance(res, dict) and res.get("status") == "success":
@@ -117,7 +118,10 @@ async def run_full_pipeline(company_id: str,
             if not marketing_errors:
                 await _run_optimization(company_id, df_gastos, tier, result, df_ventas=df_ventas)
         
-        # 6. Cleanup
+        # 6. Dashboard Aggregation (High-level synthesis for UI)
+        await _generate_dashboard_summary(company_id, result)
+        
+        # 7. Cleanup
         process_retry_queue()
         result["status"] = "completed"
         
@@ -134,9 +138,13 @@ async def _run_predictions(company_id: str, df_ventas, tier: PipelineTier, resul
         engine = TacticalEngine(tier=tier.value, company_id=company_id)
         prediction_results = engine.analyze_ltv(df_ventas)
         
+        result["metrics"]["avg_ltv"] = prediction_results['summary'].get('avg_ltv', 0)
+        result["metrics"]["avg_churn"] = prediction_results['summary'].get('avg_churn_risk', 0)
+        
         save_predictions(company_id, prediction_results['predictions'], "TacticalEngine")
+        
         result["steps_completed"].append("predict_ltv")
-        result["metrics"]["customers_analyzed"] = prediction_results['summary']['customers_analyzed'] if 'customers_analyzed' in prediction_results['summary'] else len(prediction_results['predictions'])
+        result["metrics"]["customers_analyzed"] = prediction_results['summary'].get('customers_analyzed', len(prediction_results['predictions']))
     except Exception as e:
         result["errors"].append(f"Predictions failed: {e}")
 
@@ -189,3 +197,21 @@ async def _run_optimization(company_id: str, df_gastos, tier: PipelineTier, resu
     except Exception as e:
         result["errors"].append(f"Optimization failed: {e}")
         logger.error(f"Optimization error: {e}")
+
+async def _generate_dashboard_summary(company_id: str, pipeline_result: Dict):
+    """Aggregates all steps into a single dashboard_metrics entry for fast UI load."""
+    metrics = pipeline_result.get("metrics", {})
+    
+    summary = {
+        "ltv_total": metrics.get("avg_ltv", 0) * metrics.get("customers_analyzed", 0),
+        "avg_churn": metrics.get("avg_churn", 0.12),
+        "customer_count": metrics.get("sales_records", 0),
+        "last_sync": datetime.now().isoformat(),
+        "performance_signals": {
+            "mmm_trust": 1.0 - metrics.get("mmm_mape", 0.15),
+            "data_quality": 1.0 if not pipeline_result.get("errors") else 0.7
+        }
+    }
+    
+    from api.database import save_insights_jsonb
+    save_insights_jsonb(company_id, "dashboard_metrics", summary)

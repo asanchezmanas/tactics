@@ -125,7 +125,8 @@ class UnifiedSyncHub:
             return {
                 "status": "success" if persisted else "warning", 
                 "records": len(data),
-                "persisted": persisted
+                "persisted": persisted,
+                "data": data
             }
         except Exception as e:
             logger.error(f"Sync error for {provider.provider_id}: {e}")

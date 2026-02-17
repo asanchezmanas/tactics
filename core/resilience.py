@@ -256,7 +256,7 @@ class DataGuard:
             errors.append("Empty sales data")
             return errors
         
-        required = ['customer_id', 'order_date', 'revenue']
+        required = ['id', 'customer_id', 'order_date', 'revenue']
         for col in required:
             if col not in df.columns:
                 errors.append(f"Missing required column: {col}")

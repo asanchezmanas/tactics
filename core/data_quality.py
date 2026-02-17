@@ -122,21 +122,21 @@ class DataQualityAnalyzer:
     
     # Patrones para detectar columnas de fecha
     DATE_PATTERNS = [
-        'date', 'fecha', 'timestamp', 'created', 'updated', 
-        'order_date', 'purchase_date', 'transaction_date',
+        'date', 'order_date', 'timestamp', 'fecha', 'created', 'updated', 
+        'purchase_date', 'transaction_date',
         'created_at', 'updated_at', 'time', 'dt'
     ]
     
     # Patrones para detectar columnas de ID
     ID_PATTERNS = [
-        'customer_id', 'user_id', 'client_id', 'id', 'uid',
+        'id', 'customer_id', 'user_id', 'client_id', 'uid',
         'cliente_id', 'usuario_id', 'account_id'
     ]
     
     # Patrones para detectar columnas de valor/importe
     VALUE_PATTERNS = [
-        'amount', 'value', 'total', 'price', 'revenue', 'sales',
-        'importe', 'valor', 'precio', 'monto', 'spend', 'cost'
+        'spend', 'revenue', 'amount', 'value', 'total', 'price', 'sales',
+        'importe', 'valor', 'precio', 'monto', 'cost'
     ]
     
     # Umbrales de calidad

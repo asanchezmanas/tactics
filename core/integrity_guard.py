@@ -18,7 +18,7 @@ class IntegrityIssue:
     affected_rows: int = 0
     sample_ids: List[Any] = field(default_factory=list)
 
-class UnifiedIntegrityGuard:
+class IntegrityGuard:
     """
     Consolidated guardian for all data flows.
     """
@@ -48,8 +48,8 @@ class UnifiedIntegrityGuard:
     def _check_schema(self, df: pd.DataFrame, source_type: str):
         # Mandatory columns check
         required = {
-            "ventas": ["order_id", "customer_id", "order_date", "revenue"],
-            "gastos": ["fecha", "canal", "inversion"]
+            "ventas": ["id", "customer_id", "order_date", "revenue"],
+            "gastos": ["date", "channel", "spend"]
         }.get(source_type, [])
         
         for col in required:

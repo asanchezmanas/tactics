@@ -91,13 +91,23 @@ def save_mmm_results(company_id: str, optimization_results: Dict, channel_poster
 
 def get_dashboard_metrics(company_id: str) -> dict:
     """Retrieves latest metrics from the hybrid layer."""
+    if not db_bridge.client:
+        return {"ltv_total": 0, "avg_churn": 0, "customer_count": 0}
+
     try:
-        data = db_bridge.get_company_data(company_id, "ingestion_raw")
-        # Filter for dashboard insight (simplified for walkthrough)
-        for item in data:
-            if item.get("provider_id") == "dashboard_metrics":
-                return item["payload"][0]
-    except Exception: pass
+        # SOTA: Query latest aggregated dashboard entry
+        res = db_bridge.client.table("raw_payloads")\
+            .select("payload")\
+            .eq("company_id", company_id)\
+            .eq("provider_id", "dashboard_metrics")\
+            .order("ingested_at", descending=True)\
+            .limit(1)\
+            .execute()
+        
+        if res.data:
+            return res.data[0]["payload"][0]
+    except Exception as e:
+        print(f"[DB] Dashboard fetch error: {e}")
     
     return {"ltv_total": 0, "avg_churn": 0, "customer_count": 0}
 

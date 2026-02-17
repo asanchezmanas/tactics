@@ -24,9 +24,10 @@ class POSRetailConnector(AsyncSyncProvider):
         # SOTA Logic: Standardize various POS formats into a unified transaction stream
         return [
             {
-                "transaction_id": "pos_tr_1029",
+                "id": "pos_tr_1029",
                 "customer_id": "cust_local_55",
                 "revenue": 85.00,
+                "order_date": "2026-02-17T11:00:00Z",
                 "items_count": 3,
                 "payment_method": "stripe_terminal",
                 "store_location": "Madrid_Center"

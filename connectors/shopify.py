@@ -27,7 +27,7 @@ class ShopifyConnector(AsyncSyncProvider):
         # For the marathon, we mock the SOTA response format
         return [
             {
-                "order_id": "sh_9922",
+                "id": "sh_9922",
                 "customer_id": "cust_shopify_1",
                 "revenue": 120.50,
                 "order_date": "2026-02-15T10:00:00Z",
@@ -35,7 +35,7 @@ class ShopifyConnector(AsyncSyncProvider):
                 "items": ["t-shirt", "cap"]
             },
             {
-                "order_id": "sh_9923",
+                "id": "sh_9923",
                 "customer_id": "cust_shopify_2",
                 "revenue": 45.00,
                 "order_date": "2026-02-16T12:00:00Z",
