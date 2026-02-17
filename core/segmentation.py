@@ -10,7 +10,12 @@ def segment_customers(rfm_pred, config=None):
     def categorize(row):
         prob = row['prob_alive']
         clv = row['clv_12m']
+        trend = row.get('recency_trend', 0)
         
+        # 0. Pre-churn (SOTA Precision Tier)
+        if prob > 0.7 and trend > 5:
+            return "ALERTA_PRE_CHURN"
+            
         # 1. VIPs at risk
         v = config["vip_at_risk"]
         if prob < v["prob_alive_threshold"] and clv > v["clv_threshold"]:
@@ -26,10 +31,9 @@ def segment_customers(rfm_pred, config=None):
         if prob > ly["prob_alive_threshold"] and row['predicted_purchases'] > ly["expected_purchases_threshold"]:
             return ly["label"]
             
-        # 4. Potencial Ballena
-        w = config["whale_potential"]
-        if clv > w["clv_threshold"]:
-            return w["label"]
+        # 5. One-time buyers conversion (SOTA)
+        if row['frequency'] == 0 and row.get('second_purchase_prob', 0) > 0.15:
+            return "PROSPECTO_CONVERSION"
             
         return config["default_label"]
 

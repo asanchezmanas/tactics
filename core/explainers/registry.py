@@ -7,6 +7,9 @@ Allows adding new explainers without modifying core code.
 
 from typing import Dict, Optional, Type
 from .base import ExplainerBase
+import logging
+
+logger = logging.getLogger("tactics.core.explainers")
 
 
 class ExplainerRegistry:
@@ -33,20 +36,25 @@ class ExplainerRegistry:
     
     def _bootstrap(self) -> None:
         """Auto-registers core explainers."""
-        from .ltv_explainer import LTVExplainer
-        from .mmm_explainer import MMMExplainer
-        from .eclat_explainer import ECLATExplainer
-        from .bandit_explainer import ThompsonExplainer, LinUCBExplainer
-        from .profit_explainer import ProfitExplainer
-        from .integrity_explainer import IntegrityExplainer
-        
-        self.register("ltv", LTVExplainer())
-        self.register("mmm", MMMExplainer())
-        self.register("eclat", ECLATExplainer())
-        self.register("thompson", ThompsonExplainer())
-        self.register("linucb", LinUCBExplainer())
-        self.register("profit", ProfitExplainer())
-        self.register("integrity", IntegrityExplainer())
+        try:
+            from .ltv_explainer import LTVExplainer
+            from .mmm_explainer import MMMExplainer
+            from .eclat_explainer import ECLATExplainer
+            from .bandit_explainer import ThompsonExplainer, LinUCBExplainer
+            from .profit_explainer import ProfitExplainer
+            from .integrity_explainer import IntegrityExplainer
+            
+            self.register("ltv", LTVExplainer())
+            self.register("mmm", MMMExplainer())
+            self.register("eclat", ECLATExplainer())
+            self.register("thompson", ThompsonExplainer())
+            self.register("linucb", LinUCBExplainer())
+            self.register("profit", ProfitExplainer())
+            self.register("integrity", IntegrityExplainer())
+        except Exception as e:
+            logger.error(f"ExplainerRegistry bootstrap failed: {e}")
+            # Do not re-raise to allow the rest of the app to function, 
+            # but log the failure clearly.
 
     @classmethod
     def register(cls, category: str, explainer: ExplainerBase) -> None:
@@ -61,15 +69,8 @@ class ExplainerRegistry:
     
     @classmethod
     def get(cls, category: str) -> Optional[ExplainerBase]:
-        """
-        Get the explainer for a category.
-        
-        Args:
-            category: Algorithm category
-            
-        Returns:
-            ExplainerBase instance or None if not registered
-        """
+        if cls._instance is None:
+            cls()
         return cls._explainers.get(category)
     
     @classmethod
@@ -79,7 +80,8 @@ class ExplainerRegistry:
     
     @classmethod
     def list_categories(cls) -> list:
-        """List all registered categories."""
+        if cls._instance is None:
+            cls()
         return list(cls._explainers.keys())
     
     @classmethod

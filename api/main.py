@@ -5,7 +5,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import pages, analytics, sync
+from api.routers import pages, analytics, sync, webhooks
 
 app = FastAPI(
     title="Tactics AI API",
@@ -47,6 +47,7 @@ async def health():
 # API Routes first
 app.include_router(analytics.router)
 app.include_router(sync.router)
+app.include_router(webhooks.router)
 
 # Page Routes last (contains catch-all /{locale})
 app.include_router(pages.router)

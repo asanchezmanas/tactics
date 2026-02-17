@@ -28,6 +28,7 @@ from core.optimizer import BudgetOptimizer
 from core.resilience import DataGuard
 from core.engine import TacticalEngine
 from core.metrics_factory import BusinessMetricsFactory
+from core.exporters import EnterpriseExporter
 
 logger = logging.getLogger("tactics.pipeline")
 
@@ -139,6 +140,13 @@ async def _run_predictions(company_id: str, df_ventas, tier: PipelineTier, resul
         engine = TacticalEngine(tier=tier.value, company_id=company_id)
         prediction_results = engine.analyze_ltv(df_ventas)
         
+        # SOTA: Extract results for segments and signals
+        ltv_results = prediction_results['ltv_projections']
+        
+        # 2. Precision-tier only features
+        if tier == PipelineTier.PRECISION:
+            await _run_precision_insights(company_id, ltv_results, df_ventas, result)
+        
         result["metrics"]["avg_ltv"] = prediction_results['summary'].get('avg_ltv', 0)
         result["metrics"]["avg_churn"] = prediction_results['summary'].get('avg_churn_risk', 0)
         
@@ -148,6 +156,38 @@ async def _run_predictions(company_id: str, df_ventas, tier: PipelineTier, resul
         result["metrics"]["customers_analyzed"] = prediction_results['summary'].get('customers_analyzed', len(prediction_results['predictions']))
     except Exception as e:
         result["errors"].append(f"Predictions failed: {e}")
+
+async def _run_precision_insights(company_id: str, ltv_results: pd.DataFrame, df_ventas: pd.DataFrame, result: Dict):
+    """SOTA Precision-only signals: Bid Export and Audit Trails."""
+    try:
+        factory = BusinessMetricsFactory(company_id)
+        
+        # 1. Bid Signals for Meta/Google
+        bid_signals = factory.generate_bid_signals(ltv_results)
+        save_insights_jsonb(company_id, "bid_signals", bid_signals)
+        result["steps_completed"].append("generate_bid_signals")
+        
+        # 2. Prediction Outcomes (Audit Trail)
+        # If we have historical data, we'd compare past predictions with actuals.
+        # For now, we initialize the outcome tracker with a summary.
+        audit_trail = {
+            "prediction_date": datetime.now().isoformat(),
+            "customer_count": len(ltv_results),
+            "total_value_predicted": float(ltv_results['clv_12m'].sum()),
+            "status": "active_tracking"
+        }
+        save_insights_jsonb(company_id, "prediction_audit", audit_trail)
+        result["steps_completed"].append("init_audit_trail")
+        
+        # 3. Klaviyo Proactive Alerts (Audit 4.3)
+        exporter = EnterpriseExporter(company_id)
+        klaviyo_res = exporter.export_klaviyo_segments(ltv_results)
+        result["metrics"]["klaviyo_sync"] = klaviyo_res
+        result["steps_completed"].append("klaviyo_proactive_sync")
+        
+    except Exception as e:
+        logger.error(f"Precision insights failed: {e}")
+        result["errors"].append(f"Precision signals failed: {e}")
 
 async def _run_optimization(company_id: str, df_gastos, tier: PipelineTier, result: Dict, df_ventas = None):
     """MMM Optimization Core with LTV weighting."""

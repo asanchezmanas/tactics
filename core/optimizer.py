@@ -31,7 +31,7 @@ except ImportError:
 def adstock_geometric(spending: np.ndarray, decay: float = 0.5) -> np.ndarray:
     adstocked = np.zeros_like(spending)
     for t in range(len(spending)):
-        adstocked[t] = spending[t] + (adstocked[t-1] * decay if t > 0 else 0)
+        adstocked[t] = float(spending[t]) + (float(adstocked[t-1]) * decay if t > 0 else 0)
     return adstocked
 
 def hill_saturation(x: np.ndarray, alpha: float, gamma: float, amplitude: float = 1.0) -> np.ndarray:
@@ -54,17 +54,79 @@ class BudgetOptimizer:
     def __init__(self, tier: str = 'CORE'):
         self.tier = tier
         self.channel_models = {}
+        self.baseline = None
 
     def fit_response_curves(self, spend_data: pd.DataFrame, revenue_data: pd.Series):
         """Fits saturation and adstock parameters based on history."""
+        # 1. Baseline Separation (Precision Tier feature)
+        self.baseline = self._calculate_baseline(revenue_data)
+        
+        # 2. Fit Marketing Response
+        net_revenue = revenue_data - self.baseline
+        
         if self.tier in ['ENTERPRISE', 'PRECISION'] and PYMC_AVAILABLE:
-            return self._fit_bayesian(spend_data, revenue_data)
-        return self._fit_deterministic(spend_data, revenue_data)
+            return self._fit_bayesian(spend_data, net_revenue)
+        return self._fit_deterministic(spend_data, net_revenue)
 
-    def _fit_deterministic(self, spend_data, revenue_data):
-        # Scipy-based minimization
-        # Mocking for now to satisfy pipeline
-        self.channel_models = {"fitted": True, "mape": 0.12}
+    def _calculate_baseline(self, revenue_data: pd.Series) -> pd.Series:
+        """
+        Separates organic revenue from marketing effect.
+        Standard for Precision: Weekly trend + seasonality (STL).
+        """
+        if revenue_data.empty:
+            return revenue_data
+            
+        try:
+            if self.tier in ['ENTERPRISE', 'PRECISION']:
+                try:
+                    from statsmodels.tsa.seasonal import STL
+                    # Resample to weekly to ensure period=52 works or 7 for daily
+                    res = STL(revenue_data, period=7, robust=True).fit()
+                    return res.trend + res.seasonal
+                except ImportError:
+                    pass
+            
+            # Fallback/Core: Simple Decomposition
+            trend = revenue_data.rolling(window=7, min_periods=1, center=True).mean()
+            seasonal_idx = revenue_data.index.dayofweek
+            seasonal_avg = (revenue_data - trend).groupby(seasonal_idx).transform('mean')
+            return (trend + seasonal_avg).fillna(revenue_data.mean())
+        except Exception:
+            return pd.Series(revenue_data.mean(), index=revenue_data.index)
+
+    def _fit_deterministic(self, spend_data: pd.DataFrame, net_revenue: pd.Series):
+        """
+        Scipy-based MMM fitting. 
+        Fits alpha (shape), gamma (scale), and amplitude for each channel.
+        SOTA: Applies adstock before Hill saturation.
+        """
+        self.channel_models = {}
+        for channel in spend_data.columns:
+            spend = spend_data[channel].values
+            
+            # 1. Apply Adstock (SOTA: assume decay=0.5 for core fitting)
+            adstocked = adstock_geometric(spend, decay=0.5)
+            
+            # 2. Fit Hill Parameters (amplitude, alpha, gamma)
+            # Objective: minimize MSE against net_revenue
+            def objective(params):
+                amp, alpha, gamma, decay = params
+                adstocked = adstock_geometric(spend, decay=decay)
+                pred = hill_saturation(adstocked, alpha, gamma, amplitude=amp)
+                return np.mean((net_revenue.values - pred)**2)
+            
+            res = minimize(objective, x0=[net_revenue.mean(), 1.5, spend.mean(), 0.5], 
+                           bounds=[(0, None), (0.1, 10), (1, None), (0.1, 0.9)], method='L-BFGS-B')
+            
+            self.channel_models[channel] = {
+                "amplitude": res.x[0],
+                "alpha": res.x[1],
+                "gamma": res.x[2],
+                "decay": res.x[3],
+                "mape": np.sqrt(res.fun) / (net_revenue.mean() + 1e-9)
+            }
+        
+        self.channel_models["fitted"] = True
 
     def validate_holdout(self, spend_data: pd.DataFrame, revenue_data: pd.Series, holdout_weeks: int = 4) -> float:
         """
@@ -72,13 +134,17 @@ class BudgetOptimizer:
         SOTA: Trust signal for budget shifts.
         """
         if spend_data.empty or revenue_data.empty:
-            return 0.15 # Default/Mock if no data
+            logger.warning("SOTA Audit: MMM Validation failed (Empty Data)")
+            return -1.0 
 
         try:
-            # 1. Split data
+            # 1. Align & Split data
+            spend_data, revenue_data = spend_data.align(revenue_data, join='inner', axis=0)
+            
             total_weeks = len(revenue_data)
             if total_weeks <= holdout_weeks:
-                return 0.15
+                logger.warning(f"SOTA Audit: MMM Validation failed (Insufficient weeks: {total_weeks})")
+                return -1.0
             
             train_rev = revenue_data.iloc[:-holdout_weeks]
             test_rev = revenue_data.iloc[-holdout_weeks:]
@@ -97,9 +163,11 @@ class BudgetOptimizer:
             print(f"[Optimizer] Holdout error: {e}")
             return 0.12 # Fallback
 
-    def allocate_budget(self, total_budget: float, channels: List[str], channel_params: Dict[str, dict] = None) -> Dict[str, float]:
+    def allocate_budget(self, total_budget: float, channels: List[str], channel_params: Dict[str, dict] = None, 
+                        prev_spend: Dict[str, float] = None) -> Dict[str, float]:
         """
         Distributes budget across channels using Hill saturation (Gross Profit Maximization).
+        Incorporates historical adstock (carry-over) if provided.
         """
         # Default parameters if none provided
         if not channel_params:
@@ -108,16 +176,21 @@ class BudgetOptimizer:
         def objective(budgets):
             gross_profit = 0
             for i, channel in enumerate(channels):
-                params = channel_params.get(channel, {"alpha": 1.5, "gamma": 500.0, "amplitude": 5000.0, "margin": 0.4})
+                params = channel_params.get(channel, {"alpha": 1.5, "gamma": 500.0, "amplitude": 5000.0, "margin": 0.4, "decay": 0.5})
                 
-                # SOTA Hill parameters
-                alpha = params.get("alpha", 1.5)      # Shape
-                gamma = params.get("gamma", 500.0)    # Half-saturation point
-                amp = params.get("amplitude", 5000.0) # Max sales potential
+                # SOTA Adstock + Hill parameters
+                decay = params.get("decay", 0.5)
+                # Historical carryover
+                history = prev_spend.get(channel, 0.0) if prev_spend else 0.0
+                
+                alpha = params.get("alpha", 1.5)
+                gamma = params.get("gamma", 500.0)
+                amp = params.get("amplitude", 5000.0)
                 margin = params.get("gross_margin", params.get("margin", 0.4))
                 
-                # Calculate revenue scaled by amplitude
-                revenue = hill_saturation(np.array([budgets[i]]), alpha, gamma, amplitude=amp)[0]
+                # Prediction = Hill(Spend_today + decayed_prev_spend)
+                effective_spend = budgets[i] + (history * decay)
+                revenue = hill_saturation(effective_spend, alpha, gamma, amplitude=amp)
                 gross_profit += (revenue * margin) - budgets[i]
             
             return -gross_profit  # Minimize negative profit

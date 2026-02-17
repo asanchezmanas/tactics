@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import hashlib
 from typing import Optional, List, Dict, Tuple
 from .config import ALGORITHM_CONFIG
 
@@ -22,8 +23,16 @@ class ProfitMatrixEngine:
         # Run ECLAT to get frequent itemsets
         frequent_itemsets = self.run_eclat(transactions, min_support)
         
+        if 'order_id' not in transactions.columns:
+            # SOTA: Generate robust proxy if order_id is missing
+            transactions = transactions.copy()
+            transactions['order_proxy'] = transactions.apply(lambda r: hashlib.md5(f"{r.get('customer_id', '')}_{r.get('order_date', '')}".encode()).hexdigest()[:12], axis=1)
+            id_col = 'order_proxy'
+        else:
+            id_col = 'order_id'
+            
         # Convert to pair-based rules for backwards compatibility
-        basket = transactions.groupby('order_id')['product_id'].apply(list).tolist()
+        basket = transactions.groupby(id_col)['product_id'].apply(list).tolist()
         total_orders = len(basket)
         
         from collections import Counter
@@ -70,8 +79,10 @@ class ProfitMatrixEngine:
         vertical_db: Dict[str, set] = {}
         all_tids = set()
         
+        id_col = 'order_id' if 'order_id' in transactions.columns else 'order_proxy'
+        
         for _, row in transactions.iterrows():
-            tid = row['order_id']
+            tid = row[id_col]
             item = row['product_id']
             all_tids.add(tid)
             if item not in vertical_db:

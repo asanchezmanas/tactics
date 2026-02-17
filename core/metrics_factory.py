@@ -5,6 +5,7 @@ Derives high-value BI indicators from base data and provides feedback loops for 
 
 import pandas as pd
 import numpy as np
+import hashlib
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
@@ -154,7 +155,8 @@ class BusinessMetricsFactory:
         if 'order_id' not in sales_df.columns or 'product_id' not in sales_df.columns:
             # Fallback if order_id is missing: use customer_id + date as proxy
             if 'customer_id' in sales_df.columns and 'order_date' in sales_df.columns:
-                sales_df['order_proxy'] = sales_df['customer_id'].astype(str) + "_" + sales_df['order_date'].astype(str)
+                # SOTA: use hash for uniqueness
+                sales_df['order_proxy'] = sales_df.apply(lambda r: hashlib.md5(f"{r['customer_id']}_{r['order_date']}_{r['revenue']}".encode()).hexdigest()[:12], axis=1)
                 id_col = 'order_proxy'
             else:
                 return []
@@ -360,6 +362,41 @@ class BusinessMetricsFactory:
             "matrix_summary": retention_matrix.iloc[-3:, :6].fillna(0).to_dict() if not retention_matrix.empty else {}
         }
 
+    def generate_bid_signals(self, ltv_predictions: pd.DataFrame) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        SOTA: Generates LTV-weighted bid signals for Meta CAPI and Google Ads.
+        Conversion Value = Predicted 12m CLV.
+        """
+        if ltv_predictions.empty:
+            return {"meta": [], "google": []}
+            
+        signals = ltv_predictions[['customer_id', 'clv_12m', 'prob_alive']].copy()
+        
+        # Meta CAPI Format
+        meta_signals = [
+            {
+                "external_id": row['customer_id'],
+                "event_name": "PredictiveValue",
+                "value": round(row['clv_12m'], 2),
+                "currency": "EUR"
+            } for _, row in signals.iterrows()
+        ]
+        
+        # Google Ads Offline Conversions Format
+        google_signals = [
+            {
+                "customer_id": row['customer_id'],
+                "conversion_name": "Predicted_CLV",
+                "conversion_value": round(row['clv_12m'], 2),
+                "conversion_currency": "EUR"
+            } for _, row in signals.iterrows()
+        ]
+        
+        return {
+            "meta": meta_signals,
+            "google": google_signals
+        }
+
     def _calculate_efficiency(self, sales_df: pd.DataFrame, marketing_df: pd.DataFrame) -> Dict[str, Any]:
         """Calculates MER (Marketing Efficiency Ratio)."""
         total_revenue = sales_df['revenue'].sum() if not sales_df.empty else 0
@@ -369,7 +406,8 @@ class BusinessMetricsFactory:
         mer = total_revenue / total_spend if total_spend > 0 else 0
         
         # Incremental MER (Latest 30 days)
-        cutoff = datetime.now() - timedelta(days=30)
+        # SOTA: Timezone-aware cutoff
+        cutoff = pd.Timestamp.now(tz='UTC') - pd.Timedelta(days=30)
         recent_revenue = sales_df[sales_df['order_date'] >= cutoff]['revenue'].sum() if not sales_df.empty else 0
         # Fix: use 'date' and 'spend'
         recent_spend = marketing_df[marketing_df['date'] >= cutoff]['spend'].sum() if not marketing_df.empty else 0

@@ -82,12 +82,11 @@ Cuando crezca, subirá de tier. Y lo hará porque verá el valor, no porque le h
 
 ## Comparativa de Competidores
 
-| Plataforma | Precio aprox. | Enfoque | Limitación |
+| Plataforma | ROI Esperado | Dolor que Resuelve | Limitación |
 |-----------|---------------|---------|------------|
-| Klaviyo | 100-500€/mo | Email + segmentación | Sin MMM ni LTV probabilístico |
-| Triple Whale | 300-1200€/mo | Attribution tracking | Requiere pixel, vulnerable a iOS changes |
-| Northbeam | 400-2000€/mo | MMM + Attribution | Precio prohibitivo para mid-market |
-| **Tactics** | 99-799€/mo | LTV + MMM + Optimización | Requiere datos propios (ventaja GDPR) |
+| **Klaviyo** | Retención básica | "No hablo con mi audiencia" | Sin MMM ni LTV predictivo real |
+| **Triple Whale** | Attribution | "No sé qué anuncio trajo la venta" | Sensible a cambios de iOS/Cookies |
+| **Tactics v3.3** | **Multiplicador de LTV** | **"Meta optimiza clicks baratos, no clientes que vuelven"** | Tier Precision requiere >24 meses datos |
 
 ---
 

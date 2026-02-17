@@ -4,6 +4,8 @@ Async ingestion for Sales and Customer data.
 """
 
 import logging
+import httpx
+from datetime import datetime, timedelta
 from typing import List, Dict, Any
 from .sync import AsyncSyncProvider
 

@@ -17,6 +17,13 @@ class CompanyContext(BaseModel):
 
 async def get_current_user(request: Request) -> CompanyContext:
     """FastAPI dependency to extract company context from Supabase."""
+    # SOTA: Initialize explainers early to catch bootstrap issues (Bug #7)
+    try:
+        from core.explainers.registry import ExplainerRegistry
+        ExplainerRegistry()
+    except Exception as e:
+        print(f"[AUTH] ExplainerRegistry bootstrap warning: {e}")
+
     company_id = request.headers.get("X-Company-ID")
     if not company_id:
         raise HTTPException(status_code=401, detail="X-Company-ID header required")
