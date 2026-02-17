@@ -146,10 +146,21 @@ class TacticalEngineV2:
             "tier": self.tier,
             "predictions": results.to_dict('records'),
             "summary": {
-                "avg_ltv": results['predicted_ltv'].mean(),
-                "avg_churn_risk": 1 - results['prob_alive'].mean()
-            }
+                "avg_ltv": results['predicted_ltv'].mean() if 'predicted_ltv' in results else 0,
+                "avg_churn_risk": 1 - results['prob_alive'].mean() if 'prob_alive' in results else 0
+            },
+            "ltv_projections": results # Compatibility with tests
         }
+
+    def predict_ltv(self, transactions: pd.DataFrame):
+        """Alias for analyze_ltv for API consistency."""
+        return self.analyze_ltv(transactions)
+
+class EngineFactory:
+    """Factory for instantiating V2 engines."""
+    @staticmethod
+    def create_engine(tier: str = 'CORE', company_id: str = "generic") -> TacticalEngineV2:
+        return TacticalEngineV2(tier=tier, company_id=company_id)
 
     # Merged from profit.py (Basket Analysis & Unit Economics)
     def calculate_basket_rules(self, transactions: pd.DataFrame, min_support: float = 0.05) -> Dict:
