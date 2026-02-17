@@ -3,7 +3,7 @@
  * Corrected Entry Point: Imports unified API and initializes Stores.
  */
 
-import { api } from './core/api_v2.js';
+import { api } from './core/api.js';
 
 // Global API Exposure for Legacy/Inline compatibility
 window.tacticsApi = api;
@@ -17,7 +17,7 @@ document.addEventListener('alpine:init', () => {
         async refresh() {
             this.loading = true;
             try {
-                this.metrics = await api.get('/api/elite/metrics');
+                this.metrics = await api.get('/api/v1/metrics');
             } catch (e) {
                 console.error('Analytics Refresh Error:', e);
             }
